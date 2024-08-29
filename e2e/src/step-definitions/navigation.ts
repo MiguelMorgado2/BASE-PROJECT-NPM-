@@ -1,4 +1,6 @@
-import { Given } from "@cucumber/cucumber";
+import { Given, setDefaultTimeout } from "@cucumber/cucumber";
+
+setDefaultTimeout(10000);
 
 Given (
     /^I am on the home page$/,

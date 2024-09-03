@@ -4,14 +4,26 @@ import { expect } from '@playwright/test'
 setDefaultTimeout(10000)
 
 Then(
-    /^the contacts header should contain the text Contacts$/,
-    async function() {
+    /^the "([^"]*)" should contain the text "(.*)"$/,
+    async function(elementKey: string, expectedElementText: string) {
 
-        console.log("the contacts header should contain the text Contacts")
+        console.log(`the ${elementKey} should contain the text ${expectedElementText}`)
 
         const content = await global.page.textContent("[data-id='contacts']")
 
-        expect(content).toBe('Contacts')
+        expect(content).toBe(expectedElementText)
 
+    }
+)
+
+Then(
+    /^the "([^"]*)" should be displayed$/,
+    async function(elementKey: string) {
+
+        console.log(`the ${elementKey} should be displayed`)
+
+        const locator = await global.page.locator("[data-id='playground-button']")
+
+        await expect(locator).toBeVisible()
     }
 )

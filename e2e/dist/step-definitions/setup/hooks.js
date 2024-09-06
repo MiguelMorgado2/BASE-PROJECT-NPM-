@@ -1,11 +1,12 @@
 "use strict";
 
 var _cucumber = require("@cucumber/cucumber");
+var _parsEnv = require("../../env/parsEnv");
 (0, _cucumber.Before)(async function (scenario) {
   console.log(`🥒 Running cucumber "${scenario.pickle.name}"`);
   const contextOptions = {
     recordVideo: {
-      dir: `./reports/videos/'${scenario.pickle.name}.png`
+      dir: `${(0, _parsEnv.env)('VIDEO_PATH')}${scenario.pickle.name}.png`
     }
   };
   const ready = await this.init(contextOptions);
@@ -21,7 +22,7 @@ var _cucumber = require("@cucumber/cucumber");
   const scenarioStatus = scenario.result?.status;
   if (scenarioStatus === 'FAILED') {
     const screenshot = await page.screenshot({
-      path: `./reports/screenshots/${scenario.pickle.name}.png`
+      path: `${(0, _parsEnv.env)('SCREEENSHOT_PATH')}${scenario.pickle.name}.png`
     });
     await this.attach(screenshot, 'image/png');
   }

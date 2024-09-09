@@ -14,7 +14,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 588521900
+              "duration": 842712499
             }
           },
           {
@@ -23,11 +23,12 @@
             "line": 5,
             "name": "I am on the \"home\" page",
             "match": {
-              "location": "src\\step-definitions\\navigation.ts:4"
+              "location": "src\\step-definitions\\navigation.ts:7"
             },
             "result": {
-              "status": "passed",
-              "duration": 2808656900
+              "status": "failed",
+              "duration": 1485399,
+              "error_message": "TypeError: Cannot set properties of undefined (setting 'currentScreen')\n    at ScenarioWorld.<anonymous> (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\navigation.ts:18:38)\n    at C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\navigation.ts:8:71\n    at __awaiter (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\navigation.ts:4:12)\n    at ScenarioWorld.<anonymous> (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\navigation.ts:15:12)"
             }
           },
           {
@@ -39,8 +40,8 @@
               "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:5"
             },
             "result": {
-              "status": "passed",
-              "duration": 106048399
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
@@ -52,16 +53,17 @@
               "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:19"
             },
             "result": {
-              "status": "passed",
-              "duration": 24836600
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
             "keyword": "After",
             "hidden": true,
             "result": {
-              "status": "passed",
-              "duration": 144375799
+              "status": "failed",
+              "duration": 296199,
+              "error_message": "Error: No environment variable found for SCREEENSHOT_PATH\n    at env (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\env\\parsEnv.ts:8:15)\n    at ScenarioWorld.<anonymous> (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\setup\\hooks.ts:22:25)\n    at C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\setup\\hooks.ts:8:71\n    at __awaiter (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\setup\\hooks.ts:4:12)\n    at ScenarioWorld.<anonymous> (C:\\Users\\mmorga03\\Base-Project\\react-app\\e2e\\src\\step-definitions\\setup\\hooks.ts:27:12)"
             }
           }
         ],

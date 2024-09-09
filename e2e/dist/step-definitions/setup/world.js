@@ -11,6 +11,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 class ScenarioWorld extends _cucumber.World {
   constructor(options) {
     super(options);
+    this.globalConfig = options.parameters;
   }
   async init(contextOptions) {
     await this.screen?.page?.close();

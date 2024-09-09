@@ -1,13 +1,14 @@
 "use strict";
 
 var _cucumber = require("@cucumber/cucumber");
-(0, _cucumber.setDefaultTimeout)(60 * 1000 * 2);
+var _navigationBehavior = require("../support/navigation-behavior");
 (0, _cucumber.Given)(/^I am on the "(.*)" page$/, async function (pageId) {
   const {
     screen: {
       page
-    }
+    },
+    globalConfig
   } = this;
   console.log(`I am on the ${pageId} page`);
-  await page.goto("https://hub.testingtalks.com.au/");
+  await (0, _navigationBehavior.navigateToPage)(page, pageId, globalConfig);
 });

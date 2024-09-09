@@ -3,7 +3,7 @@
 var _cucumber = require("@cucumber/cucumber");
 var _webElementHelper = require("../../support/web-element-helper");
 var _awaitForBehavior = require("../../support/await-for-behavior");
-(0, _cucumber.Then)(/^the "([^"]*)" should be displayed$/, async function (elementKey) {
+(0, _cucumber.Then)(/^the "([^"]*)" should contain the text "(.*)"$/, async function (elementKey, expectedElementText) {
   const {
     screen: {
       page
@@ -11,10 +11,9 @@ var _awaitForBehavior = require("../../support/await-for-behavior");
     globalVariables,
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalVariables, globalConfig);
   await (0, _awaitForBehavior.waitFor)(async () => {
-    const isElementVisible = (await page.$(elementIdentifier)) != null;
-    return isElementVisible;
+    const elementText = await page.textContent(elementIdentifier);
+    return elementText?.includes(expectedElementText);
   });
 });

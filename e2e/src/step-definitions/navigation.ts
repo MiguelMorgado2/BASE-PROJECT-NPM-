@@ -1,16 +1,23 @@
-import {Given, setDefaultTimeout} from "@cucumber/cucumber"
-import { PageId } from "../env/global";
-import { navigateToPage } from "../support/navigation-behavior";
+import { Given } from '@cucumber/cucumber'
+import {
+    navigateToPage,
+} from '../support/navigation-behavior';
+import { PageId } from '../env/global';
 
 Given(
-  /^I am on the "(.*)" page$/,
-  async function(pageId: PageId) {
-    const {
-      screen: {page},
-      globalConfig,
+    /^I am on the "([^"]*)" page$/,
+    async function(pageId: PageId) {
+        const {
+            screen: { page },
+            globalVariables,
+            globalConfig,
+        } = this;
 
-    } = this;
-    console.log(`I am on the ${pageId} page`);
-    await navigateToPage(page, pageId, globalConfig)
-  }
+        console.log(`I am on the ${pageId} page`);
+
+        globalVariables.currentScreen = pageId;
+
+        await navigateToPage(page, pageId, globalConfig);
+
+    }
 )

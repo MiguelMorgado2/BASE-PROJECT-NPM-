@@ -1,7 +1,7 @@
 import { Then } from '@cucumber/cucumber'
 import { ElementKey } from '../../env/global';
 import {getElementLocator} from "../../support/web-element-helper";
-import { waitFor } from '../../support/await-for-behavior';
+import { waitFor } from '../../support/wait-for-behavior';
 
 Then(
     /^the "([^"]*)" should contain the text "(.*)"$/,

@@ -8,11 +8,10 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     screen: {
       page
     },
-    globalVariables,
     globalConfig
   } = this;
   console.log(`the ${elementKey} should be displayed`);
-  const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalVariables, globalConfig);
+  const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const isElementVisible = (await page.$(elementIdentifier)) != null;
     return isElementVisible;

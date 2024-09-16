@@ -8,10 +8,10 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     screen: {
       page
     },
-    globalVariables,
     globalConfig
   } = this;
-  const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalVariables, globalConfig);
+  console.log(`the ${elementKey} should contain the text ${expectedElementText}`);
+  const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementText = await page.textContent(elementIdentifier);
     return elementText?.includes(expectedElementText);

@@ -1,8 +1,8 @@
 import { Then } from '@cucumber/cucumber'
-import { ElementKey } from '../../env/global';
-import { ScenarioWorld } from '../setup/world';
-import {getElementLocator} from "../../support/web-element-helper";
-import { waitFor } from '../../support/wait-for-behavior';
+import { ElementKey } from '../../env/global'
+import { getElementLocator } from '../../support/web-element-helper'
+import {ScenarioWorld} from "../setup/world";
+import { waitFor } from '../../support/wait-for-behavior'
 
 Then(
     /^the "([^"]*)" should contain the text "(.*)"$/,
@@ -17,9 +17,28 @@ Then(
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
         await waitFor(async () => {
-            const elementText = await page.textContent(elementIdentifier)
-            return elementText?.includes(expectedElementText);
-        });
+          const elementText = await page.textContent(elementIdentifier)
+          return elementText?.includes(expectedElementText)
+        })
 
     }
 )
+
+Then(
+    /^the "([^"]*)" should equal the text "([^"]*)"$/,
+    async function (elementKey: ElementKey,  expectedElementText: string) {
+        const {
+            screen: { page },
+            globalConfig,
+        } = this;
+
+        console.log(`the ${elementKey} should equal the text ${expectedElementText}`);
+
+        const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
+
+        await waitFor(async () => {
+            const elementText = await page.textContent(elementIdentifier)
+            return (elementText  === expectedElementText);
+        });
+    }
+);

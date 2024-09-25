@@ -15,6 +15,7 @@ const waitFor = async (predicate, options) => {
     const result = await predicate();
     if (result) return result;
     await sleep(wait);
+    console.log(`Waiting ${wait}ms`);
   }
   throw new Error(`Wait time of ${timeout}ms exceeded`);
 };

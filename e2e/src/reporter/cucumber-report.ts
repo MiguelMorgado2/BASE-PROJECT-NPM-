@@ -1,9 +1,8 @@
+import dotenv from 'dotenv'
 import reporter, { Options } from 'cucumber-html-reporter'
 import { env } from '../env/parseEnv'
-import dotenv from 'dotenv'
-dotenv.config({
-    path: env('COMMON_CONFIG_FILE')
-})
+
+dotenv.config({path: env('COMMON_CONFIG_FILE')})
 
 const options: Options = {
     theme: 'bootstrap',
@@ -14,4 +13,5 @@ const options: Options = {
     reportSuiteAsScenarios: true,
     launchReport: false,
 }
+
 reporter.generate(options)

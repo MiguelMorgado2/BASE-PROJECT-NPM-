@@ -6,23 +6,22 @@ import {
     PagesConfig,
     PageElementMappings,
 } from './env/global';
-import fs from "fs";
+import * as fs from "fs";
 
 dotenv.config({path: env('COMMON_CONFIG_FILE')})
 
 const hostsConfig: HostsConfig = getJsonFromFile(env('HOSTS_URLS_PATH'));
 const pagesConfig: PagesConfig = getJsonFromFile(env('PAGE_URLS_PATH'));
-
-const mappingFiles = fs.readdirSync(`${process.cwd()}${env('PAGE_ELEMENTS_PATH')}`);
+const mappingFiles = fs.readdirSync(`${process.cwd()}${env('PAGE_ELEMENTS_PATH')}`)
 
 const pageElementMappings: PageElementMappings = mappingFiles.reduce(
     (pageElementConfigAcc, file) => {
-        const key = file.replace('.json', '');
+        const key = file.replace('.json', '')
         const elementMappings = getJsonFromFile(`${env('PAGE_ELEMENTS_PATH')}${file}`);
-        return { ...pageElementConfigAcc, [key]: elementMappings };
+        return {...pageElementConfigAcc, [key]: elementMappings}
     },
     {}
-);
+)
 
 const worldParameters: GlobalConfig = {
     hostsConfig,
@@ -35,7 +34,9 @@ const common = `./src/features/**/*.feature \
                 --require ./src/step-definitions/**/**/*.ts \
                 -f json:./reports/report.json \
                 --world-parameters ${JSON.stringify(worldParameters)} \
-                --format progress-bar`;
+                --format progress-bar \
+                --parallel ${env('PARALLEL')} \
+                --retry ${env('RETRY')} `;
 
 const dev = `${common} --tags '@dev'`;
 const smoke = `${common} --tags '@smoke'`;

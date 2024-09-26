@@ -3,21 +3,21 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.uncheckElement = exports.selectValue = exports.inputValueOnPage = exports.inputValueOnIframe = exports.inputValue = exports.getValue = exports.getIframeElement = exports.clickElement = exports.checkElement = void 0;
+exports.uncheckElement = exports.selectValue = exports.inputValueOnPage = exports.inputValueOnIframe = exports.inputValue = exports.getValue = exports.getIframeElement = exports.clickElementAtIndex = exports.clickElement = exports.checkElement = void 0;
 const clickElement = async (page, elementIdentifier) => {
   await page.click(elementIdentifier);
 };
 exports.clickElement = clickElement;
+const clickElementAtIndex = async (page, elementIdentifier, elementPosition) => {
+  const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`);
+  await element?.click();
+};
+exports.clickElementAtIndex = clickElementAtIndex;
 const inputValue = async (page, elementIdentifier, input) => {
   await page.focus(elementIdentifier);
   await page.fill(elementIdentifier, input);
 };
 exports.inputValue = inputValue;
-const inputValueOnPage = async (pages, pageIndex, elementIdentifier, input) => {
-  await pages[pageIndex].focus(elementIdentifier);
-  await pages[pageIndex].fill(elementIdentifier, input);
-};
-exports.inputValueOnPage = inputValueOnPage;
 const selectValue = async (page, elementIdentifier, option) => {
   await page.focus(elementIdentifier);
   await page.selectOption(elementIdentifier, option);
@@ -45,7 +45,12 @@ const getIframeElement = async (page, iframeIdentifier) => {
   return elementIframe;
 };
 exports.getIframeElement = getIframeElement;
-const inputValueOnIframe = async (elementIframe, elementIdentifier, input) => {
-  await elementIframe.fill(elementIdentifier, input);
+const inputValueOnIframe = async (elementIframe, elementIdentifier, inputValue) => {
+  await elementIframe.fill(elementIdentifier, inputValue);
 };
 exports.inputValueOnIframe = inputValueOnIframe;
+const inputValueOnPage = async (pages, pageIndex, elementIdentifier, inputValue) => {
+  await pages[pageIndex].focus(elementIdentifier);
+  await pages[pageIndex].fill(elementIdentifier, inputValue);
+};
+exports.inputValueOnPage = inputValueOnPage;

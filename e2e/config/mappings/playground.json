@@ -1,10 +1,15 @@
 {
   "female" : "[value='female']",
+  "male" : "[value='male']",
   "female label" : "[data-id='female-radio-button']",
   "male label" : "[data-id='male-radio-button']",
-  "male" : "[value='male']",
   "movies" : "[id='movies-input']",
-  "The Godfather" : "//li[text()='The Godfather']",
+  "the godfather" : "//li[text()='The Godfather']",
+  "outlined required" : "[id='outlined-required']",
+  "outlined disabled" : "[id='outlined-disabled']",
+  "outlined read only" : "[id='outlined-read-only-input']",
+  "outlined error" : "[id='outlined-error-helper-text-label']",
+  "outlined error text" : "[id='outlined-error-helper-text-helper-text']",
   "blue" : "[data-id='blue-radio-button']",
   "purple" : "[data-id='purple-radio-button']",
   "green" : "[data-id='green-radio-button']",
@@ -13,10 +18,11 @@
   "basic iframe" : "[id='basic-iframe']",
   "new tab" : "[data-id='new-tab-button']",
   "open window" : "[data-id='open-window-button']",
-  "outlined required" : "[id='outlined-required']",
-  "outlined disabled" : "[id='outlined-disabled']",
-  "outlined read only" : "[id='outlined-read-only-input']",
-  "validation label" : "[id='outlined-error-helper-text-label']",
-  "validation error" : "[id='outlined-error-helper-text-helper-text']"
-
+  "primary" : "[data-id='primary-button']",
+  "secondary" : "[data-id='secondary-button']",
+  "third" : "[data-id='third-button']",
+  "my button" : "[data-id='my-button']",
+  "basic" : "[data-id='basic-table']",
+  "switch one" : "[data-id='switch-one']",
+  "switch two" : "[data-id='switch-two']"
 }

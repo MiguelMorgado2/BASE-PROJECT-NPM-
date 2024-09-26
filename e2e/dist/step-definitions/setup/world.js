@@ -12,6 +12,7 @@ class ScenarioWorld extends _cucumber.World {
   constructor(options) {
     super(options);
     this.globalConfig = options.parameters;
+    this.globalVariables = {};
   }
   async init(contextOptions) {
     await this.screen?.page?.close();
@@ -32,8 +33,8 @@ class ScenarioWorld extends _cucumber.World {
     const automationBrowser = (0, _parseEnv.env)('UI_AUTOMATION_BROWSER');
     const browserType = _playwright.default[automationBrowser];
     const browser = await browserType.launch({
-      headless: process.env.HEADLESS !== 'false',
       devtools: process.env.DEVTOOLS !== 'false',
+      headless: process.env.HEADLESS !== 'false',
       args: ['--disable-web-security', '--disable-features=IsolateOrigins, site-per-process']
     });
     return browser;

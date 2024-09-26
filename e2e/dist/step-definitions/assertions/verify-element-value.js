@@ -89,3 +89,17 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     return elementText?.includes(expectedElementText) === !negate;
   });
 });
+(0, _cucumber.Then)(/^the "([^"]*)" "([^"]*)" attribute should( not)? contain the text "(.*)"$/, async function (elementKey, attribute, negate, expectedElementText) {
+  const {
+    screen: {
+      page
+    },
+    globalConfig
+  } = this;
+  console.log(`the ${elementKey} ${attribute} attribute should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
+  const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
+  await (0, _waitForBehavior.waitFor)(async () => {
+    const attributeText = await (0, _htmlBehavior.getAttributeText)(page, elementIdentifier, attribute);
+    return attributeText?.includes(expectedElementText) === !negate;
+  });
+});

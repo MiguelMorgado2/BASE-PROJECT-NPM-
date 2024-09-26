@@ -4,17 +4,17 @@
     "elements": [
       {
         "description": "",
-        "id": "as-a-user-i-can-interact-with-switches;as-a-user-i-can-interact-and-assert-on-switches",
+        "id": "as-a-user-i-can-interact-with-stored-values;as-a-user-i-can-interact-and-assert-on-stored-values",
         "keyword": "Scenario",
         "line": 5,
-        "name": "As a user I can interact and assert on switches",
+        "name": "As a user I can interact and assert on stored values",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 933267300
+              "duration": 1247895000
             }
           },
           {
@@ -27,7 +27,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 3086043499
+              "duration": 4971630600
             }
           },
           {
@@ -40,7 +40,7 @@
             },
             "result": {
               "status": "passed",
-              "duration": 488939300
+              "duration": 960166600
             }
           },
           {
@@ -53,85 +53,85 @@
             },
             "result": {
               "status": "passed",
-              "duration": 2929500
+              "duration": 2989700
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 9,
-            "name": "the \"switch one\" switch should be checked",
+            "name": "I retrieve the \"first value\" text and store it as \"first value\" in global variables",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-checked.ts:7"
+              "location": "src\\step-definitions\\stored.ts:7"
             },
             "result": {
               "status": "passed",
-              "duration": 898291200
+              "duration": 893770300
             }
           },
           {
             "arguments": [],
-            "keyword": "Then ",
+            "keyword": "And ",
             "line": 10,
-            "name": "I uncheck the \"switch one\" switch",
+            "name": "the \"second value\" should equal the \"first value\" stored in global variables",
             "match": {
-              "location": "src\\step-definitions\\check.ts:11"
+              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:35"
             },
             "result": {
               "status": "passed",
-              "duration": 120146800
+              "duration": 13251599
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 11,
-            "name": "the \"switch one\" switch should not be checked",
+            "name": "the \"fourth value\" should not equal the \"first value\" stored in global variables",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-checked.ts:7"
+              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:35"
             },
             "result": {
               "status": "passed",
-              "duration": 13458800
+              "duration": 14691299
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 12,
-            "name": "I check the \"switch one\" switch",
+            "name": "the \"fourth value\" should contain the \"first value\" stored in global variables",
             "match": {
-              "location": "src\\step-definitions\\check.ts:11"
+              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:7"
             },
             "result": {
               "status": "passed",
-              "duration": 170445799
+              "duration": 9129100
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 13,
-            "name": "the \"switch one\" switch should be checked",
+            "name": "the \"fifth value\" should contain the \"first value\" stored in global variables",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-checked.ts:7"
+              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:7"
             },
             "result": {
               "status": "passed",
-              "duration": 5431000
+              "duration": 8149899
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 14,
-            "name": "the \"switch two\" should not be enabled",
+            "name": "the \"third value\" should not contain the \"first value\" stored in global variables",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:88"
+              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:7"
             },
             "result": {
               "status": "passed",
-              "duration": 12620499
+              "duration": 6933300
             }
           },
           {
@@ -139,7 +139,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 384861500
+              "duration": 819858600
             }
           }
         ],
@@ -160,11 +160,11 @@
         "type": "scenario"
       }
     ],
-    "id": "as-a-user-i-can-interact-with-switches",
+    "id": "as-a-user-i-can-interact-with-stored-values",
     "line": 1,
     "keyword": "Feature",
-    "name": "As a user I can interact with switches",
+    "name": "As a user I can interact with stored values",
     "tags": [],
-    "uri": "src\\features\\playground\\switches.feature"
+    "uri": "src\\features\\playground\\stored-values.feature"
   }
 ]

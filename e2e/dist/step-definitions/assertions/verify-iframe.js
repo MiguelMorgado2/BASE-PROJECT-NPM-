@@ -11,11 +11,11 @@ var _htmlBehavior = require("../../support/html-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} on the ${iframeName} should ${negate ? 'not ' : ''}be displayed`);
+  console.log(`the ${elementKey} on the ${iframeName} iframe should ${negate ? 'not ' : ''}be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const iframeIdentifier = (0, _webElementHelper.getElementLocator)(page, iframeName, globalConfig);
-  const elementIframe = await (0, _htmlBehavior.getIframeElement)(page, iframeIdentifier);
   await (0, _waitForBehavior.waitFor)(async () => {
+    const elementIframe = await (0, _htmlBehavior.getIframeElement)(page, iframeIdentifier);
     const isElementVisible = (await elementIframe?.$(elementIdentifier)) != null;
     return isElementVisible === !negate;
   });
@@ -30,8 +30,8 @@ var _htmlBehavior = require("../../support/html-behavior");
   console.log(`the ${elementKey} should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const iframeIdentifier = (0, _webElementHelper.getElementLocator)(page, iframeName, globalConfig);
-  const elementIframe = await (0, _htmlBehavior.getIframeElement)(page, iframeIdentifier);
   await (0, _waitForBehavior.waitFor)(async () => {
+    const elementIframe = await (0, _htmlBehavior.getIframeElement)(page, iframeIdentifier);
     const elementText = await elementIframe?.textContent(elementIdentifier);
     return elementText?.includes(expectedElementText) === !negate;
   });
@@ -46,8 +46,8 @@ var _htmlBehavior = require("../../support/html-behavior");
   console.log(`the ${elementKey} should ${negate ? 'not ' : ''}equal the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const iframeIdentifier = (0, _webElementHelper.getElementLocator)(page, iframeName, globalConfig);
-  const elementIframe = await (0, _htmlBehavior.getIframeElement)(page, iframeIdentifier);
   await (0, _waitForBehavior.waitFor)(async () => {
+    const elementIframe = await (0, _htmlBehavior.getIframeElement)(page, iframeIdentifier);
     const elementText = await elementIframe?.textContent(elementIdentifier);
     return elementText === expectedElementText === !negate;
   });

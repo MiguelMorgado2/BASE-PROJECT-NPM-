@@ -7,7 +7,7 @@ export const navigateToPage = async (
     { pagesConfig, hostsConfig }: GlobalConfig
 ): Promise<void> => {
     const {
-        UI_AUTOMATION_HOST: hostName = 'homepage',
+        UI_AUTOMATION_HOST: hostName = 'qa',
     } = process.env;
 
     const hostPath = hostsConfig[`${hostName}`];

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.uncheckElement = exports.selectValue = exports.inputValueOnPage = exports.inputValueOnIframe = exports.inputValue = exports.getValue = exports.getIframeElement = exports.getAttributeText = exports.clickElementAtIndex = exports.clickElement = exports.checkElement = void 0;
+exports.uncheckElement = exports.selectValue = exports.scrollIntoView = exports.inputValueOnPage = exports.inputValueOnIframe = exports.inputValue = exports.getValue = exports.getIframeElement = exports.getAttributeText = exports.clickElementAtIndex = exports.clickElement = exports.checkElement = void 0;
 const clickElement = async (page, elementIdentifier) => {
   await page.click(elementIdentifier);
 };
@@ -32,6 +32,7 @@ const uncheckElement = async (page, elementIdentifier) => {
 };
 exports.uncheckElement = uncheckElement;
 const getValue = async (page, elementIdentifier) => {
+  await page.waitForSelector(elementIdentifier);
   const value = await page.$eval(elementIdentifier, el => {
     return el.value;
   });
@@ -59,3 +60,8 @@ const getAttributeText = async (page, elementIdentifier, attribute) => {
   return attributeText;
 };
 exports.getAttributeText = getAttributeText;
+const scrollIntoView = async (page, elementIdentifier) => {
+  const element = page.locator(elementIdentifier);
+  await element.scrollIntoViewIfNeeded();
+};
+exports.scrollIntoView = scrollIntoView;

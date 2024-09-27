@@ -6,6 +6,7 @@ var _parseEnv = require("../../env/parseEnv");
 (0, _cucumber.Before)(async function (scenario) {
   console.log(`Running cucumber scenario ${scenario.pickle.name}`);
   const contextOptions = {
+    ignoreHTTPSErrors: true,
     recordVideo: {
       dir: `${(0, _parseEnv.env)('VIDEO_PATH')}${scenario.pickle.name}`
     }

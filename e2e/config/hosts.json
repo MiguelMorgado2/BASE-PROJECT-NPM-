@@ -1,3 +1,4 @@
 {
-    "homepage": "https://hub.testingtalks.com.au/"
+    "qa": "https://hub.testingtalks.com.au/",
+    "production": "https://hub.testingtalks.com.au/"
     }

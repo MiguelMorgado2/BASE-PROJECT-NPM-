@@ -1,3 +1,11 @@
-set tag=%1
+:: environment tag
+set env=%1
+:: cucumber tag
+set tag=%2
+
+:: Set the COMMON_CONFIG_FILE variable to point to the common environment configuration file
 set COMMON_CONFIG_FILE=env/common.env
-yarn run cucumber --profile %tag% || yarn run postcucumber
+set NODE_ENV=%env%
+
+:: run cucumber tests & on failure run postcucumber
+yarn run cucumber:%env% --profile %tag% || yarn run postcucumber

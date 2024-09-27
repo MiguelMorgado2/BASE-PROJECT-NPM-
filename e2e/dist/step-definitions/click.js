@@ -30,7 +30,7 @@ var _webElementHelper = require("../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`I click the ${elementPosition} ${elementKey} (?:button|link|icon|element|radio button)`);
+  console.log(`I click ${elementPosition} ${elementKey} button|link`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {

@@ -10,13 +10,13 @@ var _webElementHelper = require("../../support/web-element-helper");
       context
     }
   } = this;
-  console.log(`the ${elementPosition} tab should ${negate ? 'not ' : ''}contain the title ${expectedTitle}`);
+  console.log(`the ${elementPosition} window|tab should ${negate ? 'not ' : ''}contain the title ${expectedTitle}`);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(2000);
   await (0, _waitForBehavior.waitFor)(async () => {
     let pages = context.pages();
-    const tabTitle = await pages[pageIndex].title();
-    return tabTitle?.includes(expectedTitle) === !negate;
+    const pageTitle = await pages[pageIndex].title();
+    return pageTitle?.includes(expectedTitle) === !negate;
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" on the "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)" (?:tab|window) should( not)? be displayed$/, async function (elementKey, elementPosition, negate) {
@@ -27,7 +27,7 @@ var _webElementHelper = require("../../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} on the ${elementPosition} tab|window should ${negate ? 'not ' : ''}be displayed`);
+  console.log(`the ${elementKey} on the ${elementPosition} window|tab should ${negate ? 'not ' : ''}be displayed`);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
@@ -44,7 +44,7 @@ var _webElementHelper = require("../../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} on the ${elementPosition} tab|window should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
+  console.log(`the ${elementKey} on the ${elementPosition} window|tab should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
@@ -61,7 +61,7 @@ var _webElementHelper = require("../../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} on the ${elementPosition} tab|window should ${negate ? 'not ' : ''}equal the text ${expectedElementText}`);
+  console.log(`the ${elementKey} on the ${elementPosition} window|tab should ${negate ? 'not ' : ''}equal the text ${expectedElementText}`);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {

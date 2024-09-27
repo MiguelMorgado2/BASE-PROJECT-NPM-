@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.waitFor = void 0;
 const waitFor = async (predicate, options) => {
   const {
-    timeout = 10000,
+    timeout = 20000,
     wait = 2000
   } = options || {};
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));

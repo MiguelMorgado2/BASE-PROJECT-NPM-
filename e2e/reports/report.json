@@ -4,134 +4,82 @@
     "elements": [
       {
         "description": "",
-        "id": "as-a-user-i-can-interact-with-stored-values;as-a-user-i-can-interact-and-assert-on-stored-values",
+        "id": "as-a-user-i-can-refresh-the-browser-and-see-the-application;as-a-user-i-can-refresh-the-browser-and-be-on-the-page-expected",
         "keyword": "Scenario",
-        "line": 5,
-        "name": "As a user I can interact and assert on stored values",
+        "line": 6,
+        "name": "As a user I can refresh the browser and be on the page expected",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 1247895000
+              "duration": 1055858900
             }
           },
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 6,
+            "line": 7,
             "name": "I am on the \"home\" page",
             "match": {
-              "location": "src\\step-definitions\\navigation.ts:10"
+              "location": "src\\step-definitions\\navigation.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 4971630600
+              "duration": 5239488599
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 7,
+            "line": 8,
+            "name": "I refresh the \"home\" page",
+            "match": {
+              "location": "src\\step-definitions\\navigation.ts:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1181247400
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
             "name": "I click the \"playground\" button",
             "match": {
               "location": "src\\step-definitions\\click.ts:11"
             },
             "result": {
               "status": "passed",
-              "duration": 960166600
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "When ",
-            "line": 8,
-            "name": "I am directed to the \"playground\" page",
-            "match": {
-              "location": "src\\step-definitions\\navigation.ts:27"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 2989700
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 9,
-            "name": "I retrieve the \"first value\" text and store it as \"first value\" in global variables",
-            "match": {
-              "location": "src\\step-definitions\\stored.ts:7"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 893770300
+              "duration": 1004642799
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 10,
-            "name": "the \"second value\" should equal the \"first value\" stored in global variables",
+            "name": "I am directed to the \"playground\" page",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:35"
+              "location": "src\\step-definitions\\navigation.ts:28"
             },
             "result": {
               "status": "passed",
-              "duration": 13251599
+              "duration": 3115900
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
+            "keyword": "Then ",
             "line": 11,
-            "name": "the \"fourth value\" should not equal the \"first value\" stored in global variables",
+            "name": "I refresh the \"playground\" page",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:35"
+              "location": "src\\step-definitions\\navigation.ts:42"
             },
             "result": {
               "status": "passed",
-              "duration": 14691299
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 12,
-            "name": "the \"fourth value\" should contain the \"first value\" stored in global variables",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:7"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 9129100
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 13,
-            "name": "the \"fifth value\" should contain the \"first value\" stored in global variables",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:7"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 8149899
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 14,
-            "name": "the \"third value\" should not contain the \"first value\" stored in global variables",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-stored-value.ts:7"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 6933300
+              "duration": 3348943300
             }
           },
           {
@@ -139,32 +87,32 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 819858600
+              "duration": 649998100
             }
           }
         ],
         "tags": [
           {
-            "name": "@smoke",
+            "name": "@dev",
             "line": 3
           },
           {
-            "name": "@regression",
+            "name": "@smoke",
             "line": 4
           },
           {
-            "name": "@dev",
-            "line": 4
+            "name": "@regression",
+            "line": 5
           }
         ],
         "type": "scenario"
       }
     ],
-    "id": "as-a-user-i-can-interact-with-stored-values",
+    "id": "as-a-user-i-can-refresh-the-browser-and-see-the-application",
     "line": 1,
     "keyword": "Feature",
-    "name": "As a user I can interact with stored values",
+    "name": "As a user I can refresh the browser and see the application",
     "tags": [],
-    "uri": "src\\features\\playground\\stored-values.feature"
+    "uri": "src\\features\\playground\\page-refresh.feature"
   }
 ]

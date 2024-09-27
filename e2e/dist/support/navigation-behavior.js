@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.navigateToPage = exports.getCurrentPageId = exports.currentPathMatchesPageId = void 0;
+exports.reloadPage = exports.navigateToPage = exports.getCurrentPageId = exports.currentPathMatchesPageId = void 0;
 const navigateToPage = async (page, pageId, _ref) => {
   let {
     pagesConfig,
@@ -45,8 +45,12 @@ const getCurrentPageId = (page, globalConfig) => {
   const currentPageId = pageConfigPageIds.find(pageId => pathMatchesPageId(currentPath, pageId, globalConfig));
   if (!currentPageId) {
     throw Error(`Failed to get page name from current route ${currentPath}, \
-            possible pages: ${JSON.stringify(pagesConfig)}`);
+      possible pages: ${JSON.stringify(pagesConfig)}`);
   }
   return currentPageId;
 };
 exports.getCurrentPageId = getCurrentPageId;
+const reloadPage = async page => {
+  await page.reload();
+};
+exports.reloadPage = reloadPage;

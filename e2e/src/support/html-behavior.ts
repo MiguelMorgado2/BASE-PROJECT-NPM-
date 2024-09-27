@@ -8,15 +8,14 @@ export const clickElement = async (
     await page.click(elementIdentifier);
 };
 
-export const clickElementAtIndex = async (
+export const clickElementAtIndex = async(
     page: Page,
     elementIdentifier: ElementLocator,
-    elementPosition: number
+    elementPosition: number,
 ): Promise<void> => {
-    const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`);
-    await element?.click();
-};
-
+    const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`)
+    await element?.click()
+}
 
 export const inputValue = async (
     page: Page,
@@ -94,5 +93,5 @@ export const getAttributeText = async(
     attribute: string,
 ): Promise<string | null> => {
     const attributeText = page.locator(elementIdentifier).getAttribute(attribute)
-    return attributeText;
+    return attributeText
 }

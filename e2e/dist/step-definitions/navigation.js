@@ -24,3 +24,16 @@ var _waitForBehavior = require("../support/wait-for-behavior");
   console.log(`I am directed to the ${pageId} page`);
   await (0, _waitForBehavior.waitFor)(() => (0, _navigationBehavior.currentPathMatchesPageId)(page, pageId, globalConfig));
 });
+(0, _cucumber.Given)(/^I refresh the "([^"]*)" page$/, async function (pageId) {
+  const {
+    screen: {
+      page
+    },
+    globalConfig
+  } = this;
+  console.log(`I refresh the ${pageId} page`);
+  await (0, _navigationBehavior.reloadPage)(page);
+  await (0, _waitForBehavior.waitFor)(() => (0, _navigationBehavior.currentPathMatchesPageId)(page, pageId, globalConfig), {
+    timeout: 30000
+  });
+});

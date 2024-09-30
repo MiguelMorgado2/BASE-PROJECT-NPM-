@@ -4,6 +4,7 @@ var _cucumber = require("@cucumber/cucumber");
 var _htmlBehavior = require("../support/html-behavior");
 var _waitForBehavior = require("../support/wait-for-behavior");
 var _webElementHelper = require("../support/web-element-helper");
+var _logger = require("../logger");
 (0, _cucumber.When)(/^I click the "([^"]*)" (?:button|link)$/, async function (elementKey) {
   const {
     screen: {
@@ -11,7 +12,7 @@ var _webElementHelper = require("../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`I click the ${elementKey} (?:button|link|icon|element|radio button)`);
+  _logger.logger.log(`I click the ${elementKey} (?:button|link|icon|element|radio button)`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const result = await page.waitForSelector(elementIdentifier, {
@@ -30,7 +31,7 @@ var _webElementHelper = require("../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`I click ${elementPosition} ${elementKey} button|link`);
+  _logger.logger.log(`I click ${elementPosition} ${elementKey} button|link`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {

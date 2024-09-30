@@ -5,6 +5,7 @@ var _htmlBehavior = require("../support/html-behavior");
 var _inputHelper = require("../support/input-helper");
 var _waitForBehavior = require("../support/wait-for-behavior");
 var _webElementHelper = require("../support/web-element-helper");
+var _logger = require("../logger");
 (0, _cucumber.Then)(/^I fill in the "([^"]*)" input with "([^"]*)"$/, async function (elementKey, input) {
   const {
     screen: {
@@ -12,7 +13,7 @@ var _webElementHelper = require("../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`I fill in the ${elementKey} input with ${input}`);
+  _logger.logger.log(`I fill in the ${elementKey} input with ${input}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const result = await page.waitForSelector(elementIdentifier, {
@@ -32,7 +33,7 @@ var _webElementHelper = require("../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`I select the ${option} option from the ${elementKey}`);
+  _logger.logger.log(`I select the ${option} option from the ${elementKey}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const result = await page.waitForSelector(elementIdentifier, {

@@ -10,7 +10,7 @@ const navigateToPage = async (page, pageId, _ref) => {
     hostsConfig
   } = _ref;
   const {
-    UI_AUTOMATION_HOST: hostName = 'qa'
+    UI_AUTOMATION_HOST: hostName = 'localhost'
   } = process.env;
   const hostPath = hostsConfig[`${hostName}`];
   const url = new URL(hostPath);

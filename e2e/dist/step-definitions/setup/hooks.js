@@ -1,11 +1,14 @@
 "use strict";
 
 var _cucumber = require("@cucumber/cucumber");
+var _browserBehavior = require("../../support/browser-behavior");
 var _parseEnv = require("../../env/parseEnv");
+var _logger = require("../../logger");
 (0, _cucumber.setDefaultTimeout)((0, _parseEnv.envNumber)('SCRIPT_TIMEOUT'));
 (0, _cucumber.Before)(async function (scenario) {
-  console.log(`Running cucumber scenario ${scenario.pickle.name}`);
+  _logger.logger.log(`Running cucumber scenario ${scenario.pickle.name}`);
   const contextOptions = {
+    viewport: (0, _browserBehavior.getViewPort)(),
     ignoreHTTPSErrors: true,
     recordVideo: {
       dir: `${(0, _parseEnv.env)('VIDEO_PATH')}${scenario.pickle.name}`

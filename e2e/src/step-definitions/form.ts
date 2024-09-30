@@ -10,6 +10,7 @@ import { waitFor } from '../support/wait-for-behavior';
 import { getElementLocator } from '../support/web-element-helper';
 import { ScenarioWorld } from './setup/world';
 import { ElementKey } from '../env/global';
+import {logger} from "../logger";
 
 Then (
     /^I fill in the "([^"]*)" input with "([^"]*)"$/,
@@ -19,7 +20,7 @@ Then (
             globalConfig,
         } = this;
 
-        console.log(`I fill in the ${elementKey} input with ${input}`);
+        logger.log(`I fill in the ${elementKey} input with ${input}`);
 
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
         await waitFor(async () => {
@@ -42,7 +43,8 @@ Then(
             globalConfig,
         } = this;
 
-        console.log(`I select the ${option} option from the ${elementKey}`);
+        logger.log(`I select the ${option} option from the ${elementKey}`);
+
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
         await waitFor(async () => {

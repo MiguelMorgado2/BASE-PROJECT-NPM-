@@ -1,4 +1,4 @@
 {
-    "qa": "https://hub.testingtalks.com.au/",
+    "localhost": "https://hub.testingtalks.com.au/",
     "production": "https://hub.testingtalks.com.au/"
     }

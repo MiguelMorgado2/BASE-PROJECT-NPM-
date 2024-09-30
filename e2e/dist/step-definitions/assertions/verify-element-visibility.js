@@ -3,6 +3,7 @@
 var _cucumber = require("@cucumber/cucumber");
 var _webElementHelper = require("../../support/web-element-helper");
 var _waitForBehavior = require("../../support/wait-for-behavior");
+var _logger = require("../../logger");
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? be displayed$/, async function (elementKey, negate) {
   const {
     screen: {
@@ -10,7 +11,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not' : ''} be displayed`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''} be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const isElementVisible = (await page.$(elementIdentifier)) != null;
@@ -24,7 +25,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not' : ''}be displayed`);
+  _logger.logger.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not' : ''}be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const index = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {
@@ -39,7 +40,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`I should ${negate ? 'not ' : ''}see ${count} ${elementKey} displayed`);
+  _logger.logger.log(`I should ${negate ? 'not ' : ''}see ${count} ${elementKey} displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const element = await page.$$(elementIdentifier);

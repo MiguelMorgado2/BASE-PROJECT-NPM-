@@ -7,6 +7,7 @@ import { ScenarioWorld } from './setup/world';
 import { waitFor } from '../support/wait-for-behavior';
 import { getElementLocator } from '../support/web-element-helper';
 import { ElementKey } from '../env/global';
+import {logger} from "../logger";
 
 When(
     /^I click the "([^"]*)" (?:button|link)$/,
@@ -16,7 +17,7 @@ When(
             globalConfig,
         } = this;
 
-        console.log(`I click the ${elementKey} (?:button|link|icon|element|radio button)`);
+        logger.log(`I click the ${elementKey} (?:button|link|icon|element|radio button)`);
 
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
@@ -40,7 +41,7 @@ When(
             globalConfig,
         } = this;
 
-        console.log(`I click ${elementPosition} ${elementKey} button|link`)
+        logger.log(`I click ${elementPosition} ${elementKey} button|link`)
 
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 

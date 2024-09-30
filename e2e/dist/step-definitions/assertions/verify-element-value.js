@@ -4,6 +4,7 @@ var _cucumber = require("@cucumber/cucumber");
 var _htmlBehavior = require("../../support/html-behavior");
 var _webElementHelper = require("../../support/web-element-helper");
 var _waitForBehavior = require("../../support/wait-for-behavior");
+var _logger = require("../../logger");
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? contain the text "(.*)"$/, async function (elementKey, negate, expectedElementText) {
   const {
     screen: {
@@ -11,10 +12,12 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not' : ''} contain the text ${expectedElementText}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''} contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementText = await page.textContent(elementIdentifier);
+    _logger.logger.debug("elementText ", elementText);
+    _logger.logger.debug("expectedElementText ", expectedElementText);
     return elementText?.includes(expectedElementText) === !negate;
   });
 });
@@ -25,7 +28,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the text ${expectedElementText}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementText = await page.textContent(elementIdentifier);
@@ -39,7 +42,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not' : ''}contain the value ${elementValue}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}contain the value ${elementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementAttribute = await (0, _htmlBehavior.getValue)(page, elementIdentifier);
@@ -53,7 +56,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the value ${elementValue}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the value ${elementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementAttribute = await (0, _htmlBehavior.getValue)(page, elementIdentifier);
@@ -67,7 +70,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not' : ''}be enabled`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}be enabled`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const isElementEnabled = await page.isEnabled(elementIdentifier);
@@ -81,11 +84,11 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
+  _logger.logger.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
-  const index = Number(elementPosition.match(/\d/g)?.join('')) - 1;
+  const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {
-    const elementText = await page.textContent(`${elementIdentifier}>>nth=${index}`);
+    const elementText = await page.textContent(`${elementIdentifier}>>nth=${pageIndex}`);
     return elementText?.includes(expectedElementText) === !negate;
   });
 });
@@ -96,7 +99,7 @@ var _waitForBehavior = require("../../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} ${attribute} attribute should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
+  _logger.logger.log(`the ${elementKey} ${attribute} attribute should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const attributeText = await (0, _htmlBehavior.getAttributeText)(page, elementIdentifier, attribute);

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.smoke = exports.regression = exports.dev = void 0;
 var _dotenv = _interopRequireDefault(require("dotenv"));
 var _parseEnv = require("./env/parseEnv");
+var _tagHelper = require("./support/tag-helper");
 var _fs = _interopRequireDefault(require("fs"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const environment = (0, _parseEnv.env)('NODE_ENV');
@@ -19,6 +20,13 @@ const hostsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('HOSTS_URL
 const pagesConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('PAGE_URLS_PATH'));
 const emailsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('EMAILS_URLS_PATH'));
 const mappingFiles = _fs.default.readdirSync(`${process.cwd()}${(0, _parseEnv.env)('PAGE_ELEMENTS_PATH')}`);
+const getEnvList = () => {
+  const envList = Object.keys(hostsConfig);
+  if (envList.length === 0) {
+    throw Error(`🧨 No environments mapped in your ${(0, _parseEnv.env)('HOSTS_URL_PATH')}`);
+  }
+  return envList;
+};
 const pageElementMappings = mappingFiles.reduce((pageElementConfigAcc, file) => {
   const key = file.replace('.json', '');
   const elementMappings = (0, _parseEnv.getJsonFromFile)(`${(0, _parseEnv.env)('PAGE_ELEMENTS_PATH')}${file}`);
@@ -41,6 +49,6 @@ const common = `./src/features/**/*.feature \
                 --format progress-bar \
                 --parallel ${(0, _parseEnv.env)('PARALLEL')} \
                 --retry ${(0, _parseEnv.env)('RETRY')}`;
-const dev = exports.dev = `${common} --tags '@dev'`;
-const smoke = exports.smoke = `${common} --tags '@smoke'`;
-const regression = exports.regression = `${common} --tags '@regression'`;
+const dev = exports.dev = (0, _tagHelper.generateCucumberRuntimeTag)(common, environment, getEnvList(), 'dev');
+const smoke = exports.smoke = (0, _tagHelper.generateCucumberRuntimeTag)(common, environment, getEnvList(), 'smoke');
+const regression = exports.regression = (0, _tagHelper.generateCucumberRuntimeTag)(common, environment, getEnvList(), 'regression');

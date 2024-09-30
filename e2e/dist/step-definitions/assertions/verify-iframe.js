@@ -4,6 +4,7 @@ var _cucumber = require("@cucumber/cucumber");
 var _waitForBehavior = require("../../support/wait-for-behavior");
 var _webElementHelper = require("../../support/web-element-helper");
 var _htmlBehavior = require("../../support/html-behavior");
+var _logger = require("../../logger");
 (0, _cucumber.Then)(/^the "([^"]*)" on the "([^"]*)" iframe should( not)? be displayed$/, async function (elementKey, iframeName, negate) {
   const {
     screen: {
@@ -11,7 +12,7 @@ var _htmlBehavior = require("../../support/html-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} on the ${iframeName} iframe should ${negate ? 'not ' : ''}be displayed`);
+  _logger.logger.log(`the ${elementKey} on the ${iframeName} iframe should ${negate ? 'not ' : ''}be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const iframeIdentifier = (0, _webElementHelper.getElementLocator)(page, iframeName, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
@@ -27,7 +28,7 @@ var _htmlBehavior = require("../../support/html-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const iframeIdentifier = (0, _webElementHelper.getElementLocator)(page, iframeName, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
@@ -43,7 +44,7 @@ var _htmlBehavior = require("../../support/html-behavior");
     },
     globalConfig
   } = this;
-  console.log(`the ${elementKey} should ${negate ? 'not ' : ''}equal the text ${expectedElementText}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not ' : ''}equal the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const iframeIdentifier = (0, _webElementHelper.getElementLocator)(page, iframeName, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {

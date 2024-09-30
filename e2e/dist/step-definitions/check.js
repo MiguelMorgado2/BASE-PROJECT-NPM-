@@ -4,6 +4,7 @@ var _cucumber = require("@cucumber/cucumber");
 var _htmlBehavior = require("../support/html-behavior");
 var _waitForBehavior = require("../support/wait-for-behavior");
 var _webElementHelper = require("../support/web-element-helper");
+var _logger = require("../logger");
 (0, _cucumber.Then)(/^I (check)?(uncheck)? the "([^"]*)" (?:check box|radio button|switch)$/, async function (checked, unchecked, elementKey) {
   const {
     screen: {
@@ -11,7 +12,7 @@ var _webElementHelper = require("../support/web-element-helper");
     },
     globalConfig
   } = this;
-  console.log(`I ${unchecked ? 'uncheck ' : 'check'} the ${elementKey} check box|radio button`);
+  _logger.logger.log(`I ${unchecked ? 'uncheck ' : 'check'} the ${elementKey} check box|radio button`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const result = await page.waitForSelector(elementIdentifier, {

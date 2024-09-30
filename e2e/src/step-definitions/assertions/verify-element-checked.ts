@@ -3,6 +3,7 @@ import { waitFor } from '../../support/wait-for-behavior'
 import { ScenarioWorld } from '../setup/world'
 import { getElementLocator } from '../../support/web-element-helper'
 import { ElementKey } from '../../env/global'
+import {logger} from "../../logger";
 
 Then(
     /^the "([^"]*)" (?:check box|radio button|switch) should( not)? be checked$/,
@@ -12,7 +13,7 @@ Then(
             globalConfig,
         } = this;
 
-        console.log(`the ${elementKey} check box|radio button should ${negate?'not ':''}be checked`)
+        logger.log(`the ${elementKey} check box|radio button should ${negate?'not ':''}be checked`)
 
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 

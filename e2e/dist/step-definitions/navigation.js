@@ -3,6 +3,7 @@
 var _cucumber = require("@cucumber/cucumber");
 var _navigationBehavior = require("../support/navigation-behavior");
 var _waitForBehavior = require("../support/wait-for-behavior");
+var _logger = require("../logger");
 (0, _cucumber.Given)(/^I am on the "([^"]*)" page$/, async function (pageId) {
   const {
     screen: {
@@ -10,7 +11,7 @@ var _waitForBehavior = require("../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`I am on the ${pageId} page`);
+  _logger.logger.log(`I am on the ${pageId} page`);
   await (0, _navigationBehavior.navigateToPage)(page, pageId, globalConfig);
   await (0, _waitForBehavior.waitFor)(() => (0, _navigationBehavior.currentPathMatchesPageId)(page, pageId, globalConfig));
 });
@@ -21,7 +22,7 @@ var _waitForBehavior = require("../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`I am directed to the ${pageId} page`);
+  _logger.logger.log(`I am directed to the ${pageId} page`);
   await (0, _waitForBehavior.waitFor)(() => (0, _navigationBehavior.currentPathMatchesPageId)(page, pageId, globalConfig));
 });
 (0, _cucumber.Given)(/^I refresh the "([^"]*)" page$/, async function (pageId) {
@@ -31,7 +32,7 @@ var _waitForBehavior = require("../support/wait-for-behavior");
     },
     globalConfig
   } = this;
-  console.log(`I refresh the ${pageId} page`);
+  _logger.logger.log(`I refresh the ${pageId} page`);
   await (0, _navigationBehavior.reloadPage)(page);
   await (0, _waitForBehavior.waitFor)(() => (0, _navigationBehavior.currentPathMatchesPageId)(page, pageId, globalConfig), {
     timeout: 30000

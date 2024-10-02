@@ -15,13 +15,11 @@ var _logger = require("../logger");
   _logger.logger.log(`I click the ${elementKey} (?:button|link|icon|element|radio button)`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const result = await page.waitForSelector(elementIdentifier, {
-      state: 'visible'
-    });
-    if (result) {
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
       await (0, _htmlBehavior.clickElement)(page, elementIdentifier);
     }
-    return result;
+    return elementStable;
   });
 });
 (0, _cucumber.When)(/^I click the "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)" "([^"]*)" (?:button|link)$/, async function (elementPosition, elementKey) {
@@ -35,12 +33,10 @@ var _logger = require("../logger");
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {
-    const result = await page.waitForSelector(elementIdentifier, {
-      state: 'visible'
-    });
-    if (result) {
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
       await (0, _htmlBehavior.clickElementAtIndex)(page, elementIdentifier, pageIndex);
     }
-    return result;
+    return elementStable;
   });
 });

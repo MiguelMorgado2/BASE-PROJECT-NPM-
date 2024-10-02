@@ -15,12 +15,10 @@ var _logger = require("../logger");
   _logger.logger.log(`I scroll to the ${elementKey}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const result = await page.waitForSelector(elementIdentifier, {
-      state: 'visible'
-    });
-    if (result) {
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
       await (0, _htmlBehavior.scrollIntoView)(page, elementIdentifier);
     }
-    return result;
+    return elementStable;
   });
 });

@@ -1,5 +1,8 @@
 import { Then } from '@cucumber/cucumber'
-import { waitFor } from '../support/wait-for-behavior'
+import {
+    waitFor,
+    waitForSelectorOnPage
+} from '../support/wait-for-behavior'
 import {
     inputValueOnPage,
 } from '../support/html-behavior'
@@ -24,13 +27,14 @@ Then(
 
         await waitFor(async () => {
             let pages = context.pages();
-            const result = await pages[pageIndex].waitForSelector(elementIdentifier, {
-                state: 'visible'
-            })
-            if (result) {
+
+            const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
+
+            if (elementStable) {
                 await inputValueOnPage(pages, pageIndex, elementIdentifier, inputValue)
             }
-            return result
+
+            return elementStable
         })
     }
 )

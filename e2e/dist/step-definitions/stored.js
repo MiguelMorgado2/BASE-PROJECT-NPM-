@@ -15,15 +15,13 @@ var _logger = require("../logger");
   _logger.logger.log(`I retrieve the ${elementKey} text and store it as ${variableKey} in global variables`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const result = await page.waitForSelector(elementIdentifier, {
-      state: 'visible'
-    });
-    if (result) {
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
       const elementText = await page.textContent(elementIdentifier);
       if (elementText != null) {
         globalVariables[variableKey] = elementText;
       }
     }
-    return result;
+    return elementStable;
   });
 });

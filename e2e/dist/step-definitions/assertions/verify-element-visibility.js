@@ -1,6 +1,7 @@
 "use strict";
 
 var _cucumber = require("@cucumber/cucumber");
+var _htmlBehavior = require("../../support/html-behavior");
 var _webElementHelper = require("../../support/web-element-helper");
 var _waitForBehavior = require("../../support/wait-for-behavior");
 var _logger = require("../../logger");
@@ -14,7 +15,7 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''} be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const isElementVisible = (await page.$(elementIdentifier)) != null;
+    const isElementVisible = (await (0, _htmlBehavior.getElement)(page, elementIdentifier)) != null;
     return isElementVisible === !negate;
   });
 });
@@ -29,7 +30,7 @@ var _logger = require("../../logger");
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const index = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {
-    const isElementVisible = (await page.$(`${elementIdentifier}>>nth=${index}`)) != null;
+    const isElementVisible = (await (0, _htmlBehavior.getElementAtIndex)(page, elementIdentifier, index)) != null;
     return isElementVisible === !negate;
   });
 });
@@ -43,7 +44,7 @@ var _logger = require("../../logger");
   _logger.logger.log(`I should ${negate ? 'not ' : ''}see ${count} ${elementKey} displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const element = await page.$$(elementIdentifier);
+    const element = await (0, _htmlBehavior.getElements)(page, elementIdentifier);
     return Number(count) === element.length === !negate;
   });
 });

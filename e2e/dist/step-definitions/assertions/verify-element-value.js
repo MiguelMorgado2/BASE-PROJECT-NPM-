@@ -15,10 +15,15 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''} contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const elementText = await page.textContent(elementIdentifier);
-    _logger.logger.debug("elementText ", elementText);
-    _logger.logger.debug("expectedElementText ", expectedElementText);
-    return elementText?.includes(expectedElementText) === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const elementText = await (0, _htmlBehavior.getElementText)(page, elementIdentifier);
+      _logger.logger.debug("elementText ", elementText);
+      _logger.logger.debug("expectedElementText ", expectedElementText);
+      return elementText?.includes(expectedElementText) === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? equal the text "(.*)"$/, async function (elementKey, negate, expectedElementText) {
@@ -31,8 +36,13 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const elementText = await page.textContent(elementIdentifier);
-    return elementText === expectedElementText === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const elementText = await (0, _htmlBehavior.getElementText)(page, elementIdentifier);
+      return elementText === expectedElementText === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? contain the value "(.*)"$/, async function (elementKey, negate, elementValue) {
@@ -45,8 +55,13 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}contain the value ${elementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const elementAttribute = await (0, _htmlBehavior.getValue)(page, elementIdentifier);
-    return elementAttribute?.includes(elementValue) === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const elementAttribute = await (0, _htmlBehavior.getElementValue)(page, elementIdentifier);
+      return elementAttribute?.includes(elementValue) === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? equal the value "(.*)"$/, async function (elementKey, negate, elementValue) {
@@ -59,8 +74,13 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the value ${elementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const elementAttribute = await (0, _htmlBehavior.getValue)(page, elementIdentifier);
-    return elementAttribute === elementValue === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const elementAttribute = await (0, _htmlBehavior.getElementValue)(page, elementIdentifier);
+      return elementAttribute === elementValue === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? be enabled$/, async function (elementKey, negate) {
@@ -73,8 +93,13 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}be enabled`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const isElementEnabled = await page.isEnabled(elementIdentifier);
-    return isElementEnabled === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const isElementEnabled = await (0, _htmlBehavior.elementEnabled)(page, elementIdentifier);
+      return isElementEnabled === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });
 (0, _cucumber.Then)(/^the "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)" "([^"]*)" should( not)? contain the text "(.*)"$/, async function (elementPosition, elementKey, negate, expectedElementText) {
@@ -86,10 +111,15 @@ var _logger = require("../../logger");
   } = this;
   _logger.logger.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
-  const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) - 1;
+  const index = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {
-    const elementText = await page.textContent(`${elementIdentifier}>>nth=${pageIndex}`);
-    return elementText?.includes(expectedElementText) === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const elementText = await (0, _htmlBehavior.getElementTextAtIndex)(page, elementIdentifier, index);
+      return elementText?.includes(expectedElementText) === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" "([^"]*)" attribute should( not)? contain the text "(.*)"$/, async function (elementKey, attribute, negate, expectedElementText) {
@@ -102,7 +132,12 @@ var _logger = require("../../logger");
   _logger.logger.log(`the ${elementKey} ${attribute} attribute should ${negate ? 'not ' : ''}contain the text ${expectedElementText}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
-    const attributeText = await (0, _htmlBehavior.getAttributeText)(page, elementIdentifier, attribute);
-    return attributeText?.includes(expectedElementText) === !negate;
+    const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
+    if (elementStable) {
+      const attributeText = await (0, _htmlBehavior.getAttributeText)(page, elementIdentifier, attribute);
+      return attributeText?.includes(expectedElementText) === !negate;
+    } else {
+      return elementStable;
+    }
   });
 });

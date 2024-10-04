@@ -1,7 +1,7 @@
 import { Then } from '@cucumber/cucumber'
 import { ScenarioWorld } from './setup/world'
 import {
-    scrollIntoView,
+    scrollElementIntoView,
 } from '../support/html-behavior'
 import {
     waitFor,
@@ -27,7 +27,7 @@ Then(
             const elementStable = await waitForSelector(page, elementIdentifier)
 
             if (elementStable) {
-                await scrollIntoView(page, elementIdentifier)
+                await scrollElementIntoView(page, elementIdentifier)
             }
 
             return elementStable;

@@ -17,7 +17,7 @@ var _logger = require("../logger");
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
-      await (0, _htmlBehavior.scrollIntoView)(page, elementIdentifier);
+      await (0, _htmlBehavior.scrollElementIntoView)(page, elementIdentifier);
     }
     return elementStable;
   });

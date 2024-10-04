@@ -1,7 +1,15 @@
 import { Then } from '@cucumber/cucumber'
-import { waitFor } from '../../support/wait-for-behavior'
+import {
+    waitFor,
+    waitForSelectorOnPage
+} from '../../support/wait-for-behavior'
 import { ScenarioWorld } from '../setup/world'
 import { getElementLocator } from '../../support/web-element-helper'
+import {
+    getElementOnPage,
+    getElementTextWithinPage,
+    getTitleWithinPage
+} from "../../support/html-behavior"
 import { ElementKey } from '../../env/global'
 import {logger} from "../../logger";
 
@@ -20,7 +28,7 @@ Then(
 
         await waitFor(async () => {
             let pages = context.pages();
-            const pageTitle = await pages[pageIndex].title()
+            const pageTitle = await getTitleWithinPage(page, pages, pageIndex)
             return pageTitle?.includes(expectedTitle) === !negate
         })
     }
@@ -42,7 +50,7 @@ Then(
 
         await waitFor(async () => {
             let pages = context.pages();
-            const isElementVisible = (await pages[pageIndex].$(elementIdentifier)) != null;
+            const isElementVisible = await getElementOnPage(page, elementIdentifier, pages, pageIndex) != null;
             return isElementVisible === !negate
         })
     }
@@ -64,8 +72,16 @@ Then(
 
         await waitFor(async () =>  {
             let pages = context.pages()
-            const elementText = await pages[pageIndex].textContent(elementIdentifier);
-            return elementText?.includes(expectedElementText) === !negate
+
+            const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
+
+            if (elementStable) {
+                const elementText = await getElementTextWithinPage(page, elementIdentifier, pages, pageIndex);
+                return elementText?.includes(expectedElementText) === !negate
+            } else {
+                return elementStable
+            }
+
         })
     }
 )
@@ -86,8 +102,16 @@ Then(
 
         await waitFor(async () =>  {
             let pages = context.pages()
-            const elementText = await pages[pageIndex].textContent(elementIdentifier);
-            return (elementText === expectedElementText) === !negate;
+
+            const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
+
+            if (elementStable) {
+                const elementText = await pages[pageIndex].textContent(elementIdentifier);
+                return (elementText === expectedElementText) === !negate;
+            } else {
+                return elementStable
+            }
+
         })
     }
 )

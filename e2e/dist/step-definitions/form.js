@@ -19,7 +19,7 @@ var _logger = require("../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const parsedInput = (0, _inputHelper.parseInput)(input, globalConfig);
-      await (0, _htmlBehavior.inputValue)(page, elementIdentifier, parsedInput);
+      await (0, _htmlBehavior.inputElementValue)(page, elementIdentifier, parsedInput);
     }
     return elementStable;
   });
@@ -36,7 +36,7 @@ var _logger = require("../logger");
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
-      await (0, _htmlBehavior.selectValue)(page, elementIdentifier, option);
+      await (0, _htmlBehavior.selectElementValue)(page, elementIdentifier, option);
     }
     return elementStable;
   });

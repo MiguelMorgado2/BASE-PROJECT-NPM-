@@ -20,7 +20,9 @@ const hostsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('HOSTS_URL
 const pagesConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('PAGE_URLS_PATH'));
 const emailsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('EMAILS_URLS_PATH'));
 const errorsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('ERRORS_URLS_PATH'));
+const mocksConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('MOCKS_URLS_PATH'));
 const mappingFiles = _fs.default.readdirSync(`${process.cwd()}${(0, _parseEnv.env)('PAGE_ELEMENTS_PATH')}`);
+const payloadFiles = _fs.default.readdirSync(`${process.cwd()}${(0, _parseEnv.env)('MOCK_PAYLOAD_PATH')}`);
 const getEnvList = () => {
   const envList = Object.keys(hostsConfig);
   if (envList.length === 0) {
@@ -36,12 +38,22 @@ const pageElementMappings = mappingFiles.reduce((pageElementConfigAcc, file) => 
     [key]: elementMappings
   };
 }, {});
+const mockPayloadMappings = payloadFiles.reduce((payloadConfigAcc, file) => {
+  const key = file.replace('.json', '');
+  const payloadMappings = (0, _parseEnv.getJsonFromFile)(`${(0, _parseEnv.env)('MOCK_PAYLOAD_PATH')}${file}`);
+  return {
+    ...payloadConfigAcc,
+    [key]: payloadMappings
+  };
+}, {});
 const worldParameters = {
   hostsConfig,
   pagesConfig,
   emailsConfig,
   errorsConfig,
-  pageElementMappings
+  mocksConfig,
+  pageElementMappings,
+  mockPayloadMappings
 };
 const common = `./src/features/**/*.feature \
                 --require-module ts-node/register \

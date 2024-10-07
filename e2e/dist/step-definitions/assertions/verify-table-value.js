@@ -12,7 +12,7 @@ var _htmlBehavior = require("../../support/html-behavior");
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementKey} table should ${negate ? ' not' : ''}equal the following:`);
+  _logger.logger.log(`the ${elementKey} table should ${negate ? 'not ' : ''}equal the following:`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);

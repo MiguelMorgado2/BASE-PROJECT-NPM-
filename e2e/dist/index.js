@@ -19,6 +19,7 @@ _dotenv.default.config({
 const hostsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('HOSTS_URLS_PATH'));
 const pagesConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('PAGE_URLS_PATH'));
 const emailsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('EMAILS_URLS_PATH'));
+const errorsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('ERRORS_URLS_PATH'));
 const mappingFiles = _fs.default.readdirSync(`${process.cwd()}${(0, _parseEnv.env)('PAGE_ELEMENTS_PATH')}`);
 const getEnvList = () => {
   const envList = Object.keys(hostsConfig);
@@ -39,6 +40,7 @@ const worldParameters = {
   hostsConfig,
   pagesConfig,
   emailsConfig,
+  errorsConfig,
   pageElementMappings
 };
 const common = `./src/features/**/*.feature \

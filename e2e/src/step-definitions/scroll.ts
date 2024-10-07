@@ -4,7 +4,7 @@ import {
     scrollElementIntoView,
 } from '../support/html-behavior'
 import {
-    waitFor,
+    waitFor, waitForResult,
     waitForSelector
 } from '../support/wait-for-behavior'
 import { getElementLocator } from '../support/web-element-helper'
@@ -24,13 +24,16 @@ Then(
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
         await waitFor(async () => {
-            const elementStable = await waitForSelector(page, elementIdentifier)
+                const elementStable = await waitForSelector(page, elementIdentifier)
 
-            if (elementStable) {
-                await scrollElementIntoView(page, elementIdentifier)
-            }
+                if (elementStable) {
+                    await scrollElementIntoView(page, elementIdentifier)
+                    return waitForResult.PASS
+                }
 
-            return elementStable;
-        })
+                return waitForResult.ELEMENT_NOT_AVAILABLE
+            },
+            globalConfig,
+            {target: elementKey});
     }
 )

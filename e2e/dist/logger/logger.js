@@ -7,8 +7,9 @@ exports.stringIsOfOptions = exports.getLogger = void 0;
 var _parseEnv = require("../env/parseEnv");
 const DEBUG = 'debug';
 const LOG = 'log';
+const ERROR = 'error';
 const OFF = 'off';
-const LOG_LEVELS = [DEBUG, LOG, OFF];
+const LOG_LEVELS = [DEBUG, LOG, ERROR, OFF];
 const logFuncAtLevels = function (logLevels) {
   let logFunction = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : console;
   return function (logLevel) {

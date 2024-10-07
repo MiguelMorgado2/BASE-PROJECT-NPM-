@@ -20,8 +20,11 @@ var _logger = require("../logger");
       const elementText = await page.textContent(elementIdentifier);
       if (elementText != null) {
         globalVariables[variableKey] = elementText;
+        return _waitForBehavior.waitForResult.PASS;
       }
     }
-    return elementStable;
+    return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
+  }, globalConfig, {
+    target: elementKey
   });
 });

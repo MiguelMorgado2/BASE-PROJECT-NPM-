@@ -1,6 +1,6 @@
 import { Then } from '@cucumber/cucumber'
 import {
-    waitFor,
+    waitFor, waitForResult,
     waitForSelectorOnPage
 } from '../support/wait-for-behavior'
 import {
@@ -26,15 +26,18 @@ Then(
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
         await waitFor(async () => {
-            let pages = context.pages();
+                let pages = context.pages();
 
-            const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
+                const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
 
-            if (elementStable) {
-                await inputValueOnPage(pages, pageIndex, elementIdentifier, inputValue)
-            }
+                if (elementStable) {
+                    await inputValueOnPage(pages, pageIndex, elementIdentifier, inputValue)
+                    return waitForResult.PASS
+                }
 
-            return elementStable
-        })
+                return waitForResult.ELEMENT_NOT_AVAILABLE
+            },
+            globalConfig,
+            {target: elementKey});
     }
 )

@@ -7,7 +7,7 @@ import {
     parseInput,
 } from '../support/input-helper';
 import {
-    waitFor,
+    waitFor, waitForResult,
     waitForSelector
 } from '../support/wait-for-behavior';
 import { getElementLocator } from '../support/web-element-helper';
@@ -28,15 +28,18 @@ Then (
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
         await waitFor(async () => {
-            const elementStable = await waitForSelector(page, elementIdentifier)
+                const elementStable = await waitForSelector(page, elementIdentifier)
 
-            if (elementStable) {
-                const parsedInput = parseInput(input, globalConfig)
-                await inputElementValue(page, elementIdentifier, parsedInput);
-            }
+                if (elementStable) {
+                    const parsedInput = parseInput(input, globalConfig)
+                    await inputElementValue(page, elementIdentifier, parsedInput);
+                    return waitForResult.PASS
+                }
 
-            return elementStable;
-        });
+                return waitForResult.ELEMENT_NOT_AVAILABLE
+            },
+            globalConfig,
+            {target: elementKey});
     }
 );
 
@@ -53,13 +56,17 @@ Then(
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
 
         await waitFor(async () => {
-            const elementStable = await waitForSelector(page, elementIdentifier)
+                const elementStable = await waitForSelector(page, elementIdentifier)
 
-            if (elementStable) {
-                await selectElementValue(page, elementIdentifier, option);
-            }
+                if (elementStable) {
+                    await selectElementValue(page, elementIdentifier, option);
+                    return waitForResult.PASS
+                }
 
-            return elementStable;
-        });
+                return waitForResult.ELEMENT_NOT_AVAILABLE
+            },
+            globalConfig,
+            {target: elementKey});
     }
 );
+

@@ -20,8 +20,11 @@ var _logger = require("../logger");
     if (elementStable) {
       const parsedInput = (0, _inputHelper.parseInput)(input, globalConfig);
       await (0, _htmlBehavior.inputElementValue)(page, elementIdentifier, parsedInput);
+      return _waitForBehavior.waitForResult.PASS;
     }
-    return elementStable;
+    return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
+  }, globalConfig, {
+    target: elementKey
   });
 });
 (0, _cucumber.Then)(/^I select the "([^"]*)" option from the "([^"]*)"$/, async function (option, elementKey) {
@@ -37,7 +40,10 @@ var _logger = require("../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       await (0, _htmlBehavior.selectElementValue)(page, elementIdentifier, option);
+      return _waitForBehavior.waitForResult.PASS;
     }
-    return elementStable;
+    return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
+  }, globalConfig, {
+    target: elementKey
   });
 });

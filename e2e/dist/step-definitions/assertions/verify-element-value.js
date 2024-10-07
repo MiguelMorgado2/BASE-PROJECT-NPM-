@@ -20,10 +20,17 @@ var _logger = require("../../logger");
       const elementText = await (0, _htmlBehavior.getElementText)(page, elementIdentifier);
       _logger.logger.debug("elementText ", elementText);
       _logger.logger.debug("expectedElementText ", expectedElementText);
-      return elementText?.includes(expectedElementText) === !negate;
+      if (elementText?.includes(expectedElementText) === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}contain the text ${expectedElementText} 🧨`
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? equal the text "(.*)"$/, async function (elementKey, negate, expectedElementText) {
@@ -39,48 +46,69 @@ var _logger = require("../../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const elementText = await (0, _htmlBehavior.getElementText)(page, elementIdentifier);
-      return elementText === expectedElementText === !negate;
+      if (elementText === expectedElementText === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}equal the text ${expectedElementText} 🧨`
   });
 });
-(0, _cucumber.Then)(/^the "([^"]*)" should( not)? contain the value "(.*)"$/, async function (elementKey, negate, elementValue) {
+(0, _cucumber.Then)(/^the "([^"]*)" should( not)? contain the value "(.*)"$/, async function (elementKey, negate, expectedElementValue) {
   const {
     screen: {
       page
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}contain the value ${elementValue}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}contain the value ${expectedElementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const elementAttribute = await (0, _htmlBehavior.getElementValue)(page, elementIdentifier);
-      return elementAttribute?.includes(elementValue) === !negate;
+      if (elementAttribute?.includes(expectedElementValue) === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}contain the value ${expectedElementValue} 🧨`
   });
 });
-(0, _cucumber.Then)(/^the "([^"]*)" should( not)? equal the value "(.*)"$/, async function (elementKey, negate, elementValue) {
+(0, _cucumber.Then)(/^the "([^"]*)" should( not)? equal the value "(.*)"$/, async function (elementKey, negate, expectedElementValue) {
   const {
     screen: {
       page
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the value ${elementValue}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the value ${expectedElementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const elementAttribute = await (0, _htmlBehavior.getElementValue)(page, elementIdentifier);
-      return elementAttribute === elementValue === !negate;
+      if (elementAttribute === expectedElementValue === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}equal the value ${expectedElementValue} 🧨`
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? be enabled$/, async function (elementKey, negate) {
@@ -96,10 +124,17 @@ var _logger = require("../../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const isElementEnabled = await (0, _htmlBehavior.elementEnabled)(page, elementIdentifier);
-      return isElementEnabled === !negate;
+      if (isElementEnabled === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} should ${negate ? 'not ' : ''}be enabled 🧨`
   });
 });
 (0, _cucumber.Then)(/^the "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)" "([^"]*)" should( not)? contain the text "(.*)"$/, async function (elementPosition, elementKey, negate, expectedElementText) {
@@ -116,10 +151,17 @@ var _logger = require("../../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const elementText = await (0, _htmlBehavior.getElementTextAtIndex)(page, elementIdentifier, index);
-      return elementText?.includes(expectedElementText) === !negate;
+      if (elementText?.includes(expectedElementText) === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementPosition} ${elementKey} to ${negate ? 'not ' : ''}contain the text ${expectedElementText} 🧨`
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" "([^"]*)" attribute should( not)? contain the text "(.*)"$/, async function (elementKey, attribute, negate, expectedElementText) {
@@ -135,9 +177,16 @@ var _logger = require("../../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       const attributeText = await (0, _htmlBehavior.getAttributeText)(page, elementIdentifier, attribute);
-      return attributeText?.includes(expectedElementText) === !negate;
+      if (attributeText?.includes(expectedElementText) === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} ${attribute} to ${negate ? 'not ' : ''}contain the text ${expectedElementText} 🧨`
   });
 });

@@ -19,10 +19,14 @@ var _logger = require("../logger");
     if (elementStable) {
       if (!!unchecked) {
         await (0, _htmlBehavior.uncheckElement)(page, elementIdentifier);
+        return _waitForBehavior.waitForResult.PASS;
       } else {
         await (0, _htmlBehavior.checkElement)(page, elementIdentifier);
+        return _waitForBehavior.waitForResult.PASS;
       }
     }
-    return elementStable;
+    return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
+  }, globalConfig, {
+    target: elementKey
   });
 });

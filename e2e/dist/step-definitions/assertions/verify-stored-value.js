@@ -20,10 +20,17 @@ var _htmlBehavior = require("../../support/html-behavior");
     const variableValue = globalVariables[variableKey];
     if (elementStable) {
       const elementText = await (0, _htmlBehavior.getElementText)(page, elementIdentifier);
-      return elementText === variableValue === !negate;
+      if (elementText === variableValue === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}contain the ${variableKey} in global variables 🧨`
   });
 });
 (0, _cucumber.Then)(/^the "([^"]*)" should( not)? contain the "([^"]*)" stored in global variables$/, async function (elementKey, negate, variableKey) {
@@ -41,9 +48,16 @@ var _htmlBehavior = require("../../support/html-behavior");
     const variableValue = globalVariables[variableKey];
     if (elementStable) {
       const elementText = await (0, _htmlBehavior.getElementText)(page, elementIdentifier);
-      return elementText?.includes(variableValue) === !negate;
+      if (elementText?.includes(variableValue) === !negate) {
+        return _waitForBehavior.waitForResult.PASS;
+      } else {
+        return _waitForBehavior.waitForResult.FAIL;
+      }
     } else {
-      return elementStable;
+      return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
     }
+  }, globalConfig, {
+    target: elementKey,
+    failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}contain the ${variableKey} in global variables0 🧨`
   });
 });

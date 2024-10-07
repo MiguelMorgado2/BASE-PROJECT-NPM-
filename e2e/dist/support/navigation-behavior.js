@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.reloadPage = exports.navigateToPage = exports.getCurrentPageId = exports.currentPathMatchesPageId = void 0;
+var _waitForBehavior = require("./wait-for-behavior");
 const navigateToPage = async (page, pageId, _ref) => {
   let {
     pagesConfig,
@@ -31,7 +32,10 @@ const currentPathMatchesPageId = (page, pageId, globalConfig) => {
   const {
     pathname: currentPath
   } = new URL(page.url());
-  return pathMatchesPageId(currentPath, pageId, globalConfig);
+  if (pathMatchesPageId(currentPath, pageId, globalConfig)) {
+    return _waitForBehavior.waitForResult.PASS;
+  }
+  return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
 };
 exports.currentPathMatchesPageId = currentPathMatchesPageId;
 const getCurrentPageId = (page, globalConfig) => {

@@ -3,23 +3,48 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.waitForSelectorOnPage = exports.waitForSelectorInIframe = exports.waitForSelector = exports.waitFor = void 0;
+exports.waitForSelectorOnPage = exports.waitForSelectorInIframe = exports.waitForSelector = exports.waitForResult = exports.waitFor = void 0;
 var _parseEnv = require("../env/parseEnv");
+var _errorHelper = require("./error-helper");
 var _logger = require("../logger");
-const waitFor = async (predicate, options) => {
+let waitForResult = exports.waitForResult = /*#__PURE__*/function (waitForResult) {
+  waitForResult[waitForResult["PASS"] = 1] = "PASS";
+  waitForResult[waitForResult["FAIL"] = 2] = "FAIL";
+  waitForResult[waitForResult["ELEMENT_NOT_AVAILABLE"] = 3] = "ELEMENT_NOT_AVAILABLE";
+  return waitForResult;
+}({});
+const waitFor = async (predicate, globalConfig, options) => {
   const {
-    timeout = 20000,
-    wait = 2000
+    timeout = 10000,
+    wait = 2000,
+    target = '',
+    type = 'element'
   } = options || {};
   const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
   const startDate = new Date();
-  while (new Date().getTime() - startDate.getTime() < timeout) {
-    const result = await predicate();
-    if (result) return result;
-    await sleep(wait);
-    _logger.logger.log(`Waiting ${wait}ms`);
+  let notAvailableContext;
+  try {
+    while (new Date().getTime() - startDate.getTime() < timeout) {
+      const result = await predicate();
+      let resultAs;
+      if (result.result) {
+        notAvailableContext = result.replace;
+        resultAs = result.result;
+      } else {
+        resultAs = result;
+      }
+      if (resultAs === waitForResult.PASS) {
+        return;
+      } else if (resultAs === waitForResult.FAIL) {
+        throw new Error(options?.failureMessage || "Test assertion failed");
+      }
+      await sleep(wait);
+      _logger.logger.debug(`Waiting ${wait}ms`);
+    }
+    throw new Error(`Wait time of ${timeout}ms for ${notAvailableContext || target} exceeded`);
+  } catch (error) {
+    (0, _errorHelper.handleError)(globalConfig.errorsConfig, error, target, type);
   }
-  throw new Error(`Wait time of ${timeout}ms exceeded`);
 };
 exports.waitFor = waitFor;
 const waitForSelector = async (page, elementIdentifier) => {

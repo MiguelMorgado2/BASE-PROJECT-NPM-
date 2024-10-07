@@ -18,7 +18,10 @@ var _logger = require("../logger");
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
     if (elementStable) {
       await (0, _htmlBehavior.scrollElementIntoView)(page, elementIdentifier);
+      return _waitForBehavior.waitForResult.PASS;
     }
-    return elementStable;
+    return _waitForBehavior.waitForResult.ELEMENT_NOT_AVAILABLE;
+  }, globalConfig, {
+    target: elementKey
   });
 });

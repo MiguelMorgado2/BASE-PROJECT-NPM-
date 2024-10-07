@@ -132,7 +132,7 @@ Then(
             globalConfig,
         } = this;
 
-        logger.log(`the ${elementKey} should ${negate?'not':''}equal the value ${expectedElementValue}`)
+        logger.log(`the ${elementKey} should ${negate?'not ':''}equal the value ${expectedElementValue}`)
 
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
@@ -168,7 +168,7 @@ Then(
             globalConfig,
         } = this;
 
-        logger.log(`the ${elementKey} should ${negate?'not':''}be enabled`)
+        logger.log(`the ${elementKey} should ${negate?'not ':''}be enabled`)
 
         const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 

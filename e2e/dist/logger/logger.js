@@ -3,8 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.stringIsOfOptions = exports.getLogger = void 0;
+exports.getLogger = void 0;
 var _parseEnv = require("../env/parseEnv");
+var _optionsHelper = require("../support/options-helper");
 const DEBUG = 'debug';
 const LOG = 'log';
 const ERROR = 'error';
@@ -38,21 +39,11 @@ const createLogger = logLevel => {
     }
   }), {});
 };
-const logLevelIsT = (logLevel, options) => {
-  return options.includes(logLevel);
-};
-const stringIsOfOptions = (logLevel, options) => {
-  if (logLevelIsT(logLevel, options)) {
-    return logLevel;
-  }
-  throw Error(`🧨 Logger '${logLevel}' needs to be one of ${options} 🧨`);
-};
-exports.stringIsOfOptions = stringIsOfOptions;
 let loggerSingleton = null;
 const getLogger = () => {
   if (!loggerSingleton) {
     const logLevel = (0, _parseEnv.env)('LOG_LEVEL');
-    const validLogLevel = stringIsOfOptions(logLevel, LOG_LEVELS);
+    const validLogLevel = (0, _optionsHelper.stringIsOfOptions)(logLevel, LOG_LEVELS);
     loggerSingleton = createLogger(validLogLevel);
   }
   return loggerSingleton;

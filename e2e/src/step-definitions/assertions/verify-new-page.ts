@@ -11,7 +11,7 @@ import {
     getTitleWithinPage
 } from "../../support/html-behavior"
 import { ElementKey } from '../../env/global'
-import {logger} from "../../logger";
+import {logger} from "../../logger"
 
 Then(
     /^the "([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd)" (?:tab|window) should( not)? contain the title "(.*)"$/,
@@ -19,7 +19,7 @@ Then(
         const {
             globalConfig,
             screen: { page, context },
-        } = this;
+        } = this
 
         logger.log(`the ${elementPosition} window|tab should ${negate?'not ':''}contain the title ${expectedTitle}`)
 
@@ -28,7 +28,7 @@ Then(
         await page.waitForTimeout(2000)
 
         await waitFor(async () => {
-                let pages = context.pages();
+                let pages = context.pages()
                 const pageTitle = await getTitleWithinPage(page, pages, pageIndex)
                 if (pageTitle?.includes(expectedTitle) === !negate) {
                     return waitForResult.PASS
@@ -51,17 +51,17 @@ Then(
         const {
             screen: { page, context },
             globalConfig,
-        } = this;
+        } = this
 
         logger.log(`the ${elementKey} on the ${elementPosition} window|tab should ${negate?'not ':''}be displayed`)
 
         const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) -1
 
-        const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
+        const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
         await waitFor(async () => {
-                let pages = context.pages();
-                const isElementVisible = await getElementOnPage(page, elementIdentifier, pages, pageIndex) != null;
+                let pages = context.pages()
+                const isElementVisible = await getElementOnPage(page, elementIdentifier, pages, pageIndex) != null
                 if (isElementVisible === !negate) {
                     return waitForResult.PASS
                 } else {
@@ -83,13 +83,13 @@ Then(
         const {
             screen: { page, context },
             globalConfig,
-        } = this;
+        } = this
 
         logger.log(`the ${elementKey} on the ${elementPosition} window|tab should ${negate?'not ':''}contain the text ${expectedElementText}`)
 
         const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) -1
 
-        const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
+        const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
         await waitFor(async () =>  {
                 let pages = context.pages()
@@ -97,7 +97,7 @@ Then(
                 const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
 
                 if (elementStable) {
-                    const elementText = await getElementTextWithinPage(page, elementIdentifier, pages, pageIndex);
+                    const elementText = await getElementTextWithinPage(page, elementIdentifier, pages, pageIndex)
                     if (elementText?.includes(expectedElementText) === !negate) {
                         return waitForResult.PASS
                     } else {
@@ -123,13 +123,13 @@ Then(
         const {
             screen: { page, context },
             globalConfig,
-        } = this;
+        } = this
 
         logger.log(`the ${elementKey} on the ${elementPosition} window|tab should ${negate?'not ':''}equal the text ${expectedElementText}`)
 
         const pageIndex = Number(elementPosition.match(/\d/g)?.join('')) -1
 
-        const elementIdentifier = getElementLocator(page, elementKey, globalConfig);
+        const elementIdentifier = getElementLocator(page, elementKey, globalConfig)
 
         await waitFor(async () =>  {
                 let pages = context.pages()
@@ -137,7 +137,7 @@ Then(
                 const elementStable = await waitForSelectorOnPage(page, elementIdentifier, pages, pageIndex)
 
                 if (elementStable) {
-                    const elementText = await pages[pageIndex].textContent(elementIdentifier);
+                    const elementText = await pages[pageIndex].textContent(elementIdentifier)
                     if ((elementText === expectedElementText) === !negate) {
                         return waitForResult.PASS
                     } else {

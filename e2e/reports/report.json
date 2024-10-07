@@ -4,186 +4,511 @@
     "elements": [
       {
         "description": "",
-        "id": "as-a-user-i-can-interact-with-iframes;as-a-user-i-can-interact-and-assert-on-iframes",
+        "id": "as-a-user-i-expect-to-be-able-to-edit-a-new-contact;as-a-user-i-can-edit-a-new-contact",
         "keyword": "Scenario",
-        "line": 5,
-        "name": "As a user I can interact and assert on IFrames",
+        "line": 4,
+        "name": "As a user I can edit a new contact",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 954857700
+              "duration": 2128074099
             }
           },
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 6,
+            "line": 5,
             "name": "I am on the \"home\" page",
             "match": {
               "location": "src\\step-definitions\\navigation.ts:12"
             },
             "result": {
               "status": "passed",
-              "duration": 3103371799
+              "duration": 4000898900
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 7,
-            "name": "I click the \"playground\" button",
+            "line": 6,
+            "name": "I click the \"create\" button",
             "match": {
               "location": "src\\step-definitions\\click.ts:15"
             },
             "result": {
               "status": "passed",
-              "duration": 441435799
+              "duration": 153093300
             }
           },
           {
             "arguments": [],
             "keyword": "When ",
-            "line": 8,
-            "name": "I am directed to the \"playground\" page",
+            "line": 7,
+            "name": "I am directed to the \"create contact\" page",
             "match": {
               "location": "src\\step-definitions\\navigation.ts:32"
             },
             "result": {
               "status": "passed",
-              "duration": 1501399
+              "duration": 2287700
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I fill in the \"name\" input with \"Lisa Simpson\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 64659600
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 9,
+            "name": "I select the \"Female\" option from the \"gender\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:52"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 58699300
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 10,
-            "name": "I fill in the \"search\" input on the \"basic iframe\" iframe with \"Abraham Perry\"",
+            "name": "I fill in the \"phone\" input with \"939-555-0113\"",
             "match": {
-              "location": "src\\step-definitions\\iframe.ts:15"
+              "location": "src\\step-definitions\\form.ts:24"
             },
             "result": {
               "status": "passed",
-              "duration": 2154800900
+              "duration": 66412100
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 11,
-            "name": "the \"contact\" on the \"basic iframe\" iframe should be displayed",
+            "name": "I fill in the \"street\" input with \"742 Evergreen Terrace\"",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:15"
+              "location": "src\\step-definitions\\form.ts:24"
             },
             "result": {
               "status": "passed",
-              "duration": 21864400
+              "duration": 59718600
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 12,
-            "name": "the \"full name label\" on the \"basic iframe\" iframe should contain the text \"Name:\"",
+            "name": "I fill in the \"city\" input with \"Springfield\"",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:51"
+              "location": "src\\step-definitions\\form.ts:24"
             },
             "result": {
               "status": "passed",
-              "duration": 53279899
+              "duration": 38468300
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 13,
-            "name": "the \"name\" on the \"basic iframe\" iframe should equal the text \"Abraham Perry\"",
+            "name": "I click the \"save\" button",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:96"
+              "location": "src\\step-definitions\\click.ts:15"
             },
             "result": {
               "status": "passed",
-              "duration": 40552799
+              "duration": 108096000
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 14,
-            "name": "the \"gender label\" on the \"basic iframe\" iframe should contain the text \"Gender:\"",
+            "name": "I am directed to the \"home\" page",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:51"
+              "location": "src\\step-definitions\\navigation.ts:32"
             },
             "result": {
               "status": "passed",
-              "duration": 33605000
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 15,
-            "name": "the \"gender\" on the \"basic iframe\" iframe should equal the text \"Male\"",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:96"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 41034400
+              "duration": 788899
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 16,
-            "name": "the \"address label\" on the \"basic iframe\" iframe should contain the text \"Address:\"",
+            "name": "I fill in the \"search\" input with \"Lisa Simpson\"",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:51"
+              "location": "src\\step-definitions\\form.ts:24"
             },
             "result": {
               "status": "passed",
-              "duration": 47785499
+              "duration": 46610599
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 17,
-            "name": "the \"address\" on the \"basic iframe\" iframe should equal the text \"Ap #826-8849 Vulputate Street, Laramie\"",
+            "name": "the \"contact\" should be displayed",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:96"
+              "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:16"
             },
             "result": {
               "status": "passed",
-              "duration": 28883200
+              "duration": 23531699
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 18,
-            "name": "the \"edit\" on the \"basic iframe\" iframe should be displayed",
+            "name": "the \"full name label\" should contain the text \"Name:\"",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:15"
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
             },
             "result": {
               "status": "passed",
-              "duration": 24173399
+              "duration": 20006799
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
             "line": 19,
-            "name": "the \"delete\" on the \"basic iframe\" iframe should be displayed",
+            "name": "the \"name\" should contain the text \"Lisa Simpson\"",
             "match": {
-              "location": "src\\step-definitions\\assertions\\verify-iframe.ts:15"
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
             },
             "result": {
               "status": "passed",
-              "duration": 30655999
+              "duration": 15094300
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 20,
+            "name": "the \"gender label\" should contain the text \"Gender:\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14640100
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 21,
+            "name": "the \"gender\" should contain the text \"Female\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14295799
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 22,
+            "name": "the \"address label\" should contain the text \"Address:\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14530599
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 23,
+            "name": "the \"address\" should contain the text \"742 Evergreen Terrace, Springfield\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9852699
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 24,
+            "name": "the \"edit\" should be displayed",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10045200
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 25,
+            "name": "the \"delete\" should be displayed",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 5135600
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 27,
+            "name": "I click the \"edit\" button",
+            "match": {
+              "location": "src\\step-definitions\\click.ts:15"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 35742600
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 28,
+            "name": "I am directed to the \"edit contact\" page",
+            "match": {
+              "location": "src\\step-definitions\\navigation.ts:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 584800
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 29,
+            "name": "I fill in the \"name\" input with \"Ned Flanders\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 57298999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 30,
+            "name": "I select the \"Male\" option from the \"gender\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:52"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 38858500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 31,
+            "name": "I fill in the \"phone\" input with \"636-555-8904\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 51155500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 32,
+            "name": "I fill in the \"street\" input with \"740 Evergreen Terrace\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 43550099
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 33,
+            "name": "I fill in the \"city\" input with \"Shelbyville\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52977300
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 34,
+            "name": "I click the \"save\" button",
+            "match": {
+              "location": "src\\step-definitions\\click.ts:15"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 129369299
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 36,
+            "name": "I fill in the \"search\" input with \"Ned Flanders\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 52000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 37,
+            "name": "the \"contact\" should be displayed",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 10734099
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 38,
+            "name": "the \"full name label\" should contain the text \"Name:\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 16384500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 39,
+            "name": "the \"name\" should contain the text \"Ned Flanders\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14180000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 40,
+            "name": "the \"gender label\" should contain the text \"Gender:\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12345899
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 41,
+            "name": "the \"gender\" should contain the text \"Male\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 17322000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 42,
+            "name": "the \"address label\" should contain the text \"Address:\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 12335399
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 43,
+            "name": "the \"address\" should contain the text \"740 Evergreen Terrace, Shelbyville\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:18"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 14038700
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 44,
+            "name": "the \"edit\" should be displayed",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4462700
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 45,
+            "name": "the \"delete\" should be displayed",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-visibility.ts:16"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 9159300
             }
           },
           {
@@ -191,32 +516,28 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 88581499
+              "duration": 485880199
             }
           }
         ],
         "tags": [
           {
-            "name": "@smoke",
+            "name": "@regression",
             "line": 3
           },
           {
-            "name": "@regression",
-            "line": 4
-          },
-          {
             "name": "@dev",
-            "line": 4
+            "line": 3
           }
         ],
         "type": "scenario"
       }
     ],
-    "id": "as-a-user-i-can-interact-with-iframes",
+    "id": "as-a-user-i-expect-to-be-able-to-edit-a-new-contact",
     "line": 1,
     "keyword": "Feature",
-    "name": "As a user I can interact with IFrames",
+    "name": "As a user I expect to be able to edit a new contact",
     "tags": [],
-    "uri": "src\\features\\playground\\iframes.feature"
+    "uri": "src\\features\\edit-contact.feature"
   }
 ]

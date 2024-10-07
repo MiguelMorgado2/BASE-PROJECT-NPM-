@@ -12,7 +12,7 @@ var _logger = require("../../logger");
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''} be displayed`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not ' : ''} be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const isElementVisible = (await (0, _htmlBehavior.getElement)(page, elementIdentifier)) != null;
@@ -33,7 +33,7 @@ var _logger = require("../../logger");
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not' : ''}be displayed`);
+  _logger.logger.log(`the ${elementPosition} ${elementKey} should ${negate ? 'not ' : ''}be displayed`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   const index = Number(elementPosition.match(/\d/g)?.join('')) - 1;
   await (0, _waitForBehavior.waitFor)(async () => {

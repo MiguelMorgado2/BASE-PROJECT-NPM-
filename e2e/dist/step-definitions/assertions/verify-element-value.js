@@ -92,7 +92,7 @@ var _logger = require("../../logger");
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}equal the value ${expectedElementValue}`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not ' : ''}equal the value ${expectedElementValue}`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);
@@ -118,7 +118,7 @@ var _logger = require("../../logger");
     },
     globalConfig
   } = this;
-  _logger.logger.log(`the ${elementKey} should ${negate ? 'not' : ''}be enabled`);
+  _logger.logger.log(`the ${elementKey} should ${negate ? 'not ' : ''}be enabled`);
   const elementIdentifier = (0, _webElementHelper.getElementLocator)(page, elementKey, globalConfig);
   await (0, _waitForBehavior.waitFor)(async () => {
     const elementStable = await (0, _waitForBehavior.waitForSelector)(page, elementIdentifier);

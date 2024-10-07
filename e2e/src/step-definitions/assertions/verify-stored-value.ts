@@ -17,7 +17,7 @@ Then(
             screen: { page },
             globalConfig,
             globalVariables,
-        } = this;
+        } = this
 
         logger.log(`the ${elementKey} should ${negate?'not ':''}equal the ${globalVariables[variableKey]} stored in global variables`)
 
@@ -56,7 +56,7 @@ Then(
             screen: { page },
             globalConfig,
             globalVariables,
-        } = this;
+        } = this
 
         logger.log(`the ${elementKey} should ${negate?'not ':''}contain the ${globalVariables[variableKey]} stored in global variables`)
 
@@ -65,7 +65,7 @@ Then(
         await waitFor(async () => {
                 const elementStable = await waitForSelector(page, elementIdentifier)
 
-                const variableValue = globalVariables[variableKey];
+                const variableValue = globalVariables[variableKey]
 
                 if (elementStable) {
                     const elementText = await getElementText(page, elementIdentifier)

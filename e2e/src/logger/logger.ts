@@ -1,11 +1,12 @@
-import {env} from "../env/parseEnv";
+import {env} from "../env/parseEnv"
+import {stringIsOfOptions} from "../support/options-helper"
 
 const DEBUG = 'debug'
 const LOG = 'log'
 const ERROR = 'error'
 const OFF = 'off'
 
-const LOG_LEVELS = [DEBUG, LOG, ERROR, OFF] as const;
+const LOG_LEVELS = [DEBUG, LOG, ERROR, OFF] as const
 export type LogLevel = typeof LOG_LEVELS[number]
 
 type LogFunction = (...msg: any[]) => void
@@ -25,7 +26,7 @@ const logFuncAtLevels =
         }
 
 const getLogLevel = (logLevel : LogLevel): LogLevel[] => {
-    const dynamicLogLevelIndex = LOG_LEVELS.indexOf(logLevel);
+    const dynamicLogLevelIndex = LOG_LEVELS.indexOf(logLevel)
     return LOG_LEVELS.slice(dynamicLogLevelIndex)
 }
 
@@ -42,18 +43,7 @@ const createLogger = (logLevel: LogLevel): Logger => {
     ) as Logger
 }
 
-const logLevelIsT = <T extends string>(logLevel: string, options: readonly string[]): logLevel is T => {
-    return options.includes(logLevel)
-}
-
-export const stringIsOfOptions = <T extends string>(logLevel: string, options: readonly string[]): T => {
-    if (logLevelIsT(logLevel, options)) {
-        return logLevel as T
-    }
-    throw Error(`🧨 Logger '${logLevel}' needs to be one of ${options} 🧨`)
-}
-
-let loggerSingleton: Logger | null =  null;
+let loggerSingleton: Logger | null =  null
 export const getLogger = (): Logger => {
     if (!loggerSingleton) {
         const logLevel = env('LOG_LEVEL')

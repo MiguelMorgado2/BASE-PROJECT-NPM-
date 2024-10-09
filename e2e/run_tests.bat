@@ -8,4 +8,4 @@ set COMMON_CONFIG_FILE=env/common.env
 set NODE_ENV=%env%
 
 :: run cucumber tests & on failure run postcucumber
-yarn run cucumber:%env% --profile %tag% || yarn run postcucumber
+npm run cucumber:%env% -- --profile %tag% & npm run postcucumber

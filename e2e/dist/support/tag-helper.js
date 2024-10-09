@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.generateCucumberRuntimeTag = void 0;
-var generateCucumberRuntimeTag = exports.generateCucumberRuntimeTag = function generateCucumberRuntimeTag(commonConfig, runtimeEnv, availableEnvList, runtimeTag) {
-  var tagExpression = availableEnvList.filter(function (e) {
-    return e !== runtimeEnv;
-  }).map(function (e) {
-    return "(@".concat(runtimeTag, " and not @").concat(e, ")");
-  }).join(' and ');
-  return "".concat(commonConfig, " --tags '").concat(tagExpression, "'");
+const generateCucumberRuntimeTag = (commonConfig, runtimeEnv, availableEnvList, runtimeTag) => {
+  const tagExpression = availableEnvList.filter(e => e !== runtimeEnv).map(e => `(@${runtimeTag} and not @${e})`).join(' and ');
+  return `${commonConfig} --tags '${tagExpression}'`;
 };
+exports.generateCucumberRuntimeTag = generateCucumberRuntimeTag;

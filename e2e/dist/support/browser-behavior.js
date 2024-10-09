@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 exports.getViewPort = void 0;
 var _playwright = require("playwright");
 var _parseEnv = require("../env/parseEnv");
-const getViewPort = () => {
-  let viewPort;
-  const emulation = process.env.EMULATION || "browser";
+var getViewPort = exports.getViewPort = function getViewPort() {
+  var viewPort;
+  var emulation = process.env.EMULATION || "browser";
   if (emulation != "browser") {
-    const device = _playwright.devices[emulation];
+    var device = _playwright.devices[emulation];
     viewPort = {
       width: device.viewport.width,
       height: device.viewport.height
@@ -23,4 +23,3 @@ const getViewPort = () => {
   }
   return viewPort;
 };
-exports.getViewPort = getViewPort;

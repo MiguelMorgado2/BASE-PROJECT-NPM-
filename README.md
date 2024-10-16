@@ -8,6 +8,7 @@ Its important to know that there are multiple ways of structuring a playwright +
 Save the project folder “BASE-PROJECT-NPM” in the local disk of your computer and rename it for a project name that makes sense to you.
 
 ## Installation
+<!-- Foldable section starts here -->
 
 * Install Node JS recomended version - (https://nodejs.org/en/download/)
 
@@ -73,6 +74,7 @@ e2e/src/features/*.feature"],
  
 
 The installation and visual studio configurations are completed.
+<!-- Foldable section ends here -->
 
 
 

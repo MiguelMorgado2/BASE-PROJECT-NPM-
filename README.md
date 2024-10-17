@@ -10,8 +10,6 @@ Its important to know that there are multiple ways of structuring a playwright +
     1.1 [VisualStudioCodeSettings](#visual-studio-code-settings)
 
 
-
-
 ## Installation
 
 Save the project:
@@ -105,7 +103,7 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
  
 
 ### The installation and visual studio configurations are completed.
-
+test
 
 
 

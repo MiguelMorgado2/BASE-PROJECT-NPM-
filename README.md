@@ -10,12 +10,14 @@ Its important to know that there are multiple ways of structuring a playwright +
 
     1.1 [VisualStudioCodeSettings](#visual-studio-code-settings)
 
+<details>
+<summary>Click to expand Installation section</summary>
 
 ## Installation
 
 Save the project:
 
-Save the project folder “BASE-PROJECT-NPM” in the local disk of your computer and rename it for a project name that makes sense to you.
+Save the project folder “BASE-PROJECT-NPM” in the local disk of your computer and rename it if necessary.
 
 
 Install Node JS recomended version - (https://nodejs.org/en/download/)

@@ -3,12 +3,18 @@
 The purpose of this documentation is to explain how we can use an existing automation base structure, in any web automation project.
 Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
 
-* SAVE THE PROJECT:
+
+## Index
+1. [Installation](#installation)
+
+
+
+## Installation
+
+* Save the project:
 
 Save the project folder “BASE-PROJECT-NPM” in the local disk of your computer and rename it for a project name that makes sense to you.
 
-## Installation
-<!-- Foldable section starts here -->
 
 * Install Node JS recomended version - (https://nodejs.org/en/download/)
 
@@ -16,7 +22,7 @@ Save the project folder “BASE-PROJECT-NPM” in the local disk of your compute
 
 * Open Visual Studio Code:
 
- ![alt text](image.png)
+ ![VsCode](./assets/readme-images/vscode1.png)
   
 * Go to Extensions and install the Cucumber (Gherkin) Full Support:
   
@@ -49,6 +55,7 @@ All the dependencies are now installed.
 The project structure inside the e2e folder, looks like this:
 
  
+## <a name="VSCODE"></a>Configure Visual Studio Code
 
 9 – Configure the Visual Studio settings.json file, so the cucumber features and the cucumber glue are pointing correctly to our Test Cases features folder and Step definitions.
 Note: Without this configuration, it will not be possible to execute the test cases.
@@ -74,7 +81,9 @@ e2e/src/features/*.feature"],
  
 
 The installation and visual studio configurations are completed.
-<!-- Foldable section ends here -->
+
+
+
 
 
 

@@ -3,6 +3,7 @@
 The purpose of this documentation is to explain how we can use an existing automation base structure, in any web automation project.
 Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
 
+<a name="index"></a>
 
 ## Index
 1. [Installation](#installation)
@@ -63,7 +64,7 @@ All the dependencies are now installed.
 The project structure inside the e2e folder, looks like this:
 
 ![ProjectStructure1](./assets/readme-images/ProjectStructure1.png)
- 
+
 ## Visual Studio Code settings
 
 Configure the Visual Studio settings.json file, so the cucumber features and the cucumber glue are pointing correctly to our Test Cases features folder and Step definitions.
@@ -103,7 +104,9 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
  
 
 ### The installation and visual studio configurations are completed.
-test
+
+[Back to Index](#index)
+
 
 
 

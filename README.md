@@ -71,13 +71,49 @@ Go to Extensions and install the Cucumber (Gherkin) Full Support:
  
 The following dependencies are already created in the Package.json file:
 
-<details>
-<summary>Click to open package.json image</summary>
-
-![Package.json](./assets/readme-images/package.json.png)
-
-</details>
-<br>
+```ts
+{
+  "name": "e2e",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "precucumber": "rimraf reports && mkdir reports && echo {} > reports/report.json",
+    "transpile": "rimraf dist && babel --extensions .ts --out-dir dist src",
+    "cucumber": "npm run transpile && cucumber-js",
+    "cucumber:localhost": "npm run transpile && cucumber-js",
+    "cucumber:production": "npm run transpile && cucumber-js",
+    "postcucumber": "cross-env COMMON_CONFIG_FILE=env/common.env ts-node ./src/reporter/cucumber-report.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.25.6",
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
+    "@cucumber/cucumber": "^10.9.0",
+    "@playwright/test": "^1.46.1",
+    "@types/body-parser": "^1.19.5",
+    "@types/cucumber-html-reporter": "^5.0.1",
+    "@types/faker": "^5.5.3",
+    "@types/node": "^22.5.1",
+    "axe-html-reporter": "^2.2.11",
+    "axe-playwright": "^2.0.3",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "faker": "^5.5.3",
+    "playwright": "^1.46.1",
+    "rimraf": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "cucumber-html-reporter": "^7.1.1"
+  }
+}
+```
  
 These are all the dependencies that we need in the framework structure, to create and execute the test cases and the reports.
 
@@ -229,6 +265,32 @@ The config folder holds various configuration files that are used to define and 
 
     A) common.json:
 
+File content:
+
+```ts
+{
+  "header logo" : "[data-id='header-logo']",
+  "search" : "[data-id='search']",
+  "contact" : "[data-id='contact']",
+  "full name label" : "[data-id='full-name-label']",
+  "gender label" : "[data-id='gender-label']",
+  "address label": "[data-id='address-label']",
+  "address" : "[data-id='address']",
+  "edit" : "[data-id='edit-button']",
+  "delete" : "[data-id='delete-button']",
+  "name" : "[data-id='name']",
+  "gender" : "[data-id='gender']",
+  "phone" : "[data-id='phone']",
+  "street" : "[data-id='street']",
+  "city" : "[data-id='city']",
+  "save" : "[data-id='save-button']",
+  "cancel" : "[data-id='cancel-button']",
+  "playground" : "[data-id='playground-button']",
+  "no items message" : "[data-id='no-items-message']",
+  "error message" : "[data-id='error-message']"
+}
+```
+
 This file contains mappings of various UI elements to their corresponding selectors. It provides a centralized way to reference elements across different tests and different pages on the website, thus the name “common”. 
 
 Each key is a descriptive label, and each value is a CSS selector (or other selector type) that identifies the corresponding element on the web page.
@@ -237,27 +299,22 @@ Each key is a descriptive label, and each value is a CSS selector (or other sele
 To simplify and standardize the way UI elements are accessed in tests.
 Facilitates easier maintenance, as changes to selectors only need to be updated in one place.
 
-<details>
-<summary>Click to open Common.json image</summary>
-
-![Common.json](./assets/readme-images/common.json.png)
-
-</details>
-<br>
 
     B) create-contact.json:
+
+File content:
+
+```ts
+{
+  "create contact header" : "[data-id='create-contact-header']"
+}
+```
+
 This file focus specifically on elements related to creating a new contact.
 
 **Purpose:**
 To provide selectors for elements involved in the contact creation process, such as the header of the create contact form.
 
-<details>
-<summary>Click to open Create-contact.json image</summary>
-
-![Create-contact.json](./assets/readme-images/create-contact.json.png)
-
-</details>
-<br>
 
 These selectors are going to be found in the create contact page:
 
@@ -271,18 +328,28 @@ These selectors are going to be found in the create contact page:
 <br>
 
     C) home.json:
+
+File content:
+
+```ts
+{
+  "contacts header" : "[data-id='contacts']",
+  "create" : "[data-id='add-button']",
+  "search" : "[data-id='search']",
+  "full name label" : "[data-id='full-name-label']",
+  "gender label" : "[data-id='gender-label']",
+  "address label" : "[data-id='address-label']",
+  "address" : "[data-id='address']",
+  "edit" : "[data-id='edit-button']",
+  "delete" : "[data-id='delete-button']"
+}
+```
+
 This file includes selectors relevant to the home page, for managing or displaying contacts inside the home page.
 
 **Purpose:**
 To define selectors for elements on the home page, such as headers, buttons for creating contacts, and fields for contact details. This helps in testing functionalities specific to the home view.
 
-<details>
-<summary>Click to open Home.json image</summary>
-
-![Home.json](./assets/readme-images/Home.json.png)
-
-</details>
-<br>
 
 These selectors are going to be found in the Home page:
 
@@ -295,21 +362,78 @@ These selectors are going to be found in the Home page:
 <br>
 
     D) playground.json:
+
+File content:
+
+```Ts
+{
+  "female" : "[value='female']",
+  "male" : "[value='male']",
+  "female label" : "[data-id='female-radio-button']",
+  "male label" : "[data-id='male-radio-button']",
+  "movies" : "[id='movies-input']",
+  "the godfather" : "//li[text()='The Godfather']",
+  "the dark knight" : "//li[text()='The Dark Knight']",
+  "outlined required" : "[id='outlined-required']",
+  "outlined disabled" : "[id='outlined-disabled']",
+  "outlined read only" : "[id='outlined-read-only-input']",
+  "outlined error" : "[id='outlined-error-helper-text-label']",
+  "outlined error text" : "[id='outlined-error-helper-text-helper-text']",
+  "blue" : "[data-id='blue-radio-button']",
+  "purple" : "[data-id='purple-radio-button']",
+  "green" : "[data-id='green-radio-button']",
+  "grey" : "[data-id='grey-radio-button']",
+  "red" : "[data-id='red-radio-button']",
+  "basic iframe" : "[id='basic-iframe']",
+  "new tab" : "[data-id='new-tab-button']",
+  "open window" : "[data-id='open-window-button']",
+  "primary" : "[data-id='primary-button']",
+  "secondary" : "[data-id='secondary-button']",
+  "third" : "[data-id='third-button']",
+  "my button" : "[data-id='my-button']",
+  "basic" : "[data-id='basic-table']",
+  "switch one" : "[data-id='switch-one']",
+  "switch two" : "[data-id='switch-two']",
+  "browser alert" : "[data-id='browser-alert']",
+  "error alert" : "[data-id='error-alert']",
+  "warning alert" : "[data-id='warning-alert']",
+  "info alert" : "[data-id='info-alert']",
+  "success alert" : "[data-id='success-alert']",
+  "tooltip" : "[data-id='tooltip']",
+  "textarea" : "[data-id='textarea']",
+  "show hide button" : "[data-id='show-hide-button']",
+  "show hide text" : "[data-id='show-hide-text']",
+  "first value" : "[data-id='first-value']",
+  "second value" : "[data-id='second-value']",
+  "third value" : "[data-id='third-value']",
+  "fourth value" : "[data-id='fourth-value']",
+  "fifth value" : "[data-id='fifth-value']",
+  "card header" : "[data-id='card-header']",
+  "card main" : "[data-id='card-main']",
+  "card type" : "[data-id='card-type']",
+  "card overview" : "[data-id='card-overview']",
+  "card action" : "[data-id='card-action']",
+  "avatar" : "[data-id='avatar']",
+  "small avatar" : "[data-id='small-avatar']",
+  "drop down button" : "[data-id='drop-down-button']",
+  "drop down profile" : "[data-id='drop-down-profile']",
+  "drop down my account" : "[data-id='drop-down-my-account']",
+  "drop down logout" : "[data-id='drop-down-logout']",
+  "age" : "[name='age']",
+  "email" : "[data-id='email']",
+  "password" : "[data-id='password']",
+  "email error" : "[data-id='email-error']",
+  "full name" : "[data-id='full-name']"
+}
+```
+
 This file contains a broader set of selectors, for a variety of UI components that may be used across multiple tests, such as radio buttons, input fields, alerts, and more, inside the page “playground”.
 
 **Purpose:**
 To provide a comprehensive set of selectors for various interactive elements within a playground environment.
 It supports a range of test scenarios inside the playground page.
 
-<details>
-<summary>Click to open Playground.json image</summary>
-
-![Playground.json](./assets/readme-images/Playground.json.png)
-
-</details>
-<br>
-
-These selectors are going to be found in the Home page:
+These selectors are going to be found in the playground page:
 
 <details>
 <summary>Click to open Playground-web images</summary>
@@ -329,73 +453,99 @@ These selectors are going to be found in the Home page:
 
 #### 2 - e2e > Config > emails.json file:
 
+File content:
+
+```Ts
+{
+    "TEST_EMAIL" : "admin@testingtalkshub.com.au"
+  }
+```
+
 This file contains email-related configurations, specifically for testing purposes (to be used ahead in our tests).
 
 **Purpose:** It provides a designated email address to be used in tests, ensuring consistency and reliability in scenarios that require email interactions.
 
-<details>
-<summary>Click to open emails.json image</summary>
-
-![emails.json](./assets/readme-images/emails.json.png)
-
-</details>
-<br>
 
 #### 3 - e2e > Config > errors.json file:
+
+File content:
+
+```ts
+[
+    {
+      "originalErrMsgRegexString": "Wait time of [0-9]+ms for [a-zA-Z0-9 ]+exceeded",
+      "parsedErrMsg": "🧨 Timed out waiting for the '{}' <> 🧨"
+    },
+    {
+      "originalErrMsgRegexString" : "Cannot read properties of undefined (.*)",
+      "parsedErrMsg" : "🧨 Unable to find the '{}' <> mapping 🧨"
+    }
+  ]
+```
 
 This file defines error messages to be used in the automation tests.
 
 **Purpose:** It maps original error message patterns (using regex) to more user-friendly messages. This aids in debugging by making errors clearer and easier to understand during test failures.
 
-<details>
-<summary>Click to open errors.json image</summary>
-
-![errors.json](./assets/readme-images/errors.json.png)
-
-</details>
-<br>
 
 #### 4 - e2e > Config > hosts.json file:
+
+File content:
+
+```ts
+{
+    "localhost": "http://localhost:3000/",
+    "production": "https://hub.testingtalks.com.au/",
+    "api" : "https://jsonplaceholder.typicode.com/"
+  }
+```
 
 This file defines different host URLs for various environments.
 
 **Purpose:** It centralizes the URLs for different environments, enabling easy switching between local development and production environments, as well as providing an API endpoint for tests. (For now, ignore the api)
 
-<details>
-<summary>Click to open hosts.json image</summary>
-
-![hosts.json](./assets/readme-images/hosts.json.png)
-
-</details>
-<br>
-
 #### 5 - e2e > Config > mocks.json file:
+
+File content:
+
+```Ts
+{
+    "users": "users"
+  }
+```
 
 This file is used for mocking data in tests.
 
 **Purpose:** It specifies entities to be mocked during tests. In this case, its referring to a "users" object, which will be used to simulate user-related data in various scenarios.
 
-<details>
-<summary>Click to open mocks.json image</summary>
-
-![mocks.json](./assets/readme-images/mocks.json.png)
-
-</details>
-<br>
-
 #### 6 - e2e > Config > pages.json file:
+
+File content:
+
+```ts
+{
+  "home": {
+    "route": "/",
+    "regex": "^/$"
+  },
+  "create contact": {
+    "route": "/tasks/create",
+    "regex": "^/tasks/create"
+  },
+  "playground" : {
+    "route" : "/playground",
+    "regex" : "^/playground"
+  },
+  "edit contact": {
+    "route" : "/edit",
+    "regex" : "^/tasks/\\d+/edit"
+  }
+}
+```
 
 This file defines application routes and corresponding regex patterns for different pages.
 
 **Purpose:** It helps in identifying the structure and navigation of the application. Each entry contains a route to navigate to and a regex to match the URL pattern, which will be useful for assertions in tests.
-
-<details>
-<summary>Click to open pages.json image</summary>
-
-![pages.json](./assets/readme-images/pages.json.png)
-
-</details>
-<br>
 
 Ex:
 
@@ -438,15 +588,7 @@ File content:
 ```
 
 <details>
-<summary>Click to open .babelrc image</summary>
-
-![babelrc](./assets/readme-images/babelrc.png)
-
-</details>
-<br>
-
-<details>
-<summary>Click to open .babelrc file description</summary>
+<summary>Click to open .babelrc code description</summary>
 <br>
 
 The .babelrc file is a configuration file for Babel, a JavaScript compiler that allows us to use the latest JavaScript features and TypeScript in our project. 
@@ -524,7 +666,7 @@ export const envNumber = (key: string): number => {
 <br>
 
 <details>
-<summary>Click to open parseEnv.ts file description</summary>
+<summary>Click to open parseEnv.ts code description</summary>
 <br>
 
 1:

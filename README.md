@@ -3,7 +3,7 @@
 The purpose of this documentation is to explain how we can use an existing automation base structure, in any web automation project.
 Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
 
-Project Structure:
+**Project Structure:**
 <details>
   <summary>Click to open project structure images</summary>
   
@@ -202,9 +202,22 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 [Back to Index](#index)
 
 
-## e2e folder level:
+## Folders and files explanation:
 
 ### e2e > Config folder:
+
+The config folder contains the folders and files:
+
+- mappings folder
+  - common.json file
+  - create-contact.json file
+  - home.json file
+  - playground.json file
+- emails.json file
+- errors.json file
+- hosts.json file
+- mocks.json file
+- pages.json file
 
 The config folder holds various configuration files that are used to define and manage the behavior, settings, and environment parameters for our test automation project, and it contains:
 
@@ -406,7 +419,185 @@ Playground page:
 </details>
 <br>
 
+[Back to Index](#index)
+
 # END OF CONFIG FOLDER SECTION!!!
+
+### e2e > .babelrc file:
+
+Inside the e2e folder level, we have the following configuration file:
+
+    .babelrc
+
+File content:
+
+```ts
+{
+    "presets": ["@babel/preset-typescript", "@babel/preset-env"]
+}
+```
+
+<details>
+<summary>Click to open .babelrc image</summary>
+
+![babelrc](./assets/readme-images/babelrc.png)
+
+</details>
+<br>
+
+<details>
+<summary>Click to open .babelrc file description</summary>
+<br>
+
+The .babelrc file is a configuration file for Babel, a JavaScript compiler that allows us to use the latest JavaScript features and TypeScript in our project. 
+
+Here's a breakdown of the contents of our .babelrc file:
+
+Explanation of the Presets:
+
+1.	@babel/preset-typescript
+o	This preset enables Babel to understand TypeScript syntax. It allows you  to write your code in TypeScript and compiles it down to plain JavaScript, which can be executed in environments that do not support TypeScript directly.
+o	It primarily strips away TypeScript-specific features (like type annotations) but does not perform type-checking. For type-checking, you would still need to run the TypeScript compiler separately (using tsc).
+
+2.	@babel/preset-env
+o	This preset allows you to use the latest JavaScript features without worrying about which syntax transformations are needed for the environments you want to support (like older browsers).
+o	It automatically determines the transformations and polyfills required based on your specified browser or environment support.
+
+•	.babelrc file is essentially a JSON object that defines configuration settings for Babel. 
+•	When you run Babel (for example, during a build process or when you transpile your code), Babel reads this configuration file to understand how to process your JavaScript and TypeScript files.
+
+How It Works:
+
+1.	Babel CLI/Build Tool Integration: When you invoke Babel (either through the command line or through a build tool like Webpack, Gulp, or others), it automatically looks for the .babelrc file in your project directory.
+
+2.	Loading the Configuration: Babel reads the settings specified in the .babelrc file. In this case, it sees that it should use the @babel/preset-typescript and @babel/preset-env.
+
+3.	Transpiling Code: Based on this configuration, Babel processes your code, transforming modern JavaScript and TypeScript syntax into a version that can be executed in the environments you want to support.
+
+Example in Practice:
+
+For example, if you have a TypeScript file that uses modern JavaScript features and type annotations, when you run Babel:
+
+•	It will strip out the type annotations (due to @babel/preset-typescript).
+
+•	It will also transform any modern JavaScript features (like arrow functions or async/await) into a format compatible with older browsers (thanks to @babel/preset-env).
+
+</details>
+<br>
+
+### e2e > src > env folder:
+
+The env folder contains the files:
+
+- global.ts;
+- parseEnv.ts.
+
+The env folder serves as a hub for managing environmental configurations and shared types, ensuring that the automation framework or project has access to the right settings and utilities, regardless of the environment it's operating in.
+
+    parseEnv.ts file:
+
+```ts
+export const getJsonFromFile = <T = Record<string, string>>(path: string): T => {
+    return require(`${process.cwd()}${path}`);
+};
+
+export const env = (key: string): string => {
+    const value = process.env[key]
+    if (!value) {
+        throw Error(`No environment variable found for ${key}`)
+    }
+    return value;
+}
+
+export const envNumber = (key: string): number => {
+    return Number(env(key));
+};
+```
+<details>
+<summary>Click to open parsEnv.ts image</summary>
+
+![parseEnv.ts](./assets/readme-images/parseEnv.ts.png)
+
+</details>
+<br>
+
+<details>
+<summary>Click to open .babelrc file description</summary>
+<br>
+
+1:
+```ts
+export const getJsonFromFile = <T = Record<string, string>>(path: string): T => {
+```
+***export const:*** This is declaring a constant function and exporting it, which means this function can be used in other files when they import it.
+
+***getJsonFromFile:*** The name of the function. It retrieves and returns the contents of a JSON file.
+
+***<T = Record<string, string>>:*** This is a generic type in TypeScript. It allows the function to return data of any specified type. If no specific type is provided when calling the function, it defaults to returning an object where the keys are strings and the values are strings (Record<string, string>).
+
+***(path: string): T:*** This means the function takes one argument, path, which is a string representing the file path of the JSON file. The function returns data of type T (a generic type).
+
+2: 
+```ts
+return require(`${process.cwd()}${path}`);
+```
+
+***require():*** This is a way to load external files (like JSON files). It is part of Node.js, which is commonly used in Playwright/TypeScript projects. Here, it's used to read the contents of the file at the given path.
+
+***${process.cwd()}:*** This gets the current working directory (the folder where the project is running). cwd stands for "current working directory."
+
+- Template literals (${}): The ${} syntax inside backticks (``) allows you to inject variables or expressions into a string.
+
+- process.cwd() + ${path}: Combines the current working directory with the path provided to get the full path to the JSON file.
+
+***Purpose:*** This line loads the JSON file located at the specified path and returns its contents.
+
+3. export const env = (key: string): string => {
+•	env: This is the name of the function. It retrieves the value of an environment variable.
+•	(key: string): string: This means the function takes one argument, key, which is a string (the name of the environment variable). The function returns a string (the value of the environment variable).
+
+4. const value = process.env[key]
+•	process.env: This is a built-in object in Node.js that contains all the environment variables (key-value pairs) for the current running environment.
+o	Environment variables are used to store configuration values, like API keys, database URLs, or other settings, outside of your code.
+•	process.env[key]: This retrieves the value of the environment variable with the name key.
+
+5. if (!value) {
+•	This checks if the value is undefined, null, or an empty string. If the value does not exist, the code inside the block will execute.
+
+6. throw Error('No environment variable found for ${key}')
+•	throw Error(): This creates a new error and stops the execution. If no value is found for the specified environment variable, this line throws an error with a custom message saying that the variable is missing.
+•	Purpose: To ensure that the environment variable exists, and if not, notify the user by throwing an error.
+
+7. return value;
+•	If the environment variable exists, it returns the value. This allows other parts of the program to use the retrieved value.
+
+8. export const envNumber = (key: string): number => {
+•	This defines another function called envNumber, which is similar to env but is specifically designed to return a number instead of a string.
+•	(key: string): number: It takes one argument, key (the name of the environment variable), and returns a number.
+
+9. return Number(env(key));
+•	env(key): This calls the env function defined earlier to get the value of the environment variable.
+•	Number(): This converts the value returned by env(key) (which is a string) into a number. If the value cannot be converted to a valid number, it will return NaN (Not-a-Number).
+•	Purpose: This function is used when you expect an environment variable to be a numeric value (like width, height, port numbers, etc.).
+Summary:
+•	getJsonFromFile: This function loads and returns the contents of a JSON file from the file system, making it easier to use external configurations.
+•	env: Retrieves a string value from environment variables, throwing an error if the variable is not found.
+•	envNumber: Retrieves a value from environment variables and converts it to a number, ensuring that numerical configurations (like screen size or timeout limits) are properly handled.
+These functions are typically used in automation frameworks to handle configurations dynamically, allowing you to change settings (like screen sizes, API keys, etc.) without modifying the actual code.
+
+
+</details>
+<br>
+
+
+
+
+
+
+
+
+
+
 
 
 

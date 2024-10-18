@@ -204,17 +204,15 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 
 ## e2e folder level:
 
-### First folder inside the e2e Folder:
-
-### Config folder:
+### e2e > Config folder:
 
 The config folder holds various configuration files that are used to define and manage the behavior, settings, and environment parameters for our test automation project, and it contains:
 
-#### 1 - Mappings folder:
+#### 1 - e2e > Config > Mappings folder:
 
 * Inside the Config folder, we have the Mappings folder, which contains configuration files that map different components, data, or behavior of our automation framework.
 
-Files of the Mappings folder:
+**Files of the Mappings folder:**
 
     A) common.json:
 
@@ -316,7 +314,7 @@ These selectors are going to be found in the Home page:
 
 **Readability:** The descriptive keys make it easy to understand what each selector corresponds to, improving the readability of test scripts.
 
-#### 2 - emails.json file:
+#### 2 - e2e > Config > emails.json file:
 
 This file contains email-related configurations, specifically for testing purposes (to be used ahead in our tests).
 
@@ -330,7 +328,7 @@ This file contains email-related configurations, specifically for testing purpos
 </details>
 <br>
 
-#### 3 - errors.json file:
+#### 3 - e2e > Config > errors.json file:
 
 This file defines error messages to be used in the automation tests.
 
@@ -344,7 +342,7 @@ This file defines error messages to be used in the automation tests.
 </details>
 <br>
 
-#### 4 - hosts.json file:
+#### 4 - e2e > Config > hosts.json file:
 
 This file defines different host URLs for various environments.
 
@@ -358,7 +356,7 @@ This file defines different host URLs for various environments.
 </details>
 <br>
 
-#### 5 - mocks.json file:
+#### 5 - e2e > Config > mocks.json file:
 
 This file is used for mocking data in tests.
 
@@ -372,7 +370,7 @@ This file is used for mocking data in tests.
 </details>
 <br>
 
-#### 6 - pages.json file:
+#### 6 - e2e > Config > pages.json file:
 
 This file defines application routes and corresponding regex patterns for different pages.
 

@@ -496,6 +496,8 @@ The env folder serves as a hub for managing environmental configurations and sha
 
     parseEnv.ts file:
 
+File content:
+
 ```ts
 export const getJsonFromFile = <T = Record<string, string>>(path: string): T => {
     return require(`${process.cwd()}${path}`);
@@ -522,7 +524,7 @@ export const envNumber = (key: string): number => {
 <br>
 
 <details>
-<summary>Click to open .babelrc file description</summary>
+<summary>Click to open parseEnv.ts file description</summary>
 <br>
 
 1:
@@ -552,37 +554,78 @@ return require(`${process.cwd()}${path}`);
 
 ***Purpose:*** This line loads the JSON file located at the specified path and returns its contents.
 
-3. export const env = (key: string): string => {
-•	env: This is the name of the function. It retrieves the value of an environment variable.
-•	(key: string): string: This means the function takes one argument, key, which is a string (the name of the environment variable). The function returns a string (the value of the environment variable).
+3:
+```ts
+export const env = (key: string): string => {
+```
+***export const:*** This is declaring a constant function and exporting it, which means this function can be used in other files when they import it.
 
-4. const value = process.env[key]
-•	process.env: This is a built-in object in Node.js that contains all the environment variables (key-value pairs) for the current running environment.
-o	Environment variables are used to store configuration values, like API keys, database URLs, or other settings, outside of your code.
-•	process.env[key]: This retrieves the value of the environment variable with the name key.
+***env:*** This is the name of the function. It retrieves the value of an environment variable.
 
-5. if (!value) {
-•	This checks if the value is undefined, null, or an empty string. If the value does not exist, the code inside the block will execute.
+***(key: string):*** string: This means the function takes one argument, key, which is a string (the name of the environment variable). The function returns a string (the value of the environment variable).
 
-6. throw Error('No environment variable found for ${key}')
-•	throw Error(): This creates a new error and stops the execution. If no value is found for the specified environment variable, this line throws an error with a custom message saying that the variable is missing.
-•	Purpose: To ensure that the environment variable exists, and if not, notify the user by throwing an error.
+4:
+```ts
+const value = process.env[key]
+```
 
-7. return value;
-•	If the environment variable exists, it returns the value. This allows other parts of the program to use the retrieved value.
+***process.env:*** This is a built-in object in Node.js that contains all the environment variables (key-value pairs) for the current running environment.
 
-8. export const envNumber = (key: string): number => {
-•	This defines another function called envNumber, which is similar to env but is specifically designed to return a number instead of a string.
-•	(key: string): number: It takes one argument, key (the name of the environment variable), and returns a number.
+- Environment variables are used to store configuration values, like API keys, database URLs, or other settings, outside of your code.
 
-9. return Number(env(key));
-•	env(key): This calls the env function defined earlier to get the value of the environment variable.
-•	Number(): This converts the value returned by env(key) (which is a string) into a number. If the value cannot be converted to a valid number, it will return NaN (Not-a-Number).
-•	Purpose: This function is used when you expect an environment variable to be a numeric value (like width, height, port numbers, etc.).
-Summary:
-•	getJsonFromFile: This function loads and returns the contents of a JSON file from the file system, making it easier to use external configurations.
-•	env: Retrieves a string value from environment variables, throwing an error if the variable is not found.
-•	envNumber: Retrieves a value from environment variables and converts it to a number, ensuring that numerical configurations (like screen size or timeout limits) are properly handled.
+***process.env[key]:*** This retrieves the value of the environment variable with the name key.
+
+5:
+```ts
+if (!value) {
+```
+
+This checks if the value is undefined, null, or an empty string. If the value does not exist, the code inside the block will execute.
+
+6: 
+```ts
+throw Error('No environment variable found for ${key}')
+```
+
+***throw Error():*** This creates a new error and stops the execution. If no value is found for the specified environment variable, this line throws an error with a custom message saying that the variable is missing.
+
+***Purpose:*** To ensure that the environment variable exists, and if not, notify the user by throwing an error.
+
+7:
+```ts
+return value;
+```
+
+If the environment variable exists, it returns the value. This allows other parts of the program to use the retrieved value.
+
+8:
+```ts
+export const envNumber = (key: string): number => {
+```
+
+This defines another function called envNumber, which is similar to env but is specifically designed to return a number instead of a string.
+
+***(key: string): number:*** It takes one argument, key (the name of the environment variable), and returns a number.
+
+9:
+```ts
+return Number(env(key));
+```
+
+***env(key):*** This calls the env function defined earlier to get the value of the environment variable.
+
+***Number():*** This converts the value returned by env(key) (which is a string) into a number. If the value cannot be converted to a valid number, it will return NaN (Not-a-Number).
+
+***Purpose:*** This function is used when you expect an environment variable to be a numeric value (like width, height, port numbers, etc.).
+
+***Summary:***
+
+***getJsonFromFile:*** This function loads and returns the contents of a JSON file from the file system, making it easier to use external configurations.
+
+***env:*** Retrieves a string value from environment variables, throwing an error if the variable is not found.
+
+***envNumber:*** Retrieves a value from environment variables and converts it to a number, ensuring that numerical configurations (like screen size or timeout limits) are properly handled.
+
 These functions are typically used in automation frameworks to handle configurations dynamically, allowing you to change settings (like screen sizes, API keys, etc.) without modifying the actual code.
 
 

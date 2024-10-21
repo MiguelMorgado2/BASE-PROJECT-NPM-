@@ -640,6 +640,11 @@ The env folder serves as a hub for managing environmental configurations and sha
 
 File content:
 
+This file is focused on retrieving environment variables and reading JSON data from files. It has two main functionalities: 
+
+- Accessing environment variables;
+- Handling file-based JSON data. 
+
 ```ts
 export const getJsonFromFile = <T = Record<string, string>>(path: string): T => {
     return require(`${process.cwd()}${path}`);
@@ -657,13 +662,6 @@ export const envNumber = (key: string): number => {
     return Number(env(key));
 };
 ```
-<details>
-<summary>Click to open parsEnv.ts image</summary>
-
-![parseEnv.ts](./assets/readme-images/parseEnv.ts.png)
-
-</details>
-<br>
 
 <details>
 <summary>Click to open parseEnv.ts code description</summary>
@@ -774,8 +772,205 @@ These functions are typically used in automation frameworks to handle configurat
 </details>
 <br>
 
+    global.ts file:
+
+This file defines a set of types and interfaces that are used across the entire project to ensure consistency, especially when dealing with configurations, error handling, and page elements in our automation framework.
+It's like a blueprint that specifies what data is available, how it’s structured, and what kind of operations are allowed on it.
+
+The primary purpose of this file is to:
+
+- Define global types for managing different parts of our automation framework.
+- Ensure type safety when dealing with configurations, mappings, and errors.
+- Create reusable structures to avoid duplication across the project.
+- Standardize the handling of mock data, page elements, and configurations.
+
+File content:
+
+```ts
+export type PageId = string
+export type ElementKey = string
+export type ElementLocator = string
+export type WaitForTargetType = string
+export type MockConfigKey = string
+export type MockServerKey = string
+export type MockPayloadKey = string
+export type WaitForTarget = PageId | ElementKey
+export type PageElementMappings = Record<PageId, Record<ElementKey, ElementLocator>>
+export type MockPayloadMappings = Record<string, string>
+export type PagesConfig = Record<PageId, Record<string, string>>
+export type HostsConfig = Record<string, string>
+export type ErrorsConfig = ErrorConfig[]
+export type MocksConfig = Record<string, string>
+export type GlobalVariables = { [key: string]: string }
+export type EmailsConfig = Record<string, string>
+
+export type ErrorConfig = {
+    originalErrMsgRegexString: string
+    parsedErrMsg: string
+}
+
+export type GlobalConfig = {
+    pageElementMappings: PageElementMappings
+    mockPayloadMappings: MockPayloadMappings
+    hostsConfig: HostsConfig
+    pagesConfig: PagesConfig
+    errorsConfig: ErrorsConfig
+    emailsConfig: EmailsConfig
+    mocksConfig: MocksConfig
+};
+```
+
+<details>
+<summary>Click to open global.ts code description</summary>
+<br>
+
+1. Basic Type Aliases
+
+*A type alias in TypeScript is a way to give a name to a type. This helps make the code easier to read and maintain. Think of it like creating shortcuts for certain types of data that will be used frequently.*
+
+```ts
+export type PageId = string
+export type ElementKey = string
+export type ElementLocator = string
+export type WaitForTargetType = string
+export type MockConfigKey = string
+export type MockServerKey = string
+export type MockPayloadKey = string
+export type WaitForTarget = PageId | ElementKey
+```
+
+- PageId, ElementKey, ElementLocator: These define specific types for page IDs, element keys, and locators within our automation framework.
+
+- WaitForTarget: This type allows us to wait for either a PageId or ElementKey—useful for targeting specific elements or pages.
+
+- MockConfigKey, MockServerKey, MockPayloadKey: These are related to mock data handling, assigning string types for keys used in mock configurations and servers.
+
+What does this mean?
+
+PageId:
+
+PageId is just another name for string.
+It represents the ID of a page in our application. For example, the homepage might have an ID like "HomePage".
+By creating this alias, we make it clear that when we use PageId, we're referring specifically to a page’s identifier.
+
+ElementKey:
+
+Also a string, but this refers to the name or key for an element on a webpage, such as a button, a text box, or a link.
+For instance, the key for a login button might be "loginButton".
+
+ElementLocator:
+
+This is a string that represents the location of an element on a page.
+It's typically a CSS selector or XPath used by automation tools like Playwright to interact with that element. 
+
+Example: "#loginButton" could be the locator for a button with the ID loginButton.
+
+WaitForTarget:
+
+This type says that a WaitForTarget can be either a PageId or an ElementKey.
+This means in our code, when we want to wait for something (like a page or an element to load), we can use either a page ID or an element key.
+
+2. Mappings and Configuration Types
+
+```ts
+export type PageElementMappings = Record<PageId, Record<ElementKey, ElementLocator>>
+export type MockPayloadMappings = Record<string, string>
+export type PagesConfig = Record<PageId, Record<string, string>>
+export type HostsConfig = Record<string, string>
+export type ErrorsConfig = ErrorConfig[]
+export type MocksConfig = Record<string, string>
+export type GlobalVariables = { [key: string]: string }
+export type EmailsConfig = Record<string, string>
+
+```
+
+- PageElementMappings: Defines a structure for mapping page elements. It's a dictionary where each PageId contains a dictionary of ElementKey-to-ElementLocator mappings. 
+This is used to store and retrieve the locators for elements on different pages.
+
+**What does this mean?**
+
+Record<PageId, Record<ElementKey, ElementLocator>>: This is a mapping or dictionary. Think of it like a table that connects pages, elements, and their locators.
+
+Here’s how it works:
+
+The outer Record<PageId, Record<ElementKey, ElementLocator>> is saying: “I have a list of pages, and for each page, I have a list of elements and their locators.”
+Inside each page (identified by PageId), there’s another dictionary (Record<ElementKey, ElementLocator>) that maps each element (identified by ElementKey) to a locator (ElementLocator).
+
+- MockPayloadMappings: A dictionary for storing mock payloads, used when mocking server responses.
+
+This defines a mapping between some kind of identifier and a piece of mock data. It’s used when we want to simulate server responses in tests without hitting the actual server.
+
+- PagesConfig: Stores configuration for each page, where the key is PageId and the value is a set of key-value pairs (often used for custom page settings).
+
+- HostsConfig: Maps different hostnames or URLs for different environments (e.g., dev, test, production).
+
+- ErrorsConfig: A list of ErrorConfig objects, used to define and handle specific error configurations (see the ErrorConfig section below).
+
+- MocksConfig: A dictionary of mock data configurations, which could be used to set up fake data responses for tests.
+
+- GlobalVariables: A key-value pair object where both keys and values are strings, used to store global variables in your project.
+
+- EmailsConfig: This might store email addresses or other email-related configurations.
+
+3. Error Handling Configuration
+
+```ts
+export type ErrorConfig = {
+    originalErrMsgRegexString: string
+    parsedErrMsg: string
+}
+
+```
+
+- ErrorConfig: Defines a structure for error handling. It includes:
+    - originalErrMsgRegexString: A regex pattern to match specific error messages.
+
+    - parsedErrMsg: The parsed or more user-friendly version of the error message.
+
+This can be used to catch, parse, and reformat errors during our automation testing.
+
+4. Global Configuration
+
+```ts
+export type GlobalConfig = {
+    pageElementMappings: PageElementMappings
+    mockPayloadMappings: MockPayloadMappings
+    hostsConfig: HostsConfig
+    pagesConfig: PagesConfig
+    errorsConfig: ErrorsConfig
+    emailsConfig: EmailsConfig
+    mocksConfig: MocksConfig
+};
+
+```
+GlobalConfig: This is a central structure that ties all of the other configurations together. It holds all the different mappings and configurations we need in one place.
+
+- Page Element Mapping: This allows us to map specific page elements (like buttons, text fields, etc.) to locators dynamically. This is useful for managing locators in a single place rather than hardcoding them in each test.
+
+- Mock Data Handling: The mock payload mappings and configuration are used to mock API responses or server behavior during tests, ensuring that we can test without relying on actual server responses.
+
+- Error Handling: The error configuration provides a way to capture specific error patterns and convert them into more meaningful error messages, improving test reporting and debugging.
+
+- Global Settings: GlobalConfig consolidates all the configurations so that our tests have easy access to the necessary information without scattering it across different files.
 
 
+**Summary:**
+
+- Type Aliases: Help define the kinds of data you’re working with, such as page IDs, element locators, or mock payloads.
+- Mappings: Create connections between different pieces of data, such as page elements and their locators or mock requests and their responses.
+- Configurations: Provide settings and error-handling rules for your automation framework, making it easier to maintain and scale your project.
+
+**Conclusion:**
+
+- **Consistency:** The types defined here allow us to manage page elements, error handling, mock data, and configuration in a consistent way throughout the project.
+
+- **Flexibility:** The use of Record<string, string> types allows for flexibility in how we map data and configurations.
+
+- **Centralized Configuration:** By using GlobalConfig, we keep all the critical settings and mappings in one place, making it easier to manage and modify over time.
+
+
+</details>
+<br>
 
 
 

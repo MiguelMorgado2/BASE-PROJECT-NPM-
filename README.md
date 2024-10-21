@@ -3,6 +3,18 @@
 The purpose of this documentation is to explain how we can use an existing automation base structure, in any web automation project.
 Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
 
+
+What is playwright: (put link to documentation)
+
+
+What is cucumber:(put link to documentation)
+
+
+What is typescript: (put link to documentation)
+
+
+
+
 **Project Structure:**
 <details>
   <summary>Click to open project structure images</summary>
@@ -946,6 +958,7 @@ export type GlobalConfig = {
 GlobalConfig: This is a central structure that ties all of the other configurations together. It holds all the different mappings and configurations we need in one place.
 
 - Page Element Mapping: This allows us to map specific page elements (like buttons, text fields, etc.) to locators dynamically. This is useful for managing locators in a single place rather than hardcoding them in each test.
+**Note:** pageElementMappings is a variable or property, and it is expected to follow the type alias PageElementMappings.
 
 - Mock Data Handling: The mock payload mappings and configuration are used to mock API responses or server behavior during tests, ensuring that we can test without relying on actual server responses.
 
@@ -972,9 +985,299 @@ GlobalConfig: This is a central structure that ties all of the other configurati
 </details>
 <br>
 
+[Back to Index](#index)
 
 
+### e2e > src > step-definitions > setup folder:
 
+The setup folder contains the file:
+
+- world.ts
+
+    world.ts file:
+
+File content:
+
+This file acts as the bridge between our BDD tests (written in Cucumber) and the browser automation tool (Playwright), providing the necessary setup, configuration, and browser management for our tests to run smoothly.
+
+```ts
+import playwright, {
+    BrowserContextOptions,
+    Page,
+    Browser,
+    BrowserContext,
+    BrowserType
+} from "playwright";
+import { env } from '../../env/parseEnv'
+import { World, IWorldOptions, setWorldConstructor} from "@cucumber/cucumber";
+import { GlobalConfig, GlobalVariables } from '../../env/global';
+
+export type Screen = {
+    browser: Browser;
+    context: BrowserContext;
+    page: Page;
+}
+
+export class ScenarioWorld extends World {
+    constructor(options: IWorldOptions) {
+        super(options)
+
+        this.globalConfig = options.parameters as GlobalConfig;
+        this.globalVariables = {};
+    }
+
+    globalConfig: GlobalConfig;
+
+    globalVariables: GlobalVariables;
+
+    screen!: Screen;
+
+    async init(contextOptions?: BrowserContextOptions): Promise<Screen> {
+        await this.screen?.page?.close();
+        await this.screen?.context?.close()
+        await this.screen?.browser?.close()
+
+        const browser = await this.newBrowser();
+        const context = await browser.newContext(contextOptions)
+        const page = await context.newPage();
+
+        this.screen = { browser, context, page };
+
+        return this.screen
+    }
+
+    private newBrowser = async (): Promise<Browser> => {
+
+        const automationBrowsers = ['chromium', 'firefox', 'webkit']
+        type AutomationBrowser = typeof automationBrowsers[number]
+        const automationBrowser = env('UI_AUTOMATION_BROWSER') as AutomationBrowser
+
+        const browserType: BrowserType = playwright[automationBrowser];
+        const browser = await browserType.launch({
+            devtools: process.env.DEVTOOLS !== 'false',
+            headless: process.env.HEADLESS !== 'false',
+            args: ['--disable-web-security', '--disable-features=IsolateOrigins, site-per-process'],
+        })
+        return browser;
+    }
+
+}
+
+setWorldConstructor(ScenarioWorld)
+```
+
+<details>
+<summary>Click to open world.ts code description</summary>
+<br>
+
+Imports:
+```ts
+import playwright, {
+    BrowserContextOptions,
+    Page,
+    Browser,
+    BrowserContext,
+    BrowserType
+} from "playwright";
+import { env } from '../../env/parseEnv'
+import { World, IWorldOptions, setWorldConstructor} from "@cucumber/cucumber";
+import { GlobalConfig, GlobalVariables } from '../../env/global';
+
+```
+
+- import playwright {...}: This imports playwright and some of its types. Playwright is a Node.js library that allows us to automate browser interactions. These types (Browser, Page, etc.) are used to control the browser and its contexts (tabs, cookies, sessions).
+
+- env: This is a custom function from our parseEnv.ts file, used to read environment variables (like configurations).
+
+- World, IWorldOptions, setWorldConstructor: These are imported from Cucumber. Cucumber is a tool used for Behavior-Driven Development (BDD). It allows writing tests in plain English (Gherkin syntax), and World is a class that provides context for each scenario. setWorldConstructor allows customizing the World.
+
+- GlobalConfig, GlobalVariables: These are types imported from our global.ts file. GlobalConfig holds various configurations, and GlobalVariables holds global variables (for storing data during the test session).
+
+**Type Definitions:**
+```ts
+export type Screen = {
+    browser: Browser;
+    context: BrowserContext;
+    page: Page;
+}
+```
+- Screen: This is a TypeScript type alias that defines a structure containing:
+    - browser: This is an instance of a browser.
+    - context: This is the browser's context, which represents an isolated environment (like a tab) within the browser.
+    - page: This represents the web page that the browser opens and interacts with.
+
+**The ScenarioWorld class:**
+```ts
+export class ScenarioWorld extends World {
+    constructor(options: IWorldOptions) {
+        super(options)
+        this.globalConfig = options.parameters as GlobalConfig;
+        this.globalVariables = {};
+    }
+
+    globalConfig: GlobalConfig;
+    globalVariables: GlobalVariables;
+    screen!: Screen;
+```
+
+- ScenarioWorld class: This extends the World class from Cucumber. It customizes what happens in each scenario, storing configurations and variables needed for the tests.
+
+**Context:** Class Inheritance in TypeScript (or JavaScript)
+In object-oriented programming (OOP), inheritance allows a class to inherit properties and methods from another class. This is useful because it lets us reuse code and create specialized versions of generic classes.
+
+When you create a class in TypeScript or JavaScript using the class keyword, you can extend (inherit from) another class using the extends keyword. When a class inherits from another class, the parent class is often referred to as the "superclass" and the child class as the "subclass."
+
+In our case, ScenarioWorld is a subclass, and it inherits from the World class provided by the @cucumber/cucumber library.
+
+- constructor(options: IWorldOptions): The constructor gets called when a new instance of ScenarioWorld is created for each scenario.
+
+
+_The constructor is a special method in classes that gets called when we create a new instance of the class. It’s where you set up the initial state of an object._
+
+_It is called automatically when an instance (or object) of a class is created. It allows us to initialize properties or execute any setup code we need when the object is instantiated. In TypeScript, constructors are often used to initialize variables or objects and pass in any necessary configurations or data._
+
+_In the context of the ScenarioWorld class, the constructor is used to initialize the test's environment. It sets up the necessary configurations and prepares the class for running the test scenario._
+
+_Parent Class (World)_
+_The World class in Cucumber is the base class that gives access to shared data or context for all steps in a test scenario. This class might include properties and methods to help manage data during the test execution._
+
+_When we extend the World class to create our ScenarioWorld class, we want to make sure that the base functionality provided by World is still available in our custom class._
+
+- super(options): This calls the parent World class's constructor to inherit its properties.
+
+**super(options): Why It’s Needed:**
+The super() function in the constructor is necessary when our class extends another class. It ensures that the parent class's constructor gets called so that the inherited properties and methods are correctly set up. Without this call to super(), the child class (ScenarioWorld in this case) wouldn't properly inherit the initialization logic of the parent class (World).
+
+**What does super(options) do here?**
+***In our case:***
+
+```ts
+constructor(options: IWorldOptions) {
+    super(options)
+    this.globalConfig = options.parameters as GlobalConfig;
+    this.globalVariables = {};
+}
+```
+
+- constructor(options: IWorldOptions): This defines the constructor of the ScenarioWorld class. It takes in a parameter options of type IWorldOptions.
+- super(options): This line calls the constructor of the World class (the parent class) and passes the options parameter to it.
+This ensures that the World class can do its necessary setup with the options object.
+It might initialize certain properties or prepare internal logic for Cucumber to work correctly.
+Without calling super(options), our ScenarioWorld class wouldn’t have access to any of the properties and methods that World provides.
+
+Example to Illustrate super() in Simple Terms
+Here’s a simplified analogy of what’s happening:
+
+_Imagine the World class is like a blueprint for building a generic test environment. It has some predefined settings and tools (like a shared context, or scenario data).
+You create your own specialized blueprint, ScenarioWorld, but you still want to use the tools and settings from the original World blueprint.
+By calling super(), you are saying, "Hey, use the parent blueprint first to set everything up, and then I’ll add my customizations afterward."
+Practical Usage in Your ScenarioWorld
+In Cucumber, the World class provides a test context that is shared between the different steps of a scenario. By inheriting from it, your ScenarioWorld gains access to that shared context, but you can also add your own custom logic and properties (like globalConfig and globalVariables)._
+
+**Full Breakdown of our constructor:**
+
+```ts
+constructor(options: IWorldOptions) {
+    super(options)  // Calls the constructor of the parent class (World) to set up inherited functionality.
+    
+    // Custom properties for the ScenarioWorld
+    this.globalConfig = options.parameters as GlobalConfig;  // Stores test configurations in a typed variable
+    this.globalVariables = {};  // Initializes an empty object to hold global variables during the scenario
+}
+
+```
+- constructor(options: IWorldOptions): This is the constructor for your ScenarioWorld class. It's invoked when you create a new instance of ScenarioWorld and passes in options (which holds configuration data for the test).
+
+- super(options): This calls the constructor of the World class with options, ensuring that all the necessary setup from the parent class happens. It may initialize any shared test context, settings, or other necessary things defined in World.
+
+- this.globalConfig = options.parameters as GlobalConfig;: This line assigns the parameters from the options object to globalConfig. These parameters could be the specific configurations needed for your test, like URLs, timeouts, or other settings.
+
+- this.globalVariables = {};: This initializes an empty object for storing variables that might be shared across multiple test steps in a single scenario. These variables could be things like user data, tokens, or any other runtime information.
+
+***Key Takeaways:***
+
+super(options) ensures that the parent class (World) is initialized with the provided options, so you don't lose any functionality from Cucumber's base class.
+Inheritance helps reuse logic from the parent class (World) while still allowing custom logic in ScenarioWorld.
+The constructor in ScenarioWorld allows us to initialize custom properties (globalConfig and globalVariables) that will be used in our test scenarios.
+
+The init method:
+```ts
+    async init(contextOptions?: BrowserContextOptions): Promise<Screen> {
+        await this.screen?.page?.close();
+        await this.screen?.context?.close()
+        await this.screen?.browser?.close()
+
+        const browser = await this.newBrowser();
+        const context = await browser.newContext(contextOptions)
+        const page = await context.newPage();
+
+        this.screen = { browser, context, page };
+
+        return this.screen
+    }
+```
+
+- init(contextOptions?: BrowserContextOptions): This is an asynchronous method that initializes a browser session for the test.
+It first checks if there’s already an open browser, page, or context, and closes them to start fresh.
+- this.newBrowser(): This method (explained below) launches a new browser.
+- browser.newContext(contextOptions): Creates a new browser context (essentially a new tab).
+- context.newPage(): Opens a new page in the context (this is the actual web page we interact with).
+- Finally, this.screen = { browser, context, page }; assigns the new browser, context, and page to this.screen.
+
+The newBrowser method:
+
+```ts
+private newBrowser = async (): Promise<Browser> => {
+    const automationBrowsers = ['chromium', 'firefox', 'webkit'];
+    type AutomationBrowser = typeof automationBrowsers[number];
+    const automationBrowser = env('UI_AUTOMATION_BROWSER') as AutomationBrowser;
+
+    const browserType: BrowserType = playwright[automationBrowser];
+    const browser = await browserType.launch({
+        devtools: process.env.DEVTOOLS !== 'false',
+        headless: process.env.HEADLESS !== 'false',
+        args: ['--disable-web-security', '--disable-features=IsolateOrigins, site-per-process'],
+    });
+    return browser;
+};
+```
+- newBrowser(): This method launches a new browser instance.
+- const automationBrowsers = ['chromium', 'firefox', 'webkit']: This array lists the browsers supported by Playwright (chromium is the core behind Chrome, firefox for Firefox, and webkit for Safari).
+
+- env('UI_AUTOMATION_BROWSER') as AutomationBrowser: Reads an environment variable called UI_AUTOMATION_BROWSER (set in our environment) to decide which browser to use (e.g., 'chromium', 'firefox', or 'webkit').
+
+- playwright[automationBrowser]: This dynamically gets the browser type from the Playwright module (chromium, firefox, or webkit).
+
+- browserType.launch({...}): Launches the selected browser with specific options:
+
+- devtools: process.env.DEVTOOLS !== 'false': Opens the browser's developer tools unless an environment variable DEVTOOLS is explicitly set to false.
+- headless: process.env.HEADLESS !== 'false': If HEADLESS is not false, the browser will run in "headless" mode (without a visible UI).
+- args: ['--disable-web-security', ...]: These arguments disable certain browser security features.
+
+Final Line:
+
+```ts
+setWorldConstructor(ScenarioWorld);
+```
+
+This registers ScenarioWorld as the custom World constructor for Cucumber. Each time a new scenario starts, an instance of ScenarioWorld will be created, providing all the necessary setup for each test run.
+
+**Summary:**
+
+- **Imports:** Brings in necessary modules from Playwright, Cucumber, and our own configuration files.
+
+- **ScenarioWorld class:** Extends Cucumber's World class to manage browser interactions and scenario-specific data.
+- **Screen:** Defines how browser, context, and page are grouped together.
+
+- **init method:** Starts a fresh browser session and opens a page for each scenario.
+
+- **newBrowser method:** Launches a new browser based on the environment configuration.
+
+
+</details>
+<br>
+
+[Back to Index](#index)
 
 
 

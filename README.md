@@ -16,10 +16,6 @@ What is cucumber:(put link to documentation)
 
 What is typescript: (put link to documentation)
 
-</details>
-<br>
-
-
 **Project Structure:**
 <details>
   <summary>Click to open project structure images</summary>
@@ -39,6 +35,12 @@ For the purposes of this documentation tutorial, we will be using a test website
 ![TestSite](./assets/readme-images/TestSite.png)
 
 </details>
+
+</details>
+<br>
+
+
+
 
 <a name="index"></a>
 

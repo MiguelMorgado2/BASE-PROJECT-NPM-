@@ -1329,7 +1329,7 @@ export const getViewPort = (): { width: number, height: number } => {
 <summary>Click to open browser-behavior.ts file description</summary>
 <br>
 
-The purpose of your browser-behavior.ts file is to manage and provide the viewport configuration for the browser sessions during automation testing. It determines the size (width and height) of the browser window based on the environment settings. 
+The purpose of the browser-behavior.ts file is to manage and provide the viewport configuration for the browser sessions during automation testing. It determines the size (width and height) of the browser window based on the environment settings. 
 Imports:
 
 ```ts
@@ -1447,6 +1447,219 @@ The variables are going to be set in our file "common.env", inside the env folde
 [Back to Index](#index)
 
 
+    B) error-helper.ts file:
+
+File content:
+
+```ts
+import { WaitForTarget, WaitForTargetType, ErrorsConfig } from '../env/global'
+import { logger } from '../logger'
+
+export const getErrorSummary = (errDetail: string): string => {
+    return errDetail.split('\n')[0];
+}
+
+export const parseErrorMessage = (
+    errList: ErrorsConfig,
+    errorSummary: string,
+    targetName: string,
+    targetType: string
+): string => {
+    const targetErrorIndex = errList
+        .map(err => RegExp(err.originalErrMsgRegexString))
+        .findIndex(errRegex => errRegex.test(errorSummary),)
+    return targetErrorIndex > -1
+        ? errList[targetErrorIndex].parsedErrMsg.replace(/{}/g, targetName).replace(/<>/g, targetType)
+        : errorSummary;
+}
+
+
+export const handleError = (
+    errList: ErrorsConfig,
+    err: Error,
+    target?: WaitForTarget,
+    type?: WaitForTargetType
+): void => {
+    const errorDetail = err?.message ?? ''
+    const errorSummary = getErrorSummary(errorDetail)
+    const targetName = target ?? ''
+    const targetType = type ?? ''
+
+    if (!errList || !errorSummary) {
+        logger.error(errorDetail)
+        throw new Error(errorDetail)
+    }
+
+    const parsedErrorMessage = parseErrorMessage(errList, errorSummary, targetName, targetType)
+
+    logger.error(parsedErrorMessage)
+    throw new Error(parsedErrorMessage)
+}
+```
+
+<details>
+<summary>Click to open error-help.ts file description</summary>
+<br>
+
+The purpose of this file is to handle and standardize error processing in an automation environment. It provides utility functions to extract the summary from detailed error messages, match errors against predefined patterns, and replace placeholders in error messages with specific target-related information. 
+
+The file also logs and throws errors in a structured manner, ensuring that both known and unknown errors are appropriately captured and reported, enhancing the clarity and consistency of error handling across the automation framework.
+
+**Imports:**
+
+```ts
+import { WaitForTarget, WaitForTargetType, ErrorsConfig } from '../env/global'
+import { logger } from '../logger'
+```
+- import { WaitForTarget, WaitForTargetType, ErrorsConfig } from '../env/global':
+
+This imports some type definitions (WaitForTarget, WaitForTargetType, and ErrorsConfig) from the file global.ts (Check the global.ts file if needed) that defines our project's types and configurations. These are used to define the expected structure of the data.
+
+- WaitForTarget and WaitForTargetType: These types represent specific targets that the automation framework interacts with or waits for. WaitForTarget is defined as either a PageId (the ID of a webpage) or an ElementKey (a key referring to an element on the page). WaitForTargetType is a string describing the type of target (perhaps the type of element or action related to the target).
+
+- ErrorsConfig: This is a type that defines a list of error configurations, where each error configuration has:
+  - originalErrMsgRegexString: A regex string used to match against the original error message.
+  - parsedErrMsg: A parsed, human-friendly error message that replaces placeholders ({} for target names and <> for target types).
+
+- import { logger } from '../logger': The logger object from logger.ts is used for logging different levels of messages (debug, log, error). In this file, it is primarily used to log errors when they occur.
+
+**Function 1:**
+
+```ts
+export const getErrorSummary = (errDetail: string): string => {
+    return errDetail.split('\n')[0];
+}
+```
+Function Purpose:
+
+The purpose of this function is to extract the "summary" from a multi-line error message. Usually, when an error is thrown, it contains a detailed message spanning multiple lines, but this function grabs only the first line as a summary.
+
+Explanation:
+
+- errDetail: string: This is a parameter that expects a string (the error message).
+
+- split('\n'): This splits the error message into an array of strings, using the newline (\n) character as the separator.
+
+- [0]: This grabs the first line of the error message (index 0 of the array).
+
+- return errDetail.split('\n')[0];: The function returns the first line of the error message.
+
+**Function 2: parseErrorMessage:**
+
+```ts
+export const parseErrorMessage = (
+    errList: ErrorsConfig,
+    errorSummary: string,
+    targetName: string,
+    targetType: string
+): string => {
+    const targetErrorIndex = errList
+        .map(err => RegExp(err.originalErrMsgRegexString))
+        .findIndex(errRegex => errRegex.test(errorSummary),)
+    return targetErrorIndex > -1
+        ? errList[targetErrorIndex].parsedErrMsg.replace(/{}/g, targetName).replace(/<>/g, targetType)
+        : errorSummary;
+}
+```
+
+Function Purpose:
+
+This function parses a known error and attempts to format it according to a pre-configured list of errors. It checks whether the error message matches any known patterns and replaces placeholders with specific values.
+
+Explanation:
+
+- errList: ErrorsConfig: This is a list of error configurations ErrorsConfig is a type defined in our global.ts file (See errorConfig section in the global.ts file if necessary).
+
+- errorSummary: string: This is the first line of the error message that was previously extracted by getErrorSummary.
+
+- targetName: string and targetType: string: These are placeholders in error messages. For example, {} may be replaced with targetName, and <> may be replaced with targetType.
+
+**Main Logic:**
+
+- errList.map(...): This iterates over the list of errors and creates a regular expression (RegExp) from each error’s pattern.
+
+- .findIndex(...): This function checks which error pattern (regex) matches the errorSummary. It returns the index of the matching error, or -1 if no match is found.
+
+- targetErrorIndex > -1: If a match is found:
+
+- errList[targetErrorIndex].parsedErrMsg: It takes the matched error's parsed message.
+
+- .replace(/{}/g, targetName): It replaces {} in the error message with targetName.
+
+- replace(/<>/g, targetType): It replaces <> with targetType.
+If no match is found (targetErrorIndex === -1), it simply returns the errorSummary.
+
+**Function 3: handleError**
+
+```ts
+export const handleError = (
+    errList: ErrorsConfig,
+    err: Error,
+    target?: WaitForTarget,
+    type?: WaitForTargetType
+): void => {
+    const errorDetail = err?.message ?? ''
+    const errorSummary = getErrorSummary(errorDetail)
+    const targetName = target ?? ''
+    const targetType = type ?? ''
+
+    if (!errList || !errorSummary) {
+        logger.error(errorDetail)
+        throw new Error(errorDetail)
+    }
+
+    const parsedErrorMessage = parseErrorMessage(errList, errorSummary, targetName, targetType)
+
+    logger.error(parsedErrorMessage)
+    throw new Error(parsedErrorMessage)
+}
+```
+
+Function Purpose:
+
+This function handles an error by logging it and throwing an error with a parsed error message, following the process of finding matching error patterns (from the list of errors).
+
+Explanation:
+
+Parameters:
+
+- errList: ErrorsConfig: List of possible errors and their patterns.
+- err: Error: The actual error that occurred.
+- target?: WaitForTarget and type?: WaitForTargetType: Optional parameters to give more context about the target and type of error (like what element the error is related to).
+
+**Main Logic:**
+
+- err?.message ?? '': This gets the error message, or an empty string if it's undefined.
+- getErrorSummary(errorDetail): Extracts the first line (summary) of the error message using the getErrorSummary function.
+- targetName = target ?? '': If target is not provided, default to an empty string.
+- targetType = type ?? '': If type is not provided, default to an empty string.
+
+**Error Handling:**
+
+If there's no error list or error summary:
+
+- logger.error(errorDetail): Log the full error message.
+- throw new Error(errorDetail): Throw the error with its original message.
+
+
+If there is a match:
+
+- parsedErrorMessage = parseErrorMessage(...): Parse the error message using the parseErrorMessage function.
+- logger.error(parsedErrorMessage): Log the parsed error message.
+- throw new Error(parsedErrorMessage): Throw a new error with the parsed message.
+
+**Summary:**
+- getErrorSummary: Extracts the first line of a detailed error message.
+- parseErrorMessage: Tries to match the error message with known patterns and replaces placeholders with context-specific data.
+- handleError: Orchestrates the process of checking if an error matches known patterns, logging the error, and throwing a new error with more detailed information if available.
+
+Each of these functions helps manage errors in our automation tests by standardizing error messages, logging them, and ensuring that appropriate information is displayed when something goes wrong.
+
+
+</details>
+<br>
+
+[Back to Index](#index)
 
 
 

@@ -1,5 +1,9 @@
 # Playwright + cucumber + typescript
 
+<details>
+<summary>Generic description of Playwright, cucumber and typescript</summary>
+<br>
+
 The purpose of this documentation is to explain how we can use an existing automation base structure, in any web automation project.
 Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
 
@@ -12,7 +16,8 @@ What is cucumber:(put link to documentation)
 
 What is typescript: (put link to documentation)
 
-
+</details>
+<br>
 
 
 **Project Structure:**

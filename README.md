@@ -994,8 +994,6 @@ The setup folder contains the file:
 
 - world.ts
 
-    world.ts file:
-
 File content:
 
 This file acts as the bridge between our BDD tests (written in Cucumber) and the browser automation tool (Playwright), providing the necessary setup, configuration, and browser management for our tests to run smoothly.
@@ -1280,7 +1278,173 @@ This registers ScenarioWorld as the custom World constructor for Cucumber. Each 
 [Back to Index](#index)
 
 
+### e2e > src > support folder:
 
+The support folder contains the files:
+
+- browser-behavior.ts
+- error-helper.ts
+- html-behavior.ts
+- input-helper.ts
+- mock-behavior.ts
+- navigation-behavior.ts
+- options-helper.ts
+- random-data-helper.ts
+- tag-helper.ts
+- wait-for-behavior.ts
+- web-element-helper.ts
+
+This folder provides helper utilities and behavior-specific functions that assist in our automation tasks. These files encapsulate common actions or behaviors that our tests need to perform, such as browser interactions, error handling, HTML manipulations, and element interactions.
+
+    A) browser-behavior.ts file:
+
+File content:
+
+```ts
+import { devices } from "playwright"
+import { envNumber } from "../env/parseEnv"
+
+export const getViewPort = (): { width: number, height: number } => {
+    let viewPort
+    const emulation = process.env.EMULATION || "browser"
+
+    if (emulation != "browser") {
+        const device = devices[emulation]
+        viewPort = {
+            width: device.viewport.width,
+            height: device.viewport.height
+        }
+    } else {
+        viewPort = {
+            width: envNumber('BROWSER_WIDTH'),
+            height: envNumber('BROWSER_HEIGHT')
+        }
+    }
+
+    return viewPort
+}
+```
+
+<details>
+<summary>Click to open browser-behavior.ts file description</summary>
+<br>
+
+The purpose of your browser-behavior.ts file is to manage and provide the viewport configuration for the browser sessions during automation testing. It determines the size (width and height) of the browser window based on the environment settings. 
+Imports:
+
+```ts
+import { devices } from "playwright"
+import { envNumber } from "../env/parseEnv"
+```
+
+- import { devices } from "playwright":
+
+This line imports the devices object from the Playwright library. The devices object is a collection of predefined device profiles, such as mobile phones or tablets, that include specific viewport sizes and other browser configurations (e.g., simulating a mobile browser like an iPhone).
+
+- import { envNumber } from "../env/parseEnv":
+This line imports the envNumber function from our parseEnv file (check the parsEnv file if needed). This function helps to retrieve numerical environment variables. Environment variables are external settings that influence how our program behaves (for instance, setting the browser’s width and height).
+
+getViewPort Function:
+
+```ts
+export const getViewPort = (): { width: number, height: number } => {
+```
+
+- export const getViewPort:
+This line defines a function named getViewPort and exports it so that other parts of our code can use it. The function will return an object with two properties: 
+    - width 
+    - height.
+
+- : { width: number, height: number }: This is TypeScript syntax that specifies the return type of the function. It’s saying the function will return an object with two fields: width (a number) and height (also a number).
+
+```ts
+    let viewPort
+    const emulation = process.env.EMULATION || "browser"
+```
+
+- let viewPort:
+This declares a variable named viewPort. Initially, it’s undefined because its value will be assigned later.
+
+- const emulation = process.env.EMULATION || "browser":
+This line checks if an environment variable called EMULATION is set. 
+If it’s not set (i.e., undefined or empty), it defaults to the string "browser".
+
+The process.env object is a global object in Node.js that contains all the environment variables passed to our application. For example, we might set it to simulate a mobile device, and if it’s not set, it assumes we are running the browser in a normal mode (not emulating any device).
+
+Emulation Logic:
+
+```ts
+    if (emulation != "browser") {
+        const device = devices[emulation]
+        viewPort = {
+            width: device.viewport.width,
+            height: device.viewport.height
+        }
+    } else {
+        viewPort = {
+            width: envNumber('BROWSER_WIDTH'),
+            height: envNumber('BROWSER_HEIGHT')
+        }
+    }
+```
+
+- if (emulation != "browser"):
+This checks if the emulation variable is anything other than "browser". If it’s not "browser", it means we are emulating a specific device (like a mobile phone or tablet).
+
+- const device = devices[emulation]:
+If we are emulating a device, this line fetches the specific device’s settings from Playwright’s devices collection. For example, if emulation is set to "iPhone 12", it will load the profile for an iPhone 12, which includes things like screen size and browser features.
+
+- viewPort = { width: device.viewport.width, height: device.viewport.height }:
+This sets the viewPort variable to the width and height of the emulated device. It gets these values from the viewport property of the device.
+For example, for an iPhone 12, the viewport might be { width: 390, height: 844 }.
+
+Non-Emulation Logic:
+
+```ts
+    } else {
+        viewPort = {
+            width: envNumber('BROWSER_WIDTH'),
+            height: envNumber('BROWSER_HEIGHT')
+        }
+    }
+```
+
+- else block:
+If the emulation variable is equal to "browser", then we are not emulating a device.
+
+- viewPort = { width: envNumber('BROWSER_WIDTH'), height: envNumber('BROWSER_HEIGHT') }:
+In this case, the width and height of the viewport are taken from environment variables called BROWSER_WIDTH and BROWSER_HEIGHT.
+
+The envNumber('BROWSER_WIDTH') function is called to retrieve the value of the BROWSER_WIDTH environment variable as a number. This allows the test to be flexible depending on external configurations.
+
+Returning the Viewport:
+
+```ts
+    return viewPort
+}
+```
+
+- return viewPort:
+Finally, the function returns the viewPort object. This object will contain the width and height of the browser’s viewport (the visible area of the web page).
+
+If we are emulating a device, the dimensions will come from that device's profile. If not, the dimensions will come from environment variables set for the browser.
+
+**Summary:**
+The getViewPort function is responsible for determining the size (width and height) of the browser window.
+If you are emulating a device (like a phone), it will return the device's screen size.
+If you're not emulating a device, it will return the width and height based on environment variables.
+
+This is useful in automated browser testing because we often need to control the size of the browser window to simulate different devices and screen resolutions.
+
+**Note:**
+The variables are going to be set in our file "common.env", inside the env folder:
+
+![common.env](./assets/readme-images//common.env-browser-variables.png)
+
+</details>
+<br>
+
+[Back to Index](#index)
 
 
 

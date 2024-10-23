@@ -52,28 +52,32 @@ For the purposes of this documentation tutorial, we will be using a test website
 2. [e2e-Folder-Level](#folders-and-files-explanation)
 
     2.1 [Config-Folder](#e2e--config-folder)
-
-    - [Mapings](#e2e--config--mappings-folder)
-  
+    - [Mapings-folder](#e2e--config--mappings-folder)
       - [Common.json](#common-json)
-
       - [Create-Contact.json](#create-contact-json)
-
       - [Home.json](#home-json)
-
       - [Playground.json](#playground-json)
 
     - [Emails.json](#e2e--config--emails-json-file)
-
     - [Errors.json](#e2e--config--errors-json-file)
-
     - [Hosts.json](#e2e--config--hosts-json-file)
-
     - [Mocks.json](#e2e--config--mocks-json-file)
-
     - [Pages.json](#e2e--config--pages-json-file)
 
-    2.2 [Env-Folder](#e2e--env-folder)
+    2.2 [Env-Folder](#e2e--src--env-folder)
+      - [ParsEnv.ts](#parsenv-ts-file)
+      - [Global.ts](#global-ts-file)
+
+    2.3 [SRC-Folder](#e2e--src-folder)
+      - [Step-Definitions-Folder](#e2e--src--step-definitions-folder)
+        - [Setup-Folder](#e2e--src--step-definitions--setup-folder)
+          - [World.ts](#world-ts-file)
+      - [Support-Folder](#e2e--src--support-folder)
+        - [Browser-behavior.ts](#browser-behavior-ts-file)
+        - [Error-helper.ts](#error-helper-ts-file)
+
+
+          
 
 
 
@@ -281,19 +285,6 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 
 ## e2e \> Config folder:
 
-The config folder contains the folders and files:
-
-- mappings folder
-  - common.json file
-  - create-contact.json file
-  - home.json file
-  - playground.json file
-- emails.json file
-- errors.json file
-- hosts.json file
-- mocks.json file
-- pages.json file
-
 The config folder holds various configuration files that are used to define and manage the behavior, settings, and environment parameters for our test automation project, and it contains:
 
 #### e2e \> Config \> Mappings folder:
@@ -302,7 +293,7 @@ The config folder holds various configuration files that are used to define and 
 
 **Files of the Mappings folder:**
 
-#### Common json
+#### Common json:
 
 File content:
 
@@ -339,7 +330,7 @@ To simplify and standardize the way UI elements are accessed in tests.
 Facilitates easier maintenance, as changes to selectors only need to be updated in one place.
 
 
-#### Create Contact json
+#### Create Contact json:
 
 File content:
 
@@ -366,7 +357,7 @@ These selectors are going to be found in the create contact page:
 </details>
 <br>
 
-#### Home json
+#### Home json:
 
 File content:
 
@@ -400,7 +391,7 @@ These selectors are going to be found in the Home page:
 </details>
 <br>
 
-#### Playground json
+#### Playground json:
 
 File content:
 
@@ -620,7 +611,7 @@ The env folder contains the files:
 
 The env folder serves as a hub for managing environmental configurations and shared types, ensuring that the automation framework or project has access to the right settings and utilities, regardless of the environment it's operating in.
 
-    parseEnv.ts file:
+#### parsEnv ts file:
 
 File content:
 
@@ -756,7 +747,7 @@ These functions are typically used in automation frameworks to handle configurat
 </details>
 <br>
 
-    global.ts file:
+#### Global ts file:
 
 This file defines a set of types and interfaces that are used across the entire project to ensure consistency, especially when dealing with configurations, error handling, and page elements in our automation framework.
 It's like a blueprint that specifies what data is available, how it’s structured, and what kind of operations are allowed on it.
@@ -960,11 +951,57 @@ GlobalConfig: This is a central structure that ties all of the other configurati
 [Back to Index](#index)
 
 
-### e2e > src > step-definitions > setup folder:
+### e2e \> src folder
+
+The src (short for "source") folder is a common convention in software development, especially in projects using languages like JavaScript, TypeScript, or similar. 
+
+#### Purpose of the src Folder
+
+- **Organize Source Code:**
+
+The src folder serves as the main directory for all the source code files of our application or library. It helps keep the project organized by separating source code from configuration files, documentation, and other resources.
+
+- **Modular Structure:**
+
+Inside the src folder, we create subfolders to further organize our code by features, components, or modules, making it easier to navigate and maintain.
+
+- **Easier Build Process:**
+
+Many build tools and bundlers (like Webpack, Rollup, or Parcel) expect the source code to reside in a src folder. This makes it straightforward to specify which files should be compiled or bundled when preparing the application for production.
+
+- **Code Clarity:**
+
+Having a dedicated src folder enhances code clarity by indicating which files are part of the application's logic as opposed to files that are generated, built, or serve a different purpose (like dist for distribution).
+
+#### e2e \> src \> step-definitions folder
+
+The step-definitions folder in our project is used to store the step definition files for behavior-driven development (BDD) tests.
+
+**Purpose of the step-definitions Folder:**
+
+- **Linking Feature Files to Test Code:**
+
+In BDD, feature files describe the behavior of our application in plain language using the Gherkin syntax (e.g., Given, When, Then). The step definitions provide the actual implementation for these steps. This folder contains those implementations.
+
+- **Maintain Code Separation:**
+
+The folder separates the high-level, human-readable feature files from the actual test logic. Each step in a feature file corresponds to a function in a step definition file.
+
+- **Reusable Test Steps:**
+
+Step definitions allow us to reuse the same code for similar steps across multiple feature files, promoting DRY (Don't Repeat Yourself) principles.
+
+- **Organization:**
+
+By organizing our step definitions in this folder, we can easily manage and locate the code that executes the test cases for each feature. The step definitions are grouped by feature or functionality to keep everything organized.
+
+### e2e \> src \> step-definitions \> setup folder:
+
+The setup folder in our project is used to configure and prepare the environment for our Cucumber tests. 
 
 The setup folder contains the file:
 
-- world.ts
+#### World ts file:
 
 File content:
 
@@ -1268,7 +1305,7 @@ The support folder contains the files:
 
 This folder provides helper utilities and behavior-specific functions that assist in our automation tasks. These files encapsulate common actions or behaviors that our tests need to perform, such as browser interactions, error handling, HTML manipulations, and element interactions.
 
-    A) browser-behavior.ts file:
+#### browser behavior ts file:
 
 File content:
 
@@ -1419,7 +1456,7 @@ The variables are going to be set in our file "common.env", inside the env folde
 [Back to Index](#index)
 
 
-    B) error-helper.ts file:
+#### Error helper ts file:
 
 File content:
 

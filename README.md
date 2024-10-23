@@ -49,11 +49,31 @@ For the purposes of this documentation tutorial, we will be using a test website
 
     1.1 [VisualStudioCodeSettings](#visual-studio-code-settings)
 
-2. [e2eFolderLevel](#e2e-folder-level)
+2. [e2e-Folder-Level](#folders-and-files-explanation)
 
-    2.1 [ConfigFolder](#config-folder)
+    2.1 [Config-Folder](#e2e--config-folder)
 
-    2.1.1 [Mapings](#mappings-folder)
+    2.1.1 [Mapings](#e2e--config--mappings-folder)
+  
+      - [Common.json](#common-json)
+
+      - [Create-Contact.json](#create-contact-json)
+
+      - [Home.json](#home-json)
+
+      - [Playground.json](#playground-json)
+
+  - [Emails.json](#e2e--config--emails-json-file)
+
+  - [Errors.json](#e2e--config--errors-json-file)
+
+  - [Hosts.json](#e2e--config--hosts-json-file)
+
+  - [Mocks.json](#e2e--config--mocks-json-file)
+
+  - [Pages.json](#e2e--config--pages-json-file)
+
+  2.2 [Env-Folder](#e2e--env-folder)
 
 
 
@@ -257,9 +277,9 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 [Back to Index](#index)
 
 
-## Folders and files explanation:
+## FOLDERS AND FILES EXPLANATION:
 
-### e2e > Config folder:
+## e2e \> Config folder:
 
 The config folder contains the folders and files:
 
@@ -276,13 +296,13 @@ The config folder contains the folders and files:
 
 The config folder holds various configuration files that are used to define and manage the behavior, settings, and environment parameters for our test automation project, and it contains:
 
-#### 1 - e2e > Config > Mappings folder:
+#### e2e \> Config \> Mappings folder:
 
 * Inside the Config folder, we have the Mappings folder, which contains configuration files that map different components, data, or behavior of our automation framework.
 
 **Files of the Mappings folder:**
 
-    A) common.json:
+#### Common json
 
 File content:
 
@@ -319,7 +339,7 @@ To simplify and standardize the way UI elements are accessed in tests.
 Facilitates easier maintenance, as changes to selectors only need to be updated in one place.
 
 
-    B) create-contact.json:
+#### Create Contact json
 
 File content:
 
@@ -346,7 +366,7 @@ These selectors are going to be found in the create contact page:
 </details>
 <br>
 
-    C) home.json:
+#### Home json
 
 File content:
 
@@ -380,7 +400,7 @@ These selectors are going to be found in the Home page:
 </details>
 <br>
 
-    D) playground.json:
+#### Playground json
 
 File content:
 
@@ -470,7 +490,7 @@ These selectors are going to be found in the playground page:
 
 **Readability:** The descriptive keys make it easy to understand what each selector corresponds to, improving the readability of test scripts.
 
-#### 2 - e2e > Config > emails.json file:
+#### e2e \> Config \> Emails json file:
 
 File content:
 
@@ -485,7 +505,7 @@ This file contains email-related configurations, specifically for testing purpos
 **Purpose:** It provides a designated email address to be used in tests, ensuring consistency and reliability in scenarios that require email interactions.
 
 
-#### 3 - e2e > Config > errors.json file:
+#### e2e \> Config \> Errors json file:
 
 File content:
 
@@ -507,7 +527,7 @@ This file defines error messages to be used in the automation tests.
 **Purpose:** It maps original error message patterns (using regex) to more user-friendly messages. This aids in debugging by making errors clearer and easier to understand during test failures.
 
 
-#### 4 - e2e > Config > hosts.json file:
+#### e2e \> Config \> Hosts json file:
 
 File content:
 
@@ -523,7 +543,7 @@ This file defines different host URLs for various environments.
 
 **Purpose:** It centralizes the URLs for different environments, enabling easy switching between local development and production environments, as well as providing an API endpoint for tests. (For now, ignore the api)
 
-#### 5 - e2e > Config > mocks.json file:
+#### e2e \> Config \> Mocks json file:
 
 File content:
 
@@ -537,7 +557,7 @@ This file is used for mocking data in tests.
 
 **Purpose:** It specifies entities to be mocked during tests. In this case, its referring to a "users" object, which will be used to simulate user-related data in various scenarios.
 
-#### 6 - e2e > Config > pages.json file:
+#### e2e \> Config \> Pages json file:
 
 File content:
 
@@ -590,63 +610,8 @@ Playground page:
 
 [Back to Index](#index)
 
-# END OF CONFIG FOLDER SECTION!!!
 
-### e2e > .babelrc file:
-
-Inside the e2e folder level, we have the following configuration file:
-
-    .babelrc
-
-File content:
-
-```ts
-{
-    "presets": ["@babel/preset-typescript", "@babel/preset-env"]
-}
-```
-
-<details>
-<summary>Click to open .babelrc code description</summary>
-<br>
-
-The .babelrc file is a configuration file for Babel, a JavaScript compiler that allows us to use the latest JavaScript features and TypeScript in our project. 
-
-Here's a breakdown of the contents of our .babelrc file:
-
-Explanation of the Presets:
-
-1.	@babel/preset-typescript
-o	This preset enables Babel to understand TypeScript syntax. It allows you  to write your code in TypeScript and compiles it down to plain JavaScript, which can be executed in environments that do not support TypeScript directly.
-o	It primarily strips away TypeScript-specific features (like type annotations) but does not perform type-checking. For type-checking, you would still need to run the TypeScript compiler separately (using tsc).
-
-2.	@babel/preset-env
-o	This preset allows you to use the latest JavaScript features without worrying about which syntax transformations are needed for the environments you want to support (like older browsers).
-o	It automatically determines the transformations and polyfills required based on your specified browser or environment support.
-
-•	.babelrc file is essentially a JSON object that defines configuration settings for Babel. 
-•	When you run Babel (for example, during a build process or when you transpile your code), Babel reads this configuration file to understand how to process your JavaScript and TypeScript files.
-
-How It Works:
-
-1.	Babel CLI/Build Tool Integration: When you invoke Babel (either through the command line or through a build tool like Webpack, Gulp, or others), it automatically looks for the .babelrc file in your project directory.
-
-2.	Loading the Configuration: Babel reads the settings specified in the .babelrc file. In this case, it sees that it should use the @babel/preset-typescript and @babel/preset-env.
-
-3.	Transpiling Code: Based on this configuration, Babel processes your code, transforming modern JavaScript and TypeScript syntax into a version that can be executed in the environments you want to support.
-
-Example in Practice:
-
-For example, if you have a TypeScript file that uses modern JavaScript features and type annotations, when you run Babel:
-
-•	It will strip out the type annotations (due to @babel/preset-typescript).
-
-•	It will also transform any modern JavaScript features (like arrow functions or async/await) into a format compatible with older browsers (thanks to @babel/preset-env).
-
-</details>
-<br>
-
-### e2e > src > env folder:
+### e2e \> src \> env folder:
 
 The env folder contains the files:
 

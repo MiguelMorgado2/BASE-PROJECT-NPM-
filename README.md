@@ -53,7 +53,7 @@ For the purposes of this documentation tutorial, we will be using a test website
 
     2.1 [Config-Folder](#e2e--config-folder)
 
-    2.1.1 [Mapings](#e2e--config--mappings-folder)
+    - [Mapings](#e2e--config--mappings-folder)
   
       - [Common.json](#common-json)
 
@@ -63,17 +63,17 @@ For the purposes of this documentation tutorial, we will be using a test website
 
       - [Playground.json](#playground-json)
 
-  - [Emails.json](#e2e--config--emails-json-file)
+    - [Emails.json](#e2e--config--emails-json-file)
 
-  - [Errors.json](#e2e--config--errors-json-file)
+    - [Errors.json](#e2e--config--errors-json-file)
 
-  - [Hosts.json](#e2e--config--hosts-json-file)
+    - [Hosts.json](#e2e--config--hosts-json-file)
 
-  - [Mocks.json](#e2e--config--mocks-json-file)
+    - [Mocks.json](#e2e--config--mocks-json-file)
 
-  - [Pages.json](#e2e--config--pages-json-file)
+    - [Pages.json](#e2e--config--pages-json-file)
 
-  2.2 [Env-Folder](#e2e--env-folder)
+    2.2 [Env-Folder](#e2e--env-folder)
 
 
 

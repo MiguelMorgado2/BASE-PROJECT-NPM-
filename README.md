@@ -70,11 +70,14 @@ For the purposes of this documentation tutorial, we will be using a test website
 
     2.3 [SRC-Folder](#e2e--src-folder)
       - [Step-Definitions-Folder](#e2e--src--step-definitions-folder)
+
         - [Setup-Folder](#e2e--src--step-definitions--setup-folder)
           - [World.ts](#world-ts-file)
+          
       - [Support-Folder](#e2e--src--support-folder)
         - [Browser-behavior.ts](#browser-behavior-ts-file)
         - [Error-helper.ts](#error-helper-ts-file)
+        - [Html-behavior.ts](#html-behavior-ts-file)
 
 
           
@@ -1671,6 +1674,714 @@ Each of these functions helps manage errors in our automation tests by standardi
 [Back to Index](#index)
 
 
+#### Html behavior ts file:
+
+File content:
+
+```ts
+import { Page, Frame } from 'playwright';
+import { ElementLocator } from '../env/global';
+import {ElementHandle} from "@playwright/test";
+
+export const clickElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<void> => {
+    await page.click(elementIdentifier);
+};
+
+export const clickElementAtIndex = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+    elementPosition: number,
+): Promise<void> => {
+    const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`)
+    await element?.click()
+}
+
+export const inputElementValue = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    input: string
+): Promise<void> => {
+    await page.focus(elementIdentifier);
+    await page.fill(elementIdentifier, input);
+};
+
+export const selectElementValue = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    option: string
+): Promise<void> => {
+    await page.focus(elementIdentifier);
+    await page.selectOption(elementIdentifier, option);
+};
+
+export const checkElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<void> => {
+    await page.check(elementIdentifier)
+}
+
+export const uncheckElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<void> => {
+    await page.uncheck(elementIdentifier)
+}
+
+export const inputValueOnIframe =  async (
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+    inputValue: string
+): Promise<void> => {
+    await elementIframe.fill(elementIdentifier, inputValue)
+}
+
+export const inputValueOnPage = async (
+    pages: Array<Page>,
+    pageIndex: number,
+    elementIdentifier: ElementLocator,
+    inputValue: string,
+): Promise<void> => {
+    await pages[pageIndex].focus(elementIdentifier)
+    await pages[pageIndex].fill(elementIdentifier, inputValue)
+}
+
+export const scrollElementIntoView = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<void> => {
+    const element = page.locator(elementIdentifier)
+    await element.scrollIntoViewIfNeeded()
+}
+
+export const getElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const element = await page.$(elementIdentifier)
+    return element
+}
+
+export const getElements = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<ElementHandle<SVGElement | HTMLElement>[]> => {
+    const elements = await page.$$(elementIdentifier)
+    return elements
+}
+
+export const getElementAtIndex = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    index: number,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const elementAtIndex = await page.$(`${elementIdentifier}>>nth=${index}`)
+    return elementAtIndex
+}
+
+export const getElementValue = async(
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<string | null> => {
+    const value = await page.$eval<string, HTMLSelectElement>(elementIdentifier, el => {
+        return el.value;
+    })
+    return value;
+}
+
+export const getIframeElement = async (
+    page: Page,
+    iframeIdentifier: ElementLocator
+): Promise<Frame | undefined | null> => {
+    const elementHandle = await page.$(iframeIdentifier)
+    const elementIframe = await elementHandle?.contentFrame()
+    return elementIframe
+}
+
+export const getElementWithinIframe = async(
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const visibleOnIframeElement = await elementIframe?.$(elementIdentifier)
+    return visibleOnIframeElement
+}
+
+export const getTextWithinIframeElement = async (
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promise<string | null> => {
+    const textOnIframeElement = await elementIframe?.textContent(elementIdentifier)
+    return textOnIframeElement
+}
+
+export const getTitleWithinPage = async (
+    page: Page,
+    pages: Array<Page>,
+    pageIndex: number,
+): Promise<string | null> => {
+    const titleWithinPage = await pages[pageIndex].title()
+    return titleWithinPage
+}
+
+export const getElementOnPage = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const elementOnPage = await pages[pageIndex].$(elementIdentifier)
+    return elementOnPage
+}
+
+export const getElementTextWithinPage = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number,
+): Promise<string | null> => {
+    const textWithinPage = await pages[pageIndex].textContent(elementIdentifier)
+    return textWithinPage
+}
+
+export const getAttributeText = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+    attribute: string,
+): Promise<string | null> => {
+    const attributeText = page.locator(elementIdentifier).getAttribute(attribute)
+    return attributeText
+}
+
+export const getElementText = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<string | null> => {
+    const text = await page.textContent(elementIdentifier)
+    return text
+}
+
+export const getElementTextAtIndex = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    index: number
+): Promise<string | null> => {
+    const textAtIndex = await page.textContent(`${elementIdentifier}>>nth=${index}`)
+    return textAtIndex
+}
+
+export const getTableData = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<string> => {
+    const table = await page.$$eval(elementIdentifier+" tbody tr", (rows) => {
+        return rows.map(row => {
+            const cells = row.querySelectorAll('td')
+            return Array.from(cells).map(cell => cell.textContent)
+        })
+    })
+    return JSON.stringify(table)
+}
+
+export const elementEnabled = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<boolean | null> => {
+    const enabled = await page.isEnabled(elementIdentifier)
+    return enabled
+}
+
+export const elementChecked = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<boolean | null> => {
+    const checked = await page.isChecked(elementIdentifier)
+    return checked
+}
+```
+
+<details>
+<summary>Click to open html-behavior.ts file description</summary>
+<br>
+
+This file provides a set of utility functions for interacting with elements on a web page in an automation context, for testing purposes. Each function performs a specific action, such as clicking on an element, selecting a value from a dropdown, entering text, scrolling an element into view, or retrieving an element’s value. 
+
+These functions are built with asynchronous behavior to handle page interactions that require waiting, ensuring smooth and reliable automation. The utilities streamline interactions with page elements and iframes, making it easier to write reusable, modular, and maintainable test scripts.
+
+**Imports:**
+
+```ts
+import { Page, Frame } from 'playwright';
+import { ElementLocator } from '../env/global';
+import { ElementHandle } from "@playwright/test";
+```
+- import { Page, Frame } from 'playwright';: This imports Page and Frame from the Playwright library. A Page represents a single browser tab, and a Frame is an HTML frame (like an iframe element embedded within a page).
+
+- import { ElementLocator } from '../env/global';: This imports ElementLocator, a type or alias defined in our global.ts file to represent a selector (usually a CSS selector) used to identify HTML elements on a page.
+
+- import { ElementHandle } from "@playwright/test";: ElementHandle is a reference to an element in the browser, which allows for interactions and actions (like clicking or getting the text).
+
+**ClickElement:**
+
+```ts
+export const clickElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<void> => {
+    await page.click(elementIdentifier);
+};
+```
+- export const clickElement =: This exports the function clickElement so it can be used in other files.
+
+- async: Marks the function as asynchronous, meaning it returns a Promise and allows the use of await inside it.
+
+- (page: Page, elementIdentifier: ElementLocator): Parameters for the function. page is an instance of Page, representing the browser tab. 
+
+- elementIdentifier is a selector (ElementLocator type) that identifies the element to click on.
+
+- : Promise-void: Specifies that the function returns a Promise that doesn't resolve to any specific value (void).
+
+- await page.click(elementIdentifier);: await pauses execution until the click action is complete. 
+
+- page.click() performs the click on the element identified by elementIdentifier.
+
+**ClickElementAtIndex:**
+
+```ts
+export const clickElementAtIndex = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+    elementPosition: number,
+): Promise<void> => {
+    const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`);
+    await element?.click();
+};
+```
+- export const clickElementAtIndex =: Exports the clickElementAtIndex function.
+
+- async: Allows use of await and makes the function return a Promise.
+- (page: Page, elementIdentifier: ElementLocator, elementPosition: number)- : Parameters. page is the browser tab, elementIdentifier is the selector, and elementPosition is the index of the element in a list of matching elements.
+- : Promise-void: Indicates that the function returns a Promise without a return value.
+- const element = await page.$(...);: Selects a specific element from a list of elements using the nth pseudo-class. await waits for this action to complete before proceeding.
+- await element?.click();: If element exists (?. ensures it's not null), it performs a click. This line waits for the click to complete.
+
+**InputElementValue:**
+
+```ts
+export const inputElementValue = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    input: string
+): Promise<void> => {
+    await page.focus(elementIdentifier);
+    await page.fill(elementIdentifier, input);
+};
+```
+- export const inputElementValue =: Exports inputElementValue.
+- async: Makes the function asynchronous.
+
+- (page: Page, elementIdentifier: ElementLocator, input: string): page is the tab, elementIdentifier the selector, and input the text to type.
+
+- : Promise-void: Indicates no return value.
+
+- await page.focus(elementIdentifier);: Focuses on the element (like clicking into a text box), waiting until it’s ready.
+
+- await page.fill(elementIdentifier, input);: Types input into the focused element, waiting until typing is complete.
+
+**SelectElementValue:**
+
+```ts
+export const selectElementValue = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    option: string
+): Promise<void> => {
+    await page.focus(elementIdentifier);
+    await page.selectOption(elementIdentifier, option);
+};
+```
+- selectElementValue: Selects an option in a dropdown.
+
+- option: string: The option to select.
+
+- await page.focus(elementIdentifier);: Focuses the dropdown.
+
+- await page.selectOption(elementIdentifier, option);: Selects the option.
+
+**CheckElement and UncheckElement:**
+
+```ts
+export const checkElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<void> => {
+    await page.check(elementIdentifier);
+};
+
+export const uncheckElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<void> => {
+    await page.uncheck(elementIdentifier);
+};
+```
+
+- checkElement / uncheckElement: Checks or unchecks a checkbox.
+
+- await page.check(...) / await page.uncheck(...): Performs the check/uncheck action.
+
+**InputValueOnIframe:**
+
+```ts
+export const inputValueOnIframe =  async (
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+    inputValue: string
+): Promise<void> => {
+    await elementIframe.fill(elementIdentifier, inputValue);
+};
+```
+- export const inputValueOnIframe = async (...): Defines inputValueOnIframe, which inputs text into an element inside an iframe.
+
+- await elementIframe.fill(...): Fills the element in the iframe with inputValue.
+
+**InputValueOnPage:**
+
+```ts
+export const inputValueOnPage = async (
+    pages: Array<Page>,
+    pageIndex: number,
+    elementIdentifier: ElementLocator,
+    inputValue: string,
+): Promise<void> => {
+    await pages[pageIndex].focus(elementIdentifier);
+    await pages[pageIndex].fill(elementIdentifier, inputValue);
+};
+```
+
+-  pages: Array-Page: A list of browser tabs.
+
+-  pageIndex: number: Index of the tab in the list.
+
+-  await pages[pageIndex].focus(...): Focuses the element in the specified tab.
+
+-  await pages[pageIndex].fill(...): Types inputValue.
+
+**scrollElementIntoView:**
+
+```ts
+export const scrollElementIntoView = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<void> => {
+    const element = page.locator(elementIdentifier);
+    await element.scrollIntoViewIfNeeded();
+};
+```
+
+- scrollElementIntoView: Scrolls the element into view.
+
+- await element.scrollIntoViewIfNeeded(): Scrolls only if not visible.
+
+**GetElement:**
+
+```ts
+export const getElement = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const element = await page.$(elementIdentifier);
+    return element;
+};
+```
+- : Promise<ElementHandle<SVGElement | HTMLElement> | null>: Returns an element handle or null.
+
+- await page.$(...): Finds the element on the page.
+
+**GetElements:**
+
+```ts
+export const getElements = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<ElementHandle<SVGElement | HTMLElement>[]> => {
+    const elements = await page.$$(elementIdentifier)
+    return elements
+}
+```
+- Retrieves multiple elements that match a specified selector.
+
+- Parameters: page (the Playwright Page instance), elementIdentifier (the selector of the elements to retrieve).
+
+Return Type: Promise<ElementHandle<SVGElement | HTMLElement>[]> – a promise that resolves to an array of element handles.
+
+Code Explanation: Uses page.$$() to select all matching elements, then returns them.
+
+
+**getElementAtIndex**
+
+```ts
+export const getElementAtIndex = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    index: number,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const elementAtIndex = await page.$(`${elementIdentifier}>>nth=${index}`);
+    return elementAtIndex;
+};
+```
+
+- export const getElementAtIndex = async (...): Defines getElementAtIndex, which retrieves an element at a specific index.
+
+- const elementAtIndex = await page.$(...): Uses nth to select an element at the specified index.
+
+- return elementAtIndex;: Returns the element handle or null if not found.
+
+**GetElementValue:**
+
+```ts
+export const getElementValue = async(
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<string | null> => {
+    const value = await page.$eval<string, HTMLSelectElement>(elementIdentifier, el => {
+        return el.value;
+    });
+    return value;
+};
+```
+- : Promise<string | null>: Returns the element’s value or null.
+
+- await page.$eval(...): Gets the value by executing JavaScript in the browser.
+
+**getIframeElement**
+
+```ts
+export const getIframeElement = async (
+    page: Page,
+    iframeIdentifier: ElementLocator
+): Promise<Frame | undefined | null> => {
+    const elementHandle = await page.$(iframeIdentifier);
+    const elementIframe = await elementHandle?.contentFrame();
+    return elementIframe;
+};
+```
+- export const getIframeElement = async (...): Defines getIframeElement, which retrieves the frame of an iframe element.
+
+- const elementHandle = await page.$(...): Locates the iframe element.
+
+- const elementIframe = await elementHandle?.contentFrame();: Gets the frame content of the iframe.
+
+- return elementIframe;: Returns the iframe frame or null if not found.
+
+**getElementWithinIframe**
+
+```ts
+export const getElementWithinIframe = async(
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const visibleOnIframeElement = await elementIframe?.$(elementIdentifier);
+    return visibleOnIframeElement;
+};
+```
+
+- export const getElementWithinIframe = async (...): Defines getElementWithinIframe, which retrieves an element within an iframe.
+
+- const visibleOnIframeElement = await elementIframe?.$(...): Locates the element within the specified elementIframe.
+
+- return visibleOnIframeElement;: Returns the element handle or null.
+
+**getTextWithinIframeElement**
+
+```ts
+export const getTextWithinIframeElement = async (
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promise<string | null> => {
+    const textOnIframeElement = await elementIframe?.textContent(elementIdentifier);
+    return textOnIframeElement;
+};
+```
+
+- export const getTextWithinIframeElement = async (...): Defines getTextWithinIframeElement, which retrieves text content from an element inside an iframe.
+
+- const textOnIframeElement = await elementIframe?.textContent(...): Retrieves the text content.
+
+- return textOnIframeElement;: Returns the text or null.
+
+**getTitleWithinPage**
+
+```ts
+export const getTitleWithinPage = async (
+    page: Page,
+    pages: Array<Page>,
+    pageIndex: number,
+): Promise<string | null> => {
+    const titleWithinPage = await pages[pageIndex].title();
+    return titleWithinPage;
+};
+```
+- export const getTitleWithinPage = async (...): Defines getTitleWithinPage, which retrieves the title of a specific page.
+
+- const titleWithinPage = await pages[pageIndex].title();: Gets the title of the page at pageIndex.
+
+- return titleWithinPage;: Returns the title.
+
+**getElementOnPage**
+
+```ts
+export const getElementOnPage = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number,
+): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
+    const elementOnPage = await pages[pageIndex].$(elementIdentifier);
+    return elementOnPage;
+};
+```
+- export const getElementOnPage = async (...): Defines getElementOnPage, which retrieves an element on a specified page in an array.
+
+- const elementOnPage = await pages[pageIndex].$(...): Locates the element on the page.
+
+- return elementOnPage;: Returns the element or null.
+
+**getElementTextWithinPage**
+
+```ts
+export const getElementTextWithinPage = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number,
+): Promise<string | null> => {
+    const textWithinPage = await pages[pageIndex].textContent(elementIdentifier);
+    return textWithinPage;
+};
+```
+- export const getElementTextWithinPage = async (...): Defines getElementTextWithinPage, which retrieves text from an element on a specified page.
+
+- const textWithinPage = await pages[pageIndex].textContent(...): Retrieves the text content.
+
+- return textWithinPage;: Returns the text.
+
+**getAttributeText**
+
+```ts
+export const getAttributeText = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+    attribute: string,
+): Promise<string | null> => {
+    const attributeText = page.locator(elementIdentifier).getAttribute(attribute);
+    return attributeText;
+};
+```
+- export const getAttributeText = async (...): Defines getAttributeText, which retrieves a specific attribute’s value from an element.
+
+- const attributeText = page.locator(...).getAttribute(...): Locates the element and gets the attribute.
+
+- return attributeText;: Returns the attribute’s value or null.
+
+**getElementText**
+
+```ts
+export const getElementText = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<string | null> => {
+    const text = await page.textContent(elementIdentifier);
+    return text;
+};
+```
+- export const getElementText = async (...): Defines getElementText, which retrieves text content from an element.
+
+- const text = await page.textContent(...): Gets the text content.
+
+- return text;: Returns the text.
+
+**getElementTextAtIndex**
+
+```ts
+export const getElementTextAtIndex = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    index: number
+): Promise<string | null> => {
+    const textAtIndex = await page.textContent(`${elementIdentifier}>>nth=${index}`);
+    return textAtIndex;
+};
+```
+- export const getElementTextAtIndex = async (...): Defines getElementTextAtIndex, which retrieves text from an element at a specific index.
+
+- const textAtIndex = await page.textContent(...): Retrieves the text content.
+
+- return textAtIndex;: Returns the text.
+
+**getTableData**
+
+```ts
+export const getTableData = async(
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<string> => {
+    const table = await page.$$eval(elementIdentifier+" tbody tr", (rows) => {
+        return rows.map(row => {
+            const cells = row.querySelectorAll('td');
+            return Array.from(cells).map(cell => cell.textContent);
+        });
+    });
+    return JSON.stringify(table);
+};
+```
+- export const getTableData = async (...): Defines getTableData, which retrieves all data from a table.
+
+- const table = await page.$$eval(...): Evaluates each row and cell, returning an array of cell text content.
+
+- return JSON.stringify(table);: Converts the table data to JSON format.
+
+**elementEnabled**
+
+```ts
+export const elementEnabled = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<boolean | null> => {
+    const enabled = await page.isEnabled(elementIdentifier);
+    return enabled;
+};
+```
+- export const elementEnabled = async (...): Defines elementEnabled, which checks if an element is enabled.
+
+- const enabled = await page.isEnabled(...): Uses isEnabled to check if the element is interactable.
+
+- return enabled;: Returns true, false, or null.
+
+**elementChecked**
+
+```ts
+export const elementChecked = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+): Promise<boolean | null> => {
+    const checked = await page.isChecked(elementIdentifier);
+    return checked;
+};
+```
+- export const elementChecked = async (...): Defines elementChecked, which checks if a checkbox or radio is checked.
+
+- const checked = await page.isChecked(...): Uses isChecked to get the element’s checked state.
+
+- return checked;: Returns true, false, or null.
+
+
+</details>
+<br>
+
+[Back to Index](#index)
 
 
 

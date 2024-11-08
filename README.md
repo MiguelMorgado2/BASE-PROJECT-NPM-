@@ -2152,9 +2152,38 @@ export const getElementValue = async(
     return value;
 };
 ```
-- : Promise<string | null>: Returns the element’s value or null.
+*Purpose:*
+This function is designed to extract the value of an element on the page. It's specifically used to retrieve the value of an element that has a value property, such as form input fields (like -input-, -select-, -textarea-), or any other element that holds a value.
 
-- await page.$eval(...): Gets the value by executing JavaScript in the browser.
+*Parameters:*
+- page: Page: This is the Playwright Page object that represents the current web page you're interacting with. It provides methods to interact with and query elements on the page.
+
+- elementIdentifier: ElementLocator: This represents the locator used to find the target element on the page. In your case, ElementLocator is a custom type that encapsulates how to locate an element, such as a CSS selector, XPath, or Playwright Locator.
+
+*Function Breakdown:*
+await page.$eval<string, HTMLSelectElement>(elementIdentifier, el => {...}):
+
+- page.$eval: This Playwright method allows us to execute a function in the browser context, similar to running JavaScript directly in the page. It's used to query the element and extract some value from it.
+
+- elementIdentifier: This is passed as the first argument to page.$eval. It’s a selector or locator for the element whose value you want to retrieve.
+
+- <string, HTMLSelectElement>: These are TypeScript generics.
+The first type (string) specifies the return type of the function that is executed inside the browser context (in this case, it will return a string).
+
+The second type (HTMLSelectElement) defines the type of the element that is being passed to the function inside the browser. This is useful if we're interacting with a specific element type (e.g., -select- dropdown).
+- el => { return el.value; }: This is an arrow function that will be executed in the browser context. The el is the element found using elementIdentifier. The function returns el.value, which gets the value property of the element, such as the selected option in a -select> or the entered text in an -input>.
+
+- const value = await ...;:
+
+This line awaits the resolution of the page.$eval function, which returns the value of the element (el.value). This value is then assigned to the value variable.
+
+- return value;:
+
+Finally, the function returns the value that was retrieved from the element. If the element has no value, this could be null.
+
+*Summary:*
+
+This function is used to retrieve the value of a specified element on the page, which is useful when dealing with form fields or other elements that hold user input or selection data. It simplifies interactions with web elements by abstracting the logic of selecting the element and extracting its value in a clean and reusable way.
 
 **getIframeElement**
 
@@ -2243,11 +2272,30 @@ export const getElementOnPage = async(
     return elementOnPage;
 };
 ```
-- export const getElementOnPage = async (...): Defines getElementOnPage, which retrieves an element on a specified page in an array.
+*Purpose:*
+The purpose of this function is to retrieve a specific element from a page within an array of pages based on the provided pageIndex. This is useful in cases where you are working with multiple pages and want to interact with an element on a specific one.
 
-- const elementOnPage = await pages[pageIndex].$(...): Locates the element on the page.
+*Parameters:*
 
-- return elementOnPage;: Returns the element or null.
+- elementIdentifier: ElementLocator: This is a custom type that specifies the locator (such as a CSS selector or XPath) used to identify the element we're looking for on the page.
+
+- pages: Array-Page>: This is an array of Playwright Page objects. Each page corresponds to a different tab or browser context, and this array allows the function to interact with multiple pages at once.
+
+- pageIndex: number: This is the index of the page in the pages array that we want to interact with. It specifies which page to extract the element from.
+
+*Function Breakdown:*
+
+const elementOnPage = await pages[pageIndex].$(elementIdentifier);:
+
+- pages[pageIndex]: This accesses the specific page from the pages array using the provided pageIndex. This allows the function to work with the correct page, especially when dealing with multiple tabs or browser contexts.
+
+- $(elementIdentifier): This is a Playwright method used to query the page for an element. It uses the elementIdentifier (which is a locator) to find the element matching that selector on the specific page. The $ method returns a Promise that resolves to an ElementHandle representing the element found, or null if no element matching the selector is found.
+
+- ElementHandle<SVGElement | HTMLElement>: This indicates that the function expects the result to be an element handle that corresponds to an HTML or SVG element. An ElementHandle is a reference to an element on the page, which allows us to interact with it (click, retrieve attributes, etc.).
+
+- return elementOnPage;:
+
+The function returns the elementOnPage, which is either the ElementHandle for the matched element or null if no element was found. The ElementHandle allows us to perform further actions on the element (like clicking, reading text, etc.).
 
 **getElementTextWithinPage**
 
@@ -2337,11 +2385,46 @@ export const getTableData = async(
     return JSON.stringify(table);
 };
 ```
-- export const getTableData = async (...): Defines getTableData, which retrieves all data from a table.
+*Purpose:*
+The purpose of this function is to extract data from an HTML table on the page. Specifically, it retrieves the data from all the rows of the table (excluding the header), returning it in a structured format (as a JSON string). This is useful when you want to extract the contents of a table for validation or further processing in your tests.
 
-- const table = await page.$$eval(...): Evaluates each row and cell, returning an array of cell text content.
+*Parameters:*
 
-- return JSON.stringify(table);: Converts the table data to JSON format.
+- page: Page: The Playwright Page object, representing the page we want to interact with. This object provides methods to interact with and query elements on the page.
+
+- elementIdentifier: ElementLocator: A custom type used to identify the table on the page. This could be a CSS selector (like #myTable) or another valid Playwright locator that points to the -table> element.
+
+*Function Breakdown:*
+
+const table = await page.$$eval(elementIdentifier + " tbody tr", (rows) => {...});
+
+- page.$$eval(): This method evaluates a function in the context of the page and is used to query multiple elements based on the provided selector. The $$eval method is used when we want to query multiple elements that match the selector (in this case, all the rows in the table body). It takes two arguments:
+    - elementIdentifier + " tbody tr": This is the CSS selector used to select all the rows (-tr>) inside the -tbody> of the table identified by elementIdentifier. This assumes the table data is inside a -tbody>, which is the typical structure of a table.
+
+    - (rows) => {...}: This is an arrow function that will be executed in the browser context. It receives the matched elements (the rows of the table) as an argument and processes them.
+
+- rows.map(row => {...}):
+
+The rows parameter contains an array of the -tr> elements inside the -tbody> of the table. The map() function is used to iterate over each row in the table body and process it.
+
+- const cells = row.querySelectorAll('td');:
+
+    - row.querySelectorAll('td'): For each row, the function selects all the <td> (table data) elements inside the row. This returns a NodeList of the table cells in that row.
+
+- Array.from(cells).map(cell => cell.textContent);:
+
+    - Array.from(cells): Converts the NodeList of <td> elements into a JavaScript array so that it can be used with array methods like map().
+
+    - .map(cell => cell.textContent): This processes each <td> element in the row, extracting its textContent. The textContent property of an element returns the text content inside the element (i.e., the cell’s content).
+
+This results in an array of the text contents of the cells for that row.
+
+- return JSON.stringify(table);:
+
+    - Once all rows are processed, the map() function returns an array of arrays. Each inner array contains the text content of the cells in that row.
+
+    - JSON.stringify(table): The entire table data is converted into a JSON string. This makes it easier to return and use the data in other parts of your program (such as assertions in tests).
+
 
 **elementEnabled**
 
@@ -2376,6 +2459,39 @@ export const elementChecked = async (
 - const checked = await page.isChecked(...): Uses isChecked to get the element’s checked state.
 
 - return checked;: Returns true, false, or null.
+
+**Conclusion**:
+
+We created all this HTML behavior functions, to use in our future test actions and assertions:
+
+- clickElement
+- clickElementAtIndex
+- inputElementValue
+- selectElementValue
+- checkElement
+- uncheckElement
+- inputValueOnIframe
+- inputValueOnPage
+- scrollElementIntoView
+- getElement
+- getElements
+- getElementAtIndex
+- getElementValue
+- getIframeElement
+- getElementWithinIframe
+- getTextWithinIframeElement
+- getTitleWithinPage
+- getElementOnPage
+- getElementTextWithinPage
+- getAttributeText
+- getElementText
+- getElementTextAtIndex
+- getTableData
+- elementEnabled
+- elementChecked
+
+At anytime, we can create new ones if we need.
+
 
 
 </details>

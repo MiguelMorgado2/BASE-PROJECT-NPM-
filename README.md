@@ -79,6 +79,7 @@ For the purposes of this documentation tutorial, we will be using a test website
         - [Error-helper.ts](#error-helper-ts-file)
         - [Html-behavior.ts](#html-behavior-ts-file)
         - [Input-helper.ts](#input-helper-ts-file)
+        - [Mock-behavior.ts](#mock-behavior-ts-file)
 
 
           
@@ -2697,6 +2698,162 @@ return isLookupVariable(input, lookupTrigger) ? getLookupVariable(input, lookupT
 - parseInput is the main function that checks if input is a lookup variable and either retrieves the associated value or returns input as-is.
 
 These functions allow for flexible, configurable inputs in the project, enabling lookup of dynamic values based on prefixes. Let me know if you have more questions about any part!
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+#### mock behavior ts file:
+
+File content:
+
+```ts
+import { Page } from 'playwright'
+import {
+    GlobalConfig,
+    MockConfigKey,
+    MockServerKey,
+    MockPayloadKey,
+} from '../env/global'
+
+export const interceptResponse = async (
+    page: Page,
+    mockServerKey: MockServerKey,
+    mockConfigKey: MockConfigKey,
+    mockPayloadKey: MockPayloadKey,
+    { hostsConfig, mocksConfig, mockPayloadMappings }: GlobalConfig
+): Promise<void> => {
+    const mockServerHostURL = hostsConfig[mockServerKey]
+    const mockServerRoute = mocksConfig[mockConfigKey]
+    const mockServerPayload = mockPayloadMappings[mockPayloadKey]
+
+    if (!mockServerPayload) {
+        throw Error(`🧨 Unable to find the ${mockPayloadKey} payload json file 🧨`)
+    }
+
+    await page.route(`${mockServerHostURL}${mockServerRoute}`, (route) =>
+        route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify(mockServerPayload)
+        }))
+}
+```
+<details>
+<summary>Click to open mock-behavior.ts file description</summary>
+<br>
+
+The mock-behavior.ts file is designed to intercept network requests in a Playwright-based testing framework. It dynamically responds to those requests with mocked data instead of allowing them to hit a live server. This is useful for testing how the application behaves with specific responses without needing the actual server to be up or respond in real-time. The file allows customization of different mock responses based on various configurations, improving test reliability and performance.
+
+*Imports:*
+
+```ts
+import { Page } from 'playwright'
+import {
+    GlobalConfig,
+    MockConfigKey,
+    MockServerKey,
+    MockPayloadKey,
+} from '../env/global'
+```
+
+- import { Page } from 'playwright':
+This line imports the Page type from Playwright. A Page represents a browser tab and is used to control and interact with the browser during tests. In this context, it will be used to apply the route interception for mocking network requests.
+
+- import { GlobalConfig, MockConfigKey, MockServerKey, MockPayloadKey } from '../env/global':
+This line imports types from the global.ts file. These types define the structure and allowed values for the configuration keys that are passed into the interceptResponse function:
+
+    - GlobalConfig: The overall configuration object that contains details like mock payload mappings, host URLs, and other settings.
+    - MockConfigKey: A type for keys related to mock server routes.
+    - MockServerKey: A type for keys that represent mock server URLs.
+    - MockPayloadKey: A type for keys that represent specific mock payloads.
+
+*interceptResponse Function:*
+
+```ts
+export const interceptResponse = async (
+    page: Page,
+    mockServerKey: MockServerKey,
+    mockConfigKey: MockConfigKey,
+    mockPayloadKey: MockPayloadKey,
+    { hostsConfig, mocksConfig, mockPayloadMappings }: GlobalConfig
+): Promise<void> => {
+```
+- export const interceptResponse = async:
+This is defining an asynchronous function named interceptResponse that will intercept network requests. It is exported so it can be used in other files.
+
+- page: Page:
+The function takes a Page object as an argument. This represents the browser page (or tab) that will be used to intercept network requests.
+
+- mockServerKey: MockServerKey, mockConfigKey: MockConfigKey, mockPayloadKey: MockPayloadKey:
+These are keys that reference specific configurations:
+
+    - mockServerKey refers to the mock server's URL.
+    - mockConfigKey refers to the route or endpoint that needs to be mocked.
+    - mockPayloadKey refers to the specific mock data that will be returned for the network request.
+
+- { hostsConfig, mocksConfig, mockPayloadMappings }: GlobalConfig:
+This destructures the GlobalConfig object into its properties:
+
+    - hostsConfig: Contains URLs for mock servers.
+    - mocksConfig: Contains the specific routes that will be mocked.
+    - mockPayloadMappings: Contains the actual mock data for each endpoint.
+
+- Promise-void>:
+The function is asynchronous and doesn't return a value (hence void).
+
+*Inside the Function:*
+
+```ts
+    const mockServerHostURL = hostsConfig[mockServerKey]
+    const mockServerRoute = mocksConfig[mockConfigKey]
+    const mockServerPayload = mockPayloadMappings[mockPayloadKey]
+```
+- const mockServerHostURL = hostsConfig[mockServerKey]:
+This line retrieves the URL of the mock server from the hostsConfig object using the mockServerKey. The key is a string, and it maps to a URL in the configuration.
+
+- const mockServerRoute = mocksConfig[mockConfigKey]:
+This line retrieves the route or endpoint to mock from the mocksConfig object using the mockConfigKey.
+
+- const mockServerPayload = mockPayloadMappings[mockPayloadKey]:
+This line retrieves the mock data from the mockPayloadMappings object using the mockPayloadKey. The data is expected to be in the form of a JSON payload that will be returned when the mock route is hit.
+
+*Error Handling:*
+
+```ts
+    if (!mockServerPayload) {
+        throw Error(`🧨 Unable to find the ${mockPayloadKey} payload json file 🧨`)
+    }
+```
+This checks if mockServerPayload is undefined or falsy (meaning there was no matching payload for the provided mockPayloadKey). If the payload is not found, it throws an error with a descriptive message.
+
+*Intercepting the Request:*
+
+```ts
+    await page.route(`${mockServerHostURL}${mockServerRoute}`, (route) =>
+        route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify(mockServerPayload)
+        }))
+```
+- await page.route(...):
+This tells Playwright to intercept network requests that match a specific URL pattern (mockServerHostURL + mockServerRoute). When such a request is made, the provided callback function will be executed.
+
+- ${mockServerHostURL}${mockServerRoute}:
+This combines the mock server URL and the route to form the full URL that will be intercepted.
+
+- (route) => route.fulfill(...):
+This is a callback function that Playwright will call whenever a matching request is intercepted. The route object represents the intercepted request, and route.fulfill(...) is used to provide a mock response.
+
+- contentType: 'application/json':
+This sets the content type of the mocked response to 'application/json', indicating that the response will contain JSON data.
+
+- body: JSON.stringify(mockServerPayload):
+This sets the body of the mocked response. It converts the mock payload (which is an object) into a JSON string using JSON.stringify(). The mockServerPayload is the data that will be returned when the request is intercepted.
+
+**Summary of the file:**
+
+The mock-behavior.ts file intercepts network requests made by the application during testing and returns mocked responses instead. This is done to ensure the application behaves in a predictable way for testing, even if external services or endpoints are unavailable or unreliable. By using mock data, tests become more stable and independent from external systems.
 
 </details>
 <br>

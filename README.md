@@ -78,6 +78,7 @@ For the purposes of this documentation tutorial, we will be using a test website
         - [Browser-behavior.ts](#browser-behavior-ts-file)
         - [Error-helper.ts](#error-helper-ts-file)
         - [Html-behavior.ts](#html-behavior-ts-file)
+        - [Input-helper.ts](#input-helper-ts-file)
 
 
           
@@ -2500,6 +2501,207 @@ At anytime, we can create new ones if we need.
 [Back to Index](#index)
 
 
+#### Input helper ts file
+
+File content:
+
+```ts
+import { GlobalConfig } from '../env/global'
+
+const isLookupVariable = (input: string, lookupTrigger: string): boolean => {
+    return !!(lookupTrigger && input.startsWith(lookupTrigger))
+}
+
+const getLookupVariable = (input: string, lookupTrigger: string, config: GlobalConfig): string => {
+    const key = input.substr(lookupTrigger.length)
+    const lookupValue = config.emailsConfig[key] ?? process.env[key]
+
+    if (!lookupValue) {
+        throw Error(`Could not get ${input} lookup trigger`)
+    }
+
+    return lookupValue
+}
+
+export const parseInput = (input: string, config: GlobalConfig): string => {
+    const lookupTrigger = process.env.VAR_LOOKUP_TRIGGER ?? '$.'
+    return isLookupVariable(input, lookupTrigger) ? getLookupVariable(input, lookupTrigger, config): input;
+}
+
+```
+
+<details>
+<summary>Click to open input-helper.ts file description</summary>
+<br>
+
+The purpose of the input-helper.ts file is to parse and handle special "lookup variables" in input strings. If an input string starts with a specified prefix (like $.), the file interprets it as a key for looking up a value in a configuration object (GlobalConfig) or environment variables. This allows the program to dynamically replace certain inputs with predefined values, enabling flexible and configurable data handling across different environments. If the input doesn't match the lookup pattern, it's returned as-is.
+
+*File: input-helper.ts:*
+
+```ts
+import { GlobalConfig } from '../env/global';
+```
+- Explanation: This line imports the GlobalConfig type from the global.ts file. By importing this type, we can use it to define the structure and requirements for a config object that we’ll pass into some functions in this file.
+
+- Why It’s Needed: Using GlobalConfig ensures that any config object passed into functions in this file has all the expected properties (like emailsConfig, pagesConfig, etc.) defined in global.ts.
+
+*Function 1: isLookupVariable:*
+
+```ts
+const isLookupVariable = (input: string, lookupTrigger: string): boolean => {
+    return !!(lookupTrigger && input.startsWith(lookupTrigger));
+}
+```
+*Explanation of Each Part:*
+
+- Purpose: This function checks if an input string starts with a specific prefix called lookupTrigger.
+
+*Parameters:*
+
+- input: string: The string we want to check. This could be a variable name or identifier.
+
+- lookupTrigger: string: A prefix that, if present at the start of input, indicates that input is a "lookup variable".
+
+- Return Type: boolean – This function returns either true or false, indicating whether input starts with lookupTrigger.
+
+*Line-by-Line Breakdown:*
+
+- lookupTrigger && input.startsWith(lookupTrigger)
+
+This checks two things:
+
+- First: If lookupTrigger is not empty or undefined. If lookupTrigger is an empty string or undefined, the whole condition will return false.
+
+- Second: If input starts with the lookupTrigger prefix.
+!!(...)
+!! converts the result to a boolean (true or false). This is helpful if the expression inside could return something that isn’t strictly a boolean (like null or undefined).
+
+- Overall Purpose: isLookupVariable returns true if input starts with lookupTrigger, meaning it’s a "lookup variable" (a variable that requires looking up a value based on the prefix).
+
+*Function 2: getLookupVariable:*
+
+```ts
+const getLookupVariable = (input: string, lookupTrigger: string, config: GlobalConfig): string => {
+    const key = input.substr(lookupTrigger.length);
+    const lookupValue = config.emailsConfig[key] ?? process.env[key];
+
+    if (!lookupValue) {
+        throw Error(`Could not get ${input} lookup trigger`);
+    }
+
+    return lookupValue;
+}
+```
+
+*Explanation of Each Part:*
+
+- Purpose: This function extracts a "key" from input and then looks up a corresponding value in the emailsConfig section of the config object or in environment variables.
+
+*Parameters:*
+
+- input: string: The lookup variable string (e.g., $emailExample), where $ is the lookupTrigger.
+
+- lookupTrigger: string: The prefix used to identify lookup variables (e.g., $).
+
+- config: GlobalConfig: The main configuration object, expected to have a structure as defined in global.ts.
+
+- Return Type: string – This function returns the looked-up value as a string. If no value is found, it throws an error.
+
+*Line-by-Line Breakdown:*
+
+```ts
+const key = input.substr(lookupTrigger.length);
+```
+
+- Explanation: This extracts the part of input after the lookupTrigger.
+
+Example: If input is $emailExample and lookupTrigger is $, then key would become "emailExample".
+
+```ts
+const lookupValue = config.emailsConfig[key] ?? process.env[key];
+```
+
+- Explanation: This line attempts to find the value associated with key.
+First: It looks up key in config.emailsConfig, which is a section in the GlobalConfig type intended to store email configurations.
+
+- Fallback: If config.emailsConfig[key] doesn’t exist, it checks process.env[key], which accesses environment variables.
+
+- Purpose: This setup allows flexibility: if the value isn’t found in the configuration object, it tries to get it from the environment variables.
+
+```ts
+if (!lookupValue) { throw Error(...); }
+```
+
+- Explanation: If neither config.emailsConfig nor process.env contains a value for key, the function throws an error, indicating that the lookup failed.
+
+- Purpose: This ensures the function only returns a value if one exists. If no value is found, it gives a clear error message.
+
+```ts
+return lookupValue;
+```
+
+- Explanation: If lookupValue was successfully found, it is returned as the function result.
+
+*Function 3: parseInput:*
+
+```ts
+export const parseInput = (input: string, config: GlobalConfig): string => {
+    const lookupTrigger = process.env.VAR_LOOKUP_TRIGGER ?? '$.';
+    return isLookupVariable(input, lookupTrigger) ? getLookupVariable(input, lookupTrigger, config) : input;
+}
+```
+*Explanation of Each Part:*
+
+- Purpose: This function takes an input string and determines if it’s a lookup variable. If it is, it retrieves the corresponding value; if it isn’t, it simply returns input as-is.
+
+*Parameters:*
+
+- input: string: The string we want to parse, which might be a lookup variable.
+
+- config: GlobalConfig: The configuration object that provides data for lookups.
+
+- Return Type: string – This function returns the final parsed value of input.
+
+*Line-by-Line Breakdown:*~
+
+```ts
+const lookupTrigger = process.env.VAR_LOOKUP_TRIGGER ?? '$.';
+```
+
+- Explanation: This line sets lookupTrigger, the prefix used to identify lookup variables.
+
+- Primary: It checks if process.env.VAR_LOOKUP_TRIGGER is set (this is an environment variable). If so, it uses that as the lookupTrigger.
+
+- Fallback: If VAR_LOOKUP_TRIGGER isn’t set, it defaults to "$.".
+
+- Purpose: Using process.env.VAR_LOOKUP_TRIGGER allows for flexibility; users can change the trigger prefix through environment settings.
+
+```ts
+return isLookupVariable(input, lookupTrigger) ? getLookupVariable(input, lookupTrigger, config) : input;
+```
+
+- Explanation: This line is a conditional statement (using ? :, known as the ternary operator).
+
+- First Condition: isLookupVariable(input, lookupTrigger): Checks if input is a lookup variable by seeing if it starts with lookupTrigger.
+
+- If True: getLookupVariable(input, lookupTrigger, config): Calls getLookupVariable to retrieve the corresponding value.
+
+- If False: input: Returns input as it is, without modification.
+
+- Purpose: This conditional flow ensures that only lookup variables (starting with lookupTrigger) are processed, while others are returned unchanged.
+
+*Summary:*
+
+- This file provides helper functions for processing "lookup variables" in input strings.
+- GlobalConfig (from global.ts) is used to look up values in emailsConfig or environment variables.
+- parseInput is the main function that checks if input is a lookup variable and either retrieves the associated value or returns input as-is.
+
+These functions allow for flexible, configurable inputs in the project, enabling lookup of dynamic values based on prefixes. Let me know if you have more questions about any part!
+
+</details>
+<br>
+
+[Back to Index](#index)
 
 
 

@@ -2995,19 +2995,23 @@ import { logger } from "../logger"
 ```
 - import { Frame, Page } from "playwright":
 
-This imports Frame and Page from the Playwright library. These types are used to represent browser pages and frames, which allow interactions and tests to be performed in the browser context.
-import { ElementLocator, GlobalConfig, WaitForTarget, WaitForTargetType } from "../env/global":
+    - This imports Frame and Page from the Playwright library. These types are used to represent browser pages and frames, which allow interactions and tests to be performed in the browser context.
 
-This imports types and configurations from global.ts. These include types for element locators (ElementLocator), global configuration (GlobalConfig), and waiting conditions (WaitForTarget and WaitForTargetType).
-import { envNumber } from "../env/parseEnv":
+- import { ElementLocator, GlobalConfig, WaitForTarget, WaitForTargetType } from "../env/global":
 
-This imports the envNumber function, which is used to retrieve environment variables and ensure they are returned as numbers (e.g., timeout values).
-import { handleError } from "./error-helper":
+    - This imports types and configurations from global.ts. These include types for element locators (ElementLocator), global configuration (GlobalConfig), and waiting conditions (WaitForTarget and WaitForTargetType).
 
-This imports a utility function handleError from error-helper.ts to handle errors during execution.
-import { logger } from "../logger":
+- import { envNumber } from "../env/parseEnv":
 
-This imports the logger to allow logging of information (e.g., waiting times, error messages) during the test execution.
+    - This imports the envNumber function, which is used to retrieve environment variables and ensure they are returned as numbers (e.g., timeout values).
+
+- import { handleError } from "./error-helper":
+
+    - This imports a utility function handleError from error-helper.ts to handle errors during execution.
+
+- import { logger } from "../logger":
+
+    - This imports the logger to allow logging of information (e.g., waiting times, error messages) during the test execution.
 
 *waitForResult Enum:*
 

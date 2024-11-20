@@ -28,8 +28,8 @@ export const waitFor = async <T>(
   globalConfig: GlobalConfig,
   options?: { timeout?: number; wait?: number; target?: WaitForTarget; type?: WaitForTargetType, failureMessage?: string }
 ): Promise<void> => {
-  const { timeout = 10000, wait = 2000, target = '', type = 'element' } = options || {};
 
+  const { timeout = 10000, wait = 2000, target = '', type = 'element' } = options || {};
   const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
   const startDate = new Date();
   let notAvailableContext: string | undefined

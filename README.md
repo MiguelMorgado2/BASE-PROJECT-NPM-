@@ -80,6 +80,7 @@ For the purposes of this documentation tutorial, we will be using a test website
         - [Html-behavior.ts](#html-behavior-ts-file)
         - [Input-helper.ts](#input-helper-ts-file)
         - [Mock-behavior.ts](#mock-behavior-ts-file)
+        - [Wait-for-behavior.ts](#wait-for-behavior-ts-file)
 
 
           
@@ -2859,6 +2860,1124 @@ The mock-behavior.ts file intercepts network requests made by the application du
 <br>
 
 [Back to Index](#index)
+
+
+#### Wait for behavior ts file
+
+File content:
+
+```ts
+import {
+  Frame,
+  Page
+} from "playwright"
+import {
+  ElementLocator,
+  GlobalConfig,
+  WaitForTarget,
+  WaitForTargetType
+} from "../env/global"
+import { envNumber } from "../env/parseEnv"
+import {handleError} from "./error-helper";
+import {logger} from "../logger";
+
+export const enum waitForResult {
+  PASS = 1,
+  FAIL = 2,
+  ELEMENT_NOT_AVAILABLE=3
+}
+
+export type waitForResultWithContext = {
+  result: waitForResult
+  replace?: string
+}
+
+export const waitFor = async <T>(
+  predicate: () => waitForResult | Promise<waitForResult> | waitForResultWithContext | Promise<waitForResultWithContext>,
+  globalConfig: GlobalConfig,
+  options?: { timeout?: number; wait?: number; target?: WaitForTarget; type?: WaitForTargetType, failureMessage?: string }
+): Promise<void> => {
+  const { timeout = 10000, wait = 2000, target = '', type = 'element' } = options || {};
+
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  const startDate = new Date();
+  let notAvailableContext: string | undefined
+
+  try {
+    while (new Date().getTime() - startDate.getTime() < timeout) {
+      const result = await predicate();
+      let resultAs: waitForResult
+
+      if ((result as waitForResultWithContext).result) {
+        notAvailableContext = (result as waitForResultWithContext).replace
+        resultAs = (result as waitForResultWithContext).result
+      } else {
+        resultAs = result as waitForResult
+      }
+
+      if (resultAs === waitForResult.PASS) {
+        return
+      } else if (resultAs === waitForResult.FAIL) {
+        throw new Error(options?.failureMessage || "Test assertion failed")
+      }
+
+      await sleep(wait);
+      logger.debug(`Waiting ${wait}ms`);
+    }
+    throw new Error(`Wait time of ${timeout}ms for ${notAvailableContext || target} exceeded`);
+  } catch (error) {
+    handleError(globalConfig.errorsConfig, error as Error, target, type)
+  }
+};
+
+export const waitForSelector = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<boolean> => {
+  try {
+    await page.waitForSelector(elementIdentifier, {
+      state: 'visible',
+      timeout: envNumber('SELECTOR_TIMEOUT')
+    })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+export const waitForSelectorOnPage = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number
+): Promise<boolean> => {
+  try {
+    await pages[pageIndex].waitForSelector(elementIdentifier,{
+      state: 'visible',
+      timeout: envNumber('SELECTOR_TIMEOUT')
+    })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+
+export const waitForSelectorInIframe = async(
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promise<boolean> => {
+  try {
+    await elementIframe?.waitForSelector(elementIdentifier, {
+      state: 'visible',
+      timeout: envNumber('SELECTOR_TIMEOUT')
+    })
+    return true
+  } catch (e) {
+    return false
+  }
+
+}
+```
+<details>
+<summary>Click to open wait-for-behavior.ts file description</summary>
+<br>
+
+This file contains various helper functions that assist in waiting for specific elements or conditions to appear on the page or within iframes. These utilities are particularly useful for handling asynchronous operations in a Playwright-based automation test framework. The functions are designed to wait for elements to become visible or perform checks in a structured way, allowing the test to proceed only once the desired conditions are met. It also includes error handling in case the wait time exceeds the set threshold or if any other issues arise during the waiting process.
+
+*Imports:*
+
+```ts
+import { Frame, Page } from "playwright"
+import { ElementLocator, GlobalConfig, WaitForTarget, WaitForTargetType } from "../env/global"
+import { envNumber } from "../env/parseEnv"
+import { handleError } from "./error-helper"
+import { logger } from "../logger"
+```
+- import { Frame, Page } from "playwright":
+
+This imports Frame and Page from the Playwright library. These types are used to represent browser pages and frames, which allow interactions and tests to be performed in the browser context.
+import { ElementLocator, GlobalConfig, WaitForTarget, WaitForTargetType } from "../env/global":
+
+This imports types and configurations from global.ts. These include types for element locators (ElementLocator), global configuration (GlobalConfig), and waiting conditions (WaitForTarget and WaitForTargetType).
+import { envNumber } from "../env/parseEnv":
+
+This imports the envNumber function, which is used to retrieve environment variables and ensure they are returned as numbers (e.g., timeout values).
+import { handleError } from "./error-helper":
+
+This imports a utility function handleError from error-helper.ts to handle errors during execution.
+import { logger } from "../logger":
+
+This imports the logger to allow logging of information (e.g., waiting times, error messages) during the test execution.
+
+*waitForResult Enum:*
+
+```ts
+export const enum waitForResult {
+  PASS = 1,
+  FAIL = 2,
+  ELEMENT_NOT_AVAILABLE = 3
+}
+```
+- export const enum waitForResult {...}:
+This is an enum declaration in TypeScript that defines possible outcomes for waiting operations:
+
+    - PASS (1): The condition was successfully met.
+    - FAIL (2): The condition failed.
+    - ELEMENT_NOT_AVAILABLE (3): The element was not available within the expected time.
+
+*waitFor Function:*
+
+```ts
+export const waitFor = async <T>(
+  predicate: () => waitForResult | Promise<waitForResult> | waitForResultWithContext | Promise<waitForResultWithContext>,
+  globalConfig: GlobalConfig,
+  options?: { timeout?: number; wait?: number; target?: WaitForTarget; type?: WaitForTargetType, failureMessage?: string }
+): Promise<void> => {
+```
+- export const waitFor:
+
+    - export makes this function available outside this module, so it can be used in other files.
+
+    - const declares this function as a constant, meaning waitFor cannot be reassigned.
+
+    - The function is an async function, meaning it will return a Promise, enabling asynchronous operations within the function.
+T
+- Type Parameters -T>:
+
+    - -T> is a generic type parameter. It’s included to make waitFor flexible in handling various types. While T isn’t explicitly used within this function, it gives flexibility for future enhancements if additional types need to be introduced.
+
+*Parameters:*
+
+- predicate:
+
+    - This is a function that returns a condition we want to check repeatedly.
+    - predicate can return:
+        - waitForResult (an enum to represent different outcomes: PASS, FAIL, ELEMENT_NOT_AVAILABLE)
+        - waitForResultWithContext (an object with extra context information alongside waitForResult)
+        - Or Promise versions of these values, which allow predicate to execute asynchronous code.
+
+    - predicate is expected to return a value that helps us decide whether we can stop waiting or should keep checking.
+
+- globalConfig: GlobalConfig:
+
+    - globalConfig is an object that contains configuration settings used globally across the project.
+    - This could include settings like error-handling configurations, potentially imported from a settings file.
+
+- options?: { ... }:
+    - options is an optional parameter (indicated by the ?) that allows fine-tuning how waitFor should behave.
+    - options is an object that can have:
+        - timeout: Maximum time in milliseconds that waitFor should keep checking the predicate before giving up. Default is set to 10000 (10 seconds).
+        - wait: Delay in milliseconds between each check. Default is 2000 (2 seconds).
+        - target and type: Metadata that describe what waitFor is waiting for, such as an element’s name (target) and its type (type, e.g., “element”). These can help in logging or error handling.
+        - failureMessage: A custom message to throw in case the wait fails (useful for debugging).
+
+- : Promise-void>:
+
+    - The return type of the function is Promise<void>, which means it does not resolve to any value (void) but allows asynchronous operations.
+    - If all checks pass, the function completes silently; if there’s an error or timeout, the promise will reject with an error.
+
+**Summary of the Code:**
+
+This waitFor function is a utility designed to run an asynchronous loop, checking a specific condition (predicate) until it either succeeds, fails, or reaches a specified timeout. The added options (timeout, wait, etc.) make it customizable for various conditions and flexible for many different types of waiting scenarios in an automation testing framework. The use of the GlobalConfig parameter allows for consistent error handling, and the function is particularly helpful for dealing with asynchronous events or waiting for specific elements or states in Playwright.
+
+**Extracting Options:**
+
+```Ts
+  const { timeout = 10000, wait = 2000, target = '', type = 'element' } = options || {};
+```
+This line uses destructuring with default values to extract and set values from the options object. Here’s a breakdown of how it works and what each part does:
+
+- const:
+    - Declares a constant variable to hold the destructured values. This means these extracted values (timeout, wait, target, type) cannot be reassigned within this function.
+
+- { timeout = 10000, wait = 2000, target = '', type = 'element' }:
+    - This is object destructuring with default values. It extracts properties from the options object and, if a property is not provided, assigns a default value instead.
+
+Here’s what each extracted variable represents:
+
+- timeout = 10000:
+    - Extracts the timeout property from options.
+    - If options.timeout is undefined, it defaults to 10000, meaning 10,000 milliseconds (or 10 seconds).
+    - This value represents the maximum time to keep checking the predicate before stopping.
+
+- wait = 2000:
+    - Extracts the wait property from options.
+    - If options.wait is undefined, it defaults to 2000, meaning 2,000 milliseconds (or 2 seconds).
+    - This is the delay between each check. So, every 2 seconds, the function will re-evaluate the predicate function until either a passing condition is met or the timeout is reached.
+
+- target = '':
+    - Extracts the target property from options.
+    - If options.target is undefined, it defaults to an empty string ('').
+    - target is metadata, likely representing the specific element or item the function is waiting for. This can be useful for logging or error messages (e.g., if you’re waiting for a button to appear, target could be set to "Submit Button").
+
+- type = 'element':
+    - Extracts the type property from options.
+    - If options.type is undefined, it defaults to the string 'element'.
+    - This provides additional context, describing what kind of item the function is waiting for. Typical values could be element, attribute, or other specific types in the context of the test.
+    - This can also be helpful for error handling or logging by providing more detailed information on the type of item involved in the wait condition.
+
+- = options || {};:
+    - options || {} is a fallback in case options is not provided.
+    - If options is undefined or null, it defaults to an empty object {}.
+    - This ensures that destructuring can proceed without errors, even if options was never passed.
+
+**Sleep Helper Function:**
+
+```ts
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+```
+This line of code defines a helper function called sleep, which introduces a delay (or pause) for a specified number of milliseconds. This is commonly used in asynchronous programming to temporarily halt execution, allowing time for certain actions to complete before continuing.
+
+- const sleep =:
+    - This declares a constant function named sleep. Since it’s a constant, this function reference cannot be changed or reassigned in this scope.
+
+- (ms: number):
+    - This specifies that sleep accepts one argument named ms, which is of type number.
+    - The ms parameter stands for milliseconds and indicates how long the function should wait or pause. For instance, if you want a 2-second delay, you would pass 2000 (since 1000 milliseconds equals 1 second).
+
+- => new Promise(...):
+    - This is an arrow function returning a new Promise.
+    - A Promise in JavaScript (and TypeScript) is a construct that represents an operation that will complete in the future, either successfully or with a failure.
+    - By using a Promise, sleep becomes an asynchronous function, meaning it can be awaited in other parts of your code, allowing the code to pause at this function until the specified delay is over.
+
+- resolve => setTimeout(resolve, ms):
+    - Inside the Promise constructor, we provide a function with a single parameter called resolve.
+    - resolve is a function provided by the Promise system that, when called, marks the promise as completed or "resolved."
+    - setTimeout is a built-in JavaScript function that executes a function after a specified delay, given in milliseconds.
+    - Here, setTimeout is given resolve as the function to execute after ms milliseconds. When resolve is called, it completes the promise, allowing the await sleep(ms) line to move on to the next line of code after the delay.
+
+**Start Time and Context:**
+
+```ts
+const startDate = new Date();
+let notAvailableContext: string | undefined;
+```
+
+These two lines are setting up variables that are essential for tracking the start time and handling any error context if the target element or condition isn’t found within the allowed timeframe.
+
+- const startDate = new Date();
+
+**Purpose:**
+ This line captures the exact date and time when the waitFor function starts executing. The value of startDate is then used to track how long the function has been running.
+
+- Details:
+    - new Date() creates a new Date object representing the current date and time at the exact moment this line of code executes.
+    - const startDate = assigns this Date object to a constant named startDate. This ensures the recorded start time doesn’t change, allowing for accurate measurement of elapsed time.
+    - In this context, startDate helps determine if the waitFor function is running longer than the maximum allowed timeout (specified in the options), which would mean the target condition hasn’t been met within the allotted time.
+
+- How it’s used:
+    - Later in the waitFor function, you’ll see a comparison between the current time and startDate. By subtracting startDate from the current time, you can check if the allowed timeout has been exceeded.
+    - This is especially useful in long-running asynchronous loops or waiting mechanisms, where precise tracking of elapsed time is crucial.
+
+- let notAvailableContext: string | undefined;
+
+**Purpose:**
+ This line defines a variable, notAvailableContext, that will store information related to the target element or condition if it’s not found within the timeout period.
+
+- Details:
+    - let is used here, allowing notAvailableContext to be reassigned later in the function.
+    -The type is string | undefined, which means that notAvailableContext can either hold a string value or be undefined.
+        - string: This will hold a context message, likely indicating which element or condition couldn’t be found, making error messages more informative.
+        - undefined: The variable is initially undefined, indicating that no context message is available until it’s set.
+    - The notAvailableContext variable is often set when the waitFor function checks a condition and determines that the target isn’t available. For instance, if an element or condition fails to load, notAvailableContext can hold the name or identifier of that element.
+
+- How it’s used:
+    - If the waitFor function times out before the condition is met, this variable can be included in the error message, providing more context about what went wrong.
+    - When debugging or logging, notAvailableContext can help developers understand which part of the code or element failed to load, allowing for more precise troubleshooting.
+
+**Try-Catch Block:**
+
+```ts
+  try {
+    while (new Date().getTime() - startDate.getTime() < timeout) {
+      const result = await predicate();
+```
+This section of code sets up a loop that repeatedly checks if a specified condition has been met, pausing the loop once the condition is fulfilled or a timeout is reached. Here’s a detailed breakdown of what each part is doing:
+
+- try {
+    - Purpose: The try block initiates error handling. It surrounds the loop and any other code that might throw an error within this function.
+
+    - Details:
+        - If an error occurs anywhere inside this try block, the catch section (found later in the code) will handle it.
+        - Using try here helps manage any unexpected failures while waiting for the condition to pass. For example, if predicate() encounters an error, this structure ensures the error won’t crash the program but will be caught and handled gracefully.
+
+- while (new Date().getTime() - startDate.getTime() < timeout) {
+    - Purpose: This line creates a loop that will keep running as long as the current elapsed time is less than the specified timeout.
+
+    - Details:
+        - while is a type of loop that runs as long as the condition inside its parentheses remains true.
+        - Inside the while condition, the expression new Date().getTime() - startDate.getTime() < timeout calculates how much time has passed since startDate.
+            - new Date().getTime() returns the current time in milliseconds.
+            - startDate.getTime() is the start time recorded earlier in milliseconds.
+            - Subtracting startDate.getTime() from new Date().getTime() gives the elapsed time in milliseconds.
+            - The loop will continue if the elapsed time is still less than the timeout. As soon as the elapsed time exceeds the timeout, the loop will stop.
+        - In effect, this loop tries to check the specified condition (predicate) repeatedly within a certain timeframe (up to the timeout limit).
+        - Why it’s useful: By continuously looping up to the timeout limit, this function allows for waiting until a condition becomes true without waiting indefinitely.
+
+- const result = await predicate();
+    - Purpose: This line runs the predicate function (an action or condition check passed to waitFor), and it waits for its result each time the loop runs.
+
+    - Details:
+        - const result = assigns the outcome of the predicate function to the variable result.
+        - await predicate() pauses the function until predicate() completes and returns a value.
+            - The predicate function is a callback function expected to return either a simple waitForResult or a waitForResultWithContext (defined types that signal if the condition was successful, failed, or not available).
+        - await ensures the code waits for predicate() to finish before moving to the next line, which is crucial for asynchronous operations that don’t finish immediately.
+        - Each time predicate() is called, it checks a certain condition, such as whether an element is visible or a variable has reached a specific value.
+            - If the condition is true (e.g., an element becomes visible), predicate would return waitForResult.PASS.
+            - If the condition fails or times out, it might return waitForResult.FAIL or waitForResult.ELEMENT_NOT_AVAILABLE, signaling that the loop should either stop or keep trying.
+
+**Summary:**
+
+This section forms the core of the timeout-based condition check:
+- It sets up a while loop that will keep running until either:
+    - The specified condition is fulfilled.
+    - The timeout duration has elapsed.
+- It repeatedly calls predicate() (the condition-checking function) and waits for its response (result), allowing the loop to check the condition at each iteration without prematurely ending or waiting indefinitely.
+
+This structure is essential for scenarios where a web page may take varying amounts of time to load elements or fulfill specific conditions, allowing the code to react flexibly while maintaining a strict time limit.
+
+**Processing the Predicate Result:**
+
+```ts
+let resultAs: waitForResult
+if ((result as waitForResultWithContext).result) {
+  notAvailableContext = (result as waitForResultWithContext).replace
+  resultAs = (result as waitForResultWithContext).result
+} else {
+  resultAs = result as waitForResult
+}
+```
+This code snippet is handling the different possible formats of the result returned by the predicate function. Since result can be either a waitForResult or a waitForResultWithContext, this code determines which type of result was returned, extracts relevant information, and normalizes it to a single type (waitForResult). Let’s go through each line in detail.
+
+- 1. let resultAs: waitForResult
+Purpose: Declares a variable resultAs with the type waitForResult, which is used to store the normalized outcome of the predicate function.
+
+        - Details:
+
+        - let allows resultAs to be reassigned within this code block.
+        - Declaring resultAs as type waitForResult enforces that, regardless of the original type (waitForResult or waitForResultWithContext), the final value stored in resultAs will always be one of the standardized results: PASS, FAIL, or ELEMENT_NOT_AVAILABLE.
+
+- 2. if ((result as waitForResultWithContext).result) {
+Purpose: Checks if result is of type waitForResultWithContext, meaning it contains additional context information.
+
+        - Details:
+
+        - The expression (result as waitForResultWithContext).result casts result to type waitForResultWithContext and tries to access its result property.
+        - In TypeScript, as is a type assertion. It tells TypeScript to treat result as a waitForResultWithContext temporarily to access its properties.
+        - If result has a result property, it indicates that result is indeed a waitForResultWithContext type, not a simple waitForResult.
+        - The if condition will execute if result includes additional context (i.e., it’s a waitForResultWithContext).
+
+- 3. notAvailableContext = (result as waitForResultWithContext).replace
+    - Purpose: If result is a waitForResultWithContext, this line assigns the replace property of result to notAvailableContext.
+
+        - Details:
+
+        - (result as waitForResultWithContext).replace casts result to the waitForResultWithContext type and accesses its replace property.
+        - replace likely contains a message or identifier for additional context when the condition isn’t met (e.g., describing why an element isn’t available).
+        - Assigning this to notAvailableContext saves this extra context, allowing it to be referenced later (e.g., for logging or error messages).
+
+- 4. resultAs = (result as waitForResultWithContext).result
+    - Purpose: This line assigns the result property of the waitForResultWithContext object to resultAs.
+
+        - Details:
+
+        - Since we know result is a waitForResultWithContext, (result as waitForResultWithContext).result accesses its result property.
+        - This result property will hold a waitForResult value (e.g., PASS, FAIL, or ELEMENT_NOT_AVAILABLE), and assigning it to resultAs normalizes it for further processing.
+        - After this line, resultAs will contain a standardized result that can be used to determine if the condition was met.
+
+- 5. else { resultAs = result as waitForResult }
+    - Purpose: If result isn’t a waitForResultWithContext, it must be a simple waitForResult. This line assigns result directly to resultAs.
+
+        - Details:
+
+        - result as waitForResult casts result as a waitForResult type.
+        - This covers the case where predicate() returned only a waitForResult, without any additional context.
+        - resultAs will now contain the standardized result (PASS, FAIL, or ELEMENT_NOT_AVAILABLE) directly from result.
+
+**Summary:**
+
+- This code block checks whether the predicate function returned a basic result (waitForResult) or an extended result with context (waitForResultWithContext). 
+- If result includes extra context, it stores the replace message in notAvailableContext and assigns the standardized result to resultAs. 
+- If no extra context is present, it assigns the result directly to resultAs. - This way, resultAs can be used in the remainder of the code to determine the next action based on a standardized condition-checking result.
+
+
+**Handling Result States:**
+
+```Ts
+if (resultAs === waitForResult.PASS) {
+  return;
+} else if (resultAs === waitForResult.FAIL) {
+  throw new Error(options?.failureMessage || "Test assertion failed");
+}
+```
+
+This part of the code is the core logic that evaluates the result of the predicate function and decides whether the waitFor function should continue, exit successfully, or throw an error.
+
+Here, resultAs is the result of the predicate function. It has been processed earlier in the code to ensure it is a valid waitForResult value. The possible values for resultAs are likely defined in an enum like this:
+
+```Ts
+enum waitForResult {
+  PASS, // Represents success
+  FAIL, // Represents failure
+  ELEMENT_NOT_AVAILABLE, // Could be another possible result (handled outside this block)
+}
+```
+
+**Condition 1: PASS:**
+
+```ts
+if (resultAs === waitForResult.PASS) {
+  return;
+}
+```
+
+- resultAs === waitForResult.PASS:
+    - This means the predicate function evaluated the condition successfully (e.g., an element was found, or a specific condition was met).
+return:
+- Exits the waitFor function immediately because the desired outcome has been achieved.
+- The function does not proceed to any further retries or logic.
+
+**Condition 2: FAIL:**
+
+```Ts
+else if (resultAs === waitForResult.FAIL) {
+  throw new Error(options?.failureMessage || "Test assertion failed");
+}
+```
+- resultAs === waitForResult.FAIL:
+
+    - This means the predicate function evaluated the condition and determined that it failed. The failure is final and cannot be resolved by retrying (e.g., an assertion explicitly failed, or a test condition was definitively not met).
+
+- throw new Error(...):
+
+    - Throws an error immediately to indicate the failure to the calling code. This stops execution of the waitFor function and passes the error up the call stack.
+
+- Error Message:
+
+    - options?.failureMessage: If a custom failureMessage was provided in the options object, it uses that as the error message.
+    - Default Message: If no failureMessage is specified, it defaults to "Test assertion failed".
+
+- Purpose:
+
+    - This mechanism ensures the test or operation fails gracefully with clear messaging when the desired condition is definitively unachievable.
+
+**Wait Before Next Check and error:**
+
+```ts
+await sleep(wait);
+logger.debug(`Waiting ${wait}ms`);
+}
+throw new Error(`Wait time of ${timeout}ms for ${notAvailableContext || target} exceeded`);
+} catch (error) {
+handleError(globalConfig.errorsConfig, error as Error, target, type);
+}
+};
+```
+1. await sleep(wait);
+
+    - Purpose:
+
+        - This introduces a delay before retrying the predicate function.
+        - The delay duration is determined by the wait parameter, specified in milliseconds.
+
+    - How it works:
+
+        - The sleep function is defined earlier:
+
+```ts
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+```
+- This creates a promise that resolves after the specified time (ms).
+- By using await, the execution pauses here for the duration of wait.
+
+    - Why?
+
+        - In many scenarios (e.g., waiting for an element to appear), conditions take time to change. The wait period gives the system time to reach the desired state before retrying the operation.
+
+2. logger.debug(\Waiting ${wait}ms`);
+
+    - Purpose:
+
+        - Logs a message to indicate how long the function is pausing between retries.
+        - Useful for debugging or troubleshooting why the function is taking time or how often it is retrying.
+
+    - How it works:
+
+        - The logger.debug method outputs a debug-level log.
+        - The message includes the wait duration in milliseconds, formatted using a template literal.
+
+    - Why?
+
+        - For automation scripts, timing issues are common (e.g., page load delays). This log provides insights into how long the function waited, helping you identify inefficiencies or adjust the wait/timeout parameters.
+
+3. throw new Error(\Wait time of ${timeout}ms for ${notAvailableContext || target} exceeded`);
+
+    - Purpose:
+
+        - If the total time elapsed (timeout) has been exceeded and the predicate function never returned PASS, the function throws an error.
+
+    - How it works:
+
+        - The code calculates the elapsed time during the retry loop:
+```ts        
+new Date().getTime() - startDate.getTime()
+```
+
+If this exceeds timeout, it exits the loop and throws an error with a clear message.
+
+- Error Message:
+
+    - The message includes:
+
+        - timeout: The total time allowed for the operation (in milliseconds).
+        - notAvailableContext || target:
+            - : A string set earlier in the code (e.g., to indicate what wasn’t found).
+            - target: A fallback identifier for what the function was waiting for.
+
+    - Example: "Wait time of 10000ms for submit-button exceeded"
+
+- Why?
+
+    - If the desired condition isn’t met within the allowed time, the function needs to report failure. Throwing an error ensures the failure propagates to the calling code or the surrounding try-catch.
+
+4. catch (error) {
+
+    - Purpose:
+
+        - Captures any error that occurs during the retry process (including the one thrown above).
+        - Ensures the error is handled appropriately rather than crashing the script abruptly.
+
+    - How it works:
+
+        - The try block wraps the main logic of waitFor, including the predicate calls and the retry loop.
+        - If an error occurs (e.g., timeout, unexpected issue), it is caught here for further processing.
+
+5. handleError(globalConfig.errorsConfig, error as Error, target, type);
+
+    - Purpose:
+
+        - Passes the caught error to the handleError function for structured handling and logging.
+        - This allows consistent error processing across your automation framework.
+
+    - Parameters Passed:
+
+        - globalConfig.errorsConfig:
+
+            - A configuration object that defines how errors should be handled (e.g., mapping error messages, retry strategies).
+
+        - error as Error:
+            - The error object from the catch block, explicitly cast to Error type for clarity.
+
+        - target:
+            - The identifier for what the function was waiting for (e.g., an element or condition).
+
+        - type:
+            - The type of the target (e.g., 'element'), providing additional context for error handling.
+
+    - Why?
+
+        - Centralized error handling ensures that all errors are processed, logged, and potentially rethrown in a consistent manner. This makes debugging easier and reduces the risk of missed issues.
+
+    - What Happens After handleError?
+
+        - Depending on how handleError is implemented, it may:
+
+            - Log the error with additional details (e.g., parsed error messages, stack traces).
+            - Re-throw the error, causing the script to fail gracefully.
+            - Suppress the error (e.g., for non-critical issues), allowing the script to continue.
+
+**Summary:**
+
+- Retry Loop: The code waits (sleep) between retries, logging each delay (logger.debug).
+- Timeout Handling: If the total wait time exceeds the timeout value, an error is thrown with detailed information.
+- Error Management: The catch block ensures all errors (expected or unexpected) are processed through the handleError function, maintaining consistent error handling in your framework.
+
+**Wait for Selector function:**
+
+```Ts
+export const waitForSelector = async (
+    page: Page,
+    elementIdentifier: ElementLocator
+): Promise<boolean> => {
+  try {
+    await page.waitForSelector(elementIdentifier, {
+      state: 'visible',
+      timeout: envNumber('SELECTOR_TIMEOUT')
+    })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+```
+1. page: Page,
+
+    - What it is:
+
+        - The first argument, page, is a Playwright Page object.
+        - Represents the browser page (or tab) on which the script will perform actions or queries.
+
+    - Why?
+
+        - This is required to interact with the web page in Playwright.
+        - All element-related operations (e.g., finding, clicking) are performed using the Page object.
+
+2. elementIdentifier: ElementLocator
+
+    - What it is:
+
+        - The second argument, elementIdentifier, is a locator for the target element.
+        - This can be a CSS selector, XPath, or another type of locator supported by Playwright.
+
+    - Why?
+
+        - To identify and operate on specific elements in the DOM.
+
+    - Example:
+
+        - If elementIdentifier = '#submit-button', the function will check for the visibility of the element with id="submit-button".
+
+3. try {
+
+    - Purpose:
+
+        - Wraps the logic in a try block to handle potential errors gracefully.
+
+    - Why?
+
+        - Operations like page.waitForSelector can fail (e.g., the element is not found or doesn't become visible within the timeout).
+        - The catch block ensures the function does not crash the script in case of failure.
+
+4. await page.waitForSelector(elementIdentifier, {
+
+    - Purpose:
+
+        - The function waits for the element identified by elementIdentifier to meet specific conditions (state: 'visible').
+        - This is an asynchronous operation, so the await keyword is used to pause execution until the element is visible or the timeout is reached.
+
+    - How it works:
+
+        - page.waitForSelector is a Playwright method that:
+            - Searches for the element in the DOM using the given elementIdentifier.
+            - Waits for the element to satisfy the specified state condition.
+
+5. state: 'visible',
+
+    - What it means:
+
+        - Specifies that the element must be visible to satisfy the condition.
+
+        - Visible means:
+            - The element exists in the DOM.
+            - The element has a non-zero size (width > 0 and height > 0).
+            - The element is not hidden (e.g., via display: none or visibility: hidden).
+
+    - Why?
+
+        - To ensure the element is ready for user interaction or further testing.
+
+6. timeout: envNumber('SELECTOR_TIMEOUT')
+
+    - What it is:
+
+        - Specifies the maximum time (in milliseconds) to wait for the element to become visible.
+        - The timeout value is fetched dynamically using envNumber('SELECTOR_TIMEOUT').
+
+    - What is envNumber?
+
+        - A helper function that retrieves and parses an environment variable.
+
+    - Why?
+
+        - Different test environments may require different timeouts (e.g., slower environments may need a longer timeout).
+
+    - Example:
+
+        - If process.env.SELECTOR_TIMEOUT = '10000', the timeout will be set to 10 seconds.
+
+7. return true
+
+    - When it runs:
+
+        - If the await page.waitForSelector call succeeds (i.e., the element becomes visible within the timeout), the function returns true.
+
+    - Why?
+
+        - Indicates that the element is visible, signaling success to the caller.
+
+8. } catch (e) {
+
+    - When it runs:
+
+        - If an error occurs during the await page.waitForSelector call, the catch block is executed.
+
+    - What errors might occur?
+
+        - The element doesn’t exist in the DOM.
+        - The element is not visible within the timeout period.
+        - Other unexpected issues during execution.
+
+    - Why?
+
+        - Ensures the script handles errors gracefully instead of crashing.
+
+9. return false
+
+    - When it runs:
+
+        - If the try block throws an error (e.g., the element is not found or not visible), the function returns false.
+
+    - Why?
+
+        - Signals to the caller that the element is not visible.
+        - Allows the caller to decide the next steps (e.g., retrying or logging an error).
+
+**Summary:**
+
+- This function provides a simple, reusable way to check for the visibility of an element:
+
+    - Waits for the element to become visible within a configurable timeout.
+    - Returns true if successful.
+    - Returns false if the timeout is exceeded or an error occurs.
+    - Helps avoid unhandled errors and provides flexibility to the caller.
+
+**Wait for selector on page function:**
+
+```Ts
+export const waitForSelectorOnPage = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number
+): Promise<boolean> => {
+  try {
+    await pages[pageIndex].waitForSelector(elementIdentifier,{
+      state: 'visible',
+      timeout: envNumber('SELECTOR_TIMEOUT')
+    })
+    return true
+  } catch (e) {
+    return false
+  }
+}
+```
+1. Function Declaration
+
+```ts
+export const waitForSelectorOnPage = async (
+    page: Page,
+    elementIdentifier: ElementLocator,
+    pages: Array<Page>,
+    pageIndex: number
+): Promise<boolean> => {
+```
+
+- What it is:
+
+    - Declares an asynchronous function named waitForSelectorOnPage.
+    - Exported so it can be imported and used in other parts of the project.
+
+ - Arguments:
+
+    - page: Page:
+         - Represents the active Playwright Page object, possibly redundant in this function (used to maintain consistency with the signature of similar utilities).
+    - elementIdentifier: ElementLocator:
+        - A locator to identify the target element on the page (e.g., CSS selector, XPath, etc.).
+
+    - pages: ArrayPage>:
+        - An array of Page objects, representing multiple browser tabs, popups, or frames opened during the test.
+
+    - pageIndex: number:
+        - The index of the specific page within the pages array to search for the element.
+
+- Returns:
+
+    - A Promiseboolean>:
+        - Resolves to true if the element becomes visible.
+        - Resolves to false if the element is not found or doesn't meet the visibility criteria within the timeout.
+
+2. try {
+
+    - Purpose:
+
+        - Ensures any runtime errors (e.g., element not found, invalid page index) are handled gracefully.
+
+    - Why?
+
+        - Prevents crashes when dealing with asynchronous operations or invalid inputs.
+
+3. await pages[pageIndex].waitForSelector(elementIdentifier, {
+
+    - What it does:
+
+        - Accesses the specific Page object from the pages array using pageIndex.
+        - Calls the waitForSelector method on that Page to wait for the element identified by elementIdentifier to meet specific visibility conditions.
+
+    - Key Points:
+
+        - pages[pageIndex]:
+            - Accesses the desired page (tab or frame) from the pages array.
+            - If the index is invalid (e.g., out of bounds), the code will throw an error.
+
+    - waitForSelector:
+        - Waits for the element to be visible on the page.
+
+    - Arguments:
+
+        - elementIdentifier:
+            - The locator of the element to be checked.
+
+    - Options:
+        - state: 'visible':
+            - Ensures the element is visible on the page (exists in the DOM, not hidden, and has dimensions).
+
+    - timeout: envNumber('SELECTOR_TIMEOUT'):
+        - Specifies the maximum time (in milliseconds) to wait for the element.
+
+4. state: 'visible',
+
+    - What it means:
+
+        - Waits for the element to become visible on the page.
+
+    - Visibility Criteria:
+
+        - The element exists in the DOM.
+        - It has non-zero dimensions.
+        - It is not hidden by display: none or visibility: hidden.
+
+5. timeout: envNumber('SELECTOR_TIMEOUT')
+
+    - Purpose:
+
+        - Specifies how long to wait for the element before timing out.
+
+    - How envNumber Works:
+
+        - Fetches an environment variable (e.g., SELECTOR_TIMEOUT) and converts it to a number.
+
+    - Why?
+
+        - Allows dynamic configuration of timeout values for different environments (e.g., faster timeouts for local tests, slower for CI).
+
+    - Example:
+
+        - If SELECTOR_TIMEOUT = 10000 (10 seconds), the function waits up to 10 seconds for the element to become visible.
+
+6. return true
+
+    - What it does:
+
+        - If waitForSelector succeeds (the element becomes visible), the function returns true.
+
+    - Why?
+
+        - Indicates successful visibility of the element to the caller.
+
+7. } catch (e) {
+
+    - What it does:
+
+        - Executes when an error occurs in the try block.
+
+    - What errors might occur?
+
+        - pageIndex is out of bounds (e.g., pages[pageIndex] doesn’t exist).
+        - The element doesn’t meet the visible condition within the timeout.
+        - Other unexpected runtime errors.
+
+    - Why?
+
+        - Handles these errors gracefully without crashing the script.
+
+8. return false
+
+    - What it does:
+
+        - If the try block fails, the function returns false.
+
+    - Why?
+
+        - Signals to the caller that the element is either not visible or the operation failed.
+
+**Summary:**
+
+- The waitForSelectorOnPage function enhances flexibility by allowing you to target specific pages in a multi-tab or multi-frame scenario:
+
+    - Waits for an element to become visible on a specific page.
+    - Handles timeouts and invalid indices gracefully.
+    - Returns true if successful, false otherwise.
+    - Helps manage complex multi-page test scenarios effectively.
+
+
+**Wait for selector in Iframe function:**
+
+```Ts
+export const waitForSelectorInIframe = async(
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promise<boolean> => {
+  try {
+    await elementIframe?.waitForSelector(elementIdentifier, {
+      state: 'visible',
+      timeout: envNumber('SELECTOR_TIMEOUT')
+    })
+    return true
+  } catch (e) {
+    return false
+  }
+
+}
+```
+
+1. Function Declaration
+
+```ts
+export const waitForSelectorInIframe = async (
+    elementIframe: Frame,
+    elementIdentifier: ElementLocator,
+): Promiseboolean> => {
+```
+
+- What it is:
+
+     - Declares an asynchronous function named waitForSelectorInIframe.
+    - Exported so it can be used in other modules.
+
+- Arguments:
+
+    - elementIframe: Frame:
+
+        - Represents the Playwright Frame object, which provides context for interacting with content inside an iframe.
+        - Must point to the iframe where the element resides.
+
+    - elementIdentifier: ElementLocator:
+        - A locator to identify the target element inside the iframe (e.g., CSS selector, XPath, etc.).
+
+- Returns:
+
+    - A Promiseboolean>:
+
+        - Resolves to true if the element becomes visible within the iframe.
+        - Resolves to false if the element is not found or doesn't meet the visibility criteria within the timeout.
+
+2. try {
+
+    - Purpose:
+
+        - Ensures that errors (e.g., iframe not available, element not found) are handled gracefully.
+
+    - Why?
+
+        - Avoids crashes due to unhandled exceptions during asynchronous operations.
+
+3. await elementIframe?.waitForSelector(elementIdentifier, {
+
+    - What it does:
+
+        - Waits for the element identified by elementIdentifier to meet specific visibility conditions within the provided iframe (elementIframe).
+
+    - Key Points:
+
+        - elementIframe:
+            - Represents the Playwright Frame object.
+            - The ?. (optional chaining) ensures the function does not throw an error if elementIframe is undefined or null. Instead, it skips the operation and proceeds with the catch block.
+
+        - waitForSelector:
+            - Similar to its usage on a Page object, this method waits for an element to meet the specified state (e.g., visible) within the iframe.
+
+    - Arguments:
+
+        - elementIdentifier:
+            - Locator for the element being checked.
+
+    - Options:
+        - state: 'visible':
+            - Waits for the element to become visible in the iframe.
+        - timeout: envNumber('SELECTOR_TIMEOUT'):
+            - Specifies the maximum time (in milliseconds) to wait for the element.
+
+4. state: 'visible'
+
+    - What it means:
+
+        - Ensures the element exists in the iframe's DOM, is not hidden, and has dimensions.
+
+    - Visibility Criteria:
+
+        - Exists in the iframe’s DOM.
+        - Has non-zero dimensions.
+        - Is not hidden via display: none or visibility: hidden.
+
+5. timeout: envNumber('SELECTOR_TIMEOUT')
+
+    - Purpose:
+
+        - Limits how long the function waits for the element to meet the visible condition.
+
+    - How envNumber Works:
+
+        - Fetches a timeout value from an environment variable (e.g., SELECTOR_TIMEOUT) and converts it to a number.
+
+    - Why?
+
+        - Allows for dynamic configuration of the timeout based on the environment.
+
+    - Example:
+
+        - If SELECTOR_TIMEOUT = 5000 (5 seconds), the function waits up to 5 seconds for the element to become visible in the iframe.
+
+6. return true
+
+    - What it does:
+
+        - If the waitForSelector operation succeeds (i.e., the element becomes visible), the function returns true.
+
+    - Why?
+
+        - Indicates successful visibility of the element to the caller.
+
+7. } catch (e) {
+
+    - What it does:
+
+        - Executes if an error occurs in the try block.
+
+    - What errors might occur?
+
+        - elementIframe is undefined or null (optional chaining avoids immediate failure, but nothing happens).
+        - The element doesn’t meet the visible condition within the timeout.
+        - Other runtime errors, such as invalid locators.
+
+    - Why?
+
+        - Handles errors gracefully without crashing the script.
+
+8. return false
+
+    - What it does:
+
+        - If the try block fails (due to timeout or another error), the function returns false.
+~
+    - Why?
+
+        - Signals to the caller that the element is either not visible or the operation failed.
+
+**Summary:**
+
+- The waitForSelectorInIframe function:
+
+    - Waits for an element inside a specified iframe to become visible.
+    - Returns true if successful, false otherwise.
+    - Gracefully handles errors, including timeouts and invalid iframe references.
+    - Provides a reusable utility for tests involving iframe interactions.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+
 
 
 

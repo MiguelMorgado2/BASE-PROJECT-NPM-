@@ -3029,6 +3029,42 @@ This is an enum declaration in TypeScript that defines possible outcomes for wai
     - FAIL (2): The condition failed.
     - ELEMENT_NOT_AVAILABLE (3): The element was not available within the expected time.
 
+```ts
+export type waitForResultWithContext = {
+  result: waitForResult
+  replace?: string
+}
+```
+
+This code defines a TypeScript type called waitForResultWithContext
+
+- TypeScript type Definition:
+
+    - waitForResultWithContext is a custom type.
+    - It specifies the structure of an object that contains two properties: result and an optional replace.
+
+- result: waitForResult:
+
+    - Property Name: result
+    - Type: waitForResult
+        - waitForResult is likely another type or enum defined elsewhere in your code.
+        - It represents the status of some operation (e.g., PASS, FAIL, or similar outcomes).
+
+- replace?: string:
+
+    - Property Name: replace
+    - Type: string
+    - Optional (?):
+
+        - The replace property may or may not be present on objects of this type.
+
+    - Purpose:
+        - Stores additional context or a specific message to replace or augment standard information.
+
+- Usage Example:
+
+    - Objects of type waitForResultWithContext must always have a result, but the replace property is optional.
+
 *waitFor Function:*
 
 ```ts

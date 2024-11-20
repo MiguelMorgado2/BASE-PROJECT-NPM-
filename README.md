@@ -3015,6 +3015,9 @@ import { logger } from "../logger"
 
 *waitForResult Enum:*
 
+*An enum declaration in TypeScript (and other programming languages) is a way to define a set of named constants, often referred to as enumeration members. These constants are typically related and represent a fixed set of possible values for a variable.
+Enums make your code more readable, structured, and type-safe by replacing "magic values" (like numbers or strings) with meaningful names.*
+
 ```ts
 export const enum waitForResult {
   PASS = 1,

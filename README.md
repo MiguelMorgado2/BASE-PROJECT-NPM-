@@ -40,6 +40,304 @@ For the purposes of this documentation tutorial, we will be using a test website
 <br>
 
 
+<details>
+<summary>Typescript constructs</summary>
+<br>
+
+Each construct in TypeScript serves a distinct purpose, but they complement each other to create robust, type-safe, and maintainable applications. The choice of which to use depends on the problem you're solving. Together, these constructs form the backbone of TypeScript development.
+
+1. Functions
+
+**Definition**
+
+- A function is a block of code that performs a specific task and can be reused throughout the program.
+
+- Functions can take inputs (parameters) and return outputs (return values).
+
+**Syntax:**
+
+```ts
+function functionName(param1: Type, param2: Type): ReturnType {
+  // Function body
+  return value;
+}
+```
+
+**Example:**
+
+```ts
+function add(a: number, b: number): number {
+  return a + b;
+}
+console.log(add(2, 3)); // Output: 5
+```
+
+**Purpose:**
+
+- Encapsulate logic for reusability.
+- Improve code organization and readability.
+
+2. Types
+
+**Definition:**
+
+- A type in TypeScript describes the structure of data, including the shape, attributes, and their types.
+- Types ensure type safety by enforcing the expected structure of data.
+
+**Syntax:**
+
+```ts
+type TypeName = {
+  property: Type;
+  method: (param: Type) => ReturnType;
+};
+```
+
+**Example:**
+
+```ts
+type Person = {
+  name: string;
+  age: number;
+};
+
+const john: Person = { name: "John", age: 30 };
+```
+
+**Purpose:**
+
+- Enforce a consistent structure for objects, arrays, or other data types.
+- Avoid runtime errors by catching type mismatches at compile time.
+
+3. Interfaces
+
+**Definition:**
+
+- An interface is similar to a type but is specifically used to define the structure of objects.
+- Interfaces can be extended or implemented by classes.
+
+**Syntax:**
+
+```ts
+interface InterfaceName {
+  property: Type;
+  method(param: Type): ReturnType;
+}
+```
+
+**Example:**
+
+```ts
+interface Animal {
+  name: string;
+  makeSound(): void;
+}
+
+const dog: Animal = {
+  name: "Dog",
+  makeSound: () => console.log("Woof!"),
+};
+```
+
+**Purpose:**
+
+- Define contracts for object shapes or class implementations.
+- Promote consistent object design in larger projects.
+
+4. Classes
+
+**Definition:**
+
+- A class is a blueprint for creating objects.
+- It encapsulates data (properties) and methods that operate on that data.
+
+**Syntax:**
+
+```ts
+class ClassName {
+  property: Type;
+  
+  constructor(param: Type) {
+    this.property = param;
+  }
+
+  method(): ReturnType {
+    // Method body
+  }
+}
+```
+
+**Example:**
+
+```ts
+class Car {
+  make: string;
+
+  constructor(make: string) {
+    this.make = make;
+  }
+
+  drive(): void {
+    console.log(`${this.make} is driving.`);
+  }
+}
+
+const myCar = new Car("Toyota");
+myCar.drive(); // Output: Toyota is driving.
+```
+
+**Purpose:**
+
+- Model real-world entities with properties and behaviors.
+- Encourage object-oriented programming (OOP) principles like encapsulation, inheritance, and polymorphism.
+
+5. Enums
+
+**Definition:**
+
+- An enum defines a set of named constants that represent a fixed range of values.
+
+```ts
+enum EnumName {
+  VALUE1,
+  VALUE2,
+  VALUE3,
+}
+```
+
+**Example:**
+
+```ts
+enum Direction {
+  Up,
+  Down,
+  Left,
+  Right,
+}
+
+console.log(Direction.Up); // Output: 0
+```
+
+**Purpose:**
+
+- Group related constants for readability and maintainability.
+- Ensure variables can only take one of a predefined set of values.
+
+6. Modules
+
+**Definition:**
+
+- A module is a file containing code that can be exported and imported into other files.
+
+```ts
+// Export
+export const value = 42;
+export function greet() { console.log("Hello!"); }
+
+// Import
+import { value, greet } from './moduleName';
+```
+
+**Purpose:**
+
+- Organize code into reusable and maintainable chunks.
+- Avoid name collisions and promote modular development.
+
+7. Decorators
+
+**Definition:**
+
+- A decorator is a special kind of function used to modify or annotate classes, methods, properties, or parameters.
+- Decorators are a feature of TypeScript when using metadata reflection (used in frameworks like Angular).
+
+```ts
+function DecoratorName(target: any, propertyKey?: string, descriptor?: PropertyDescriptor) {
+  // Decoration logic
+}
+```
+
+**Example:**
+
+```ts
+function Log(target: any, propertyName: string) {
+  console.log(`Property ${propertyName} was accessed.`);
+}
+
+class Example {
+  @Log
+  property: string = "Hello";
+}
+```
+
+**Purpose:**
+
+- Extend or enhance the behavior of existing components.
+- Provide metadata or functionality to classes or methods.
+
+8. Generics
+
+**Definition:**
+
+- Generics allow functions, classes, or interfaces to work with any type, providing flexibility while maintaining type safety.
+
+```ts
+function functionName<T>(param: T): T {
+  return param;
+}
+```
+**Example:**
+
+```ts
+function identity<T>(arg: T): T {
+  return arg;
+}
+
+console.log(identity<number>(42));  // Output: 42
+console.log(identity<string>("Hello"));  // Output: Hello
+```
+
+**Purpose:**
+
+- Reuse code for multiple types without sacrificing type safety.
+
+#### How They Link Together
+
+**Types & Interfaces:**
+
+- Define the structure of data used in functions, classes, or objects.
+
+**Classes:**
+
+- Implement interfaces to guarantee a certain structure.
+- Use types for method parameters or properties.
+
+**Enums:**
+
+- Provide fixed options for properties or parameters in functions, types, or classes.
+
+**Functions:**
+
+- Use types or interfaces for parameters and return types to ensure type safety.
+
+**Modules:**
+
+- Organize and share functions, classes, types, and other constructs across files.
+
+**Decorators:**
+
+- Enhance the behavior of classes and methods, often linked to metadata.
+
+**Generics:**
+
+- Provide flexibility and type safety in functions, classes, and interfaces, especially for reusable components.
+
+**Conclusion:**
+
+- Each construct in TypeScript serves a distinct purpose, but they complement each other to create robust, type-safe, and maintainable applications. 
+- The choice of which to use depends on the problem you're solving. Together, these constructs form the backbone of TypeScript development.
+
+</details>
+<br>
 
 
 <a name="index"></a>
@@ -692,7 +990,7 @@ const value = process.env[key]
 
 ***process.env:*** This is a built-in object in Node.js that contains all the environment variables (key-value pairs) for the current running environment.
 
-- Environment variables are used to store configuration values, like API keys, database URLs, or other settings, outside of your code.
+- Environment variables are used to store configuration values, like API keys, database URLs, or other settings, outside of our code.
 
 ***process.env[key]:*** This retrieves the value of the environment variable with the name key.
 
@@ -889,7 +1187,7 @@ This defines a mapping between some kind of identifier and a piece of mock data.
 
 - MocksConfig: A dictionary of mock data configurations, which could be used to set up fake data responses for tests.
 
-- GlobalVariables: A key-value pair object where both keys and values are strings, used to store global variables in your project.
+- GlobalVariables: A key-value pair object where both keys and values are strings, used to store global variables in our project.
 
 - EmailsConfig: This might store email addresses or other email-related configurations.
 
@@ -940,7 +1238,7 @@ GlobalConfig: This is a central structure that ties all of the other configurati
 
 - Type Aliases: Help define the kinds of data you’re working with, such as page IDs, element locators, or mock payloads.
 - Mappings: Create connections between different pieces of data, such as page elements and their locators or mock requests and their responses.
-- Configurations: Provide settings and error-handling rules for your automation framework, making it easier to maintain and scale your project.
+- Configurations: Provide settings and error-handling rules for our automation framework, making it easier to maintain and scale our project.
 
 **Conclusion:**
 
@@ -1182,10 +1480,10 @@ Example to Illustrate super() in Simple Terms
 Here’s a simplified analogy of what’s happening:
 
 _Imagine the World class is like a blueprint for building a generic test environment. It has some predefined settings and tools (like a shared context, or scenario data).
-You create your own specialized blueprint, ScenarioWorld, but you still want to use the tools and settings from the original World blueprint.
+You create our own specialized blueprint, ScenarioWorld, but you still want to use the tools and settings from the original World blueprint.
 By calling super(), you are saying, "Hey, use the parent blueprint first to set everything up, and then I’ll add my customizations afterward."
-Practical Usage in Your ScenarioWorld
-In Cucumber, the World class provides a test context that is shared between the different steps of a scenario. By inheriting from it, your ScenarioWorld gains access to that shared context, but you can also add your own custom logic and properties (like globalConfig and globalVariables)._
+Practical Usage in our ScenarioWorld
+In Cucumber, the World class provides a test context that is shared between the different steps of a scenario. By inheriting from it, our ScenarioWorld gains access to that shared context, but you can also add our own custom logic and properties (like globalConfig and globalVariables)._
 
 **Full Breakdown of our constructor:**
 
@@ -1199,11 +1497,11 @@ constructor(options: IWorldOptions) {
 }
 
 ```
-- constructor(options: IWorldOptions): This is the constructor for your ScenarioWorld class. It's invoked when you create a new instance of ScenarioWorld and passes in options (which holds configuration data for the test).
+- constructor(options: IWorldOptions): This is the constructor for our ScenarioWorld class. It's invoked when you create a new instance of ScenarioWorld and passes in options (which holds configuration data for the test).
 
 - super(options): This calls the constructor of the World class with options, ensuring that all the necessary setup from the parent class happens. It may initialize any shared test context, settings, or other necessary things defined in World.
 
-- this.globalConfig = options.parameters as GlobalConfig;: This line assigns the parameters from the options object to globalConfig. These parameters could be the specific configurations needed for your test, like URLs, timeouts, or other settings.
+- this.globalConfig = options.parameters as GlobalConfig;: This line assigns the parameters from the options object to globalConfig. These parameters could be the specific configurations needed for our test, like URLs, timeouts, or other settings.
 
 - this.globalVariables = {};: This initializes an empty object for storing variables that might be shared across multiple test steps in a single scenario. These variables could be things like user data, tokens, or any other runtime information.
 
@@ -2161,7 +2459,7 @@ This function is designed to extract the value of an element on the page. It's s
 *Parameters:*
 - page: Page: This is the Playwright Page object that represents the current web page you're interacting with. It provides methods to interact with and query elements on the page.
 
-- elementIdentifier: ElementLocator: This represents the locator used to find the target element on the page. In your case, ElementLocator is a custom type that encapsulates how to locate an element, such as a CSS selector, XPath, or Playwright Locator.
+- elementIdentifier: ElementLocator: This represents the locator used to find the target element on the page. In our case, ElementLocator is a custom type that encapsulates how to locate an element, such as a CSS selector, XPath, or Playwright Locator.
 
 *Function Breakdown:*
 await page.$eval<string, HTMLSelectElement>(elementIdentifier, el => {...}):
@@ -2389,7 +2687,7 @@ export const getTableData = async(
 };
 ```
 *Purpose:*
-The purpose of this function is to extract data from an HTML table on the page. Specifically, it retrieves the data from all the rows of the table (excluding the header), returning it in a structured format (as a JSON string). This is useful when you want to extract the contents of a table for validation or further processing in your tests.
+The purpose of this function is to extract data from an HTML table on the page. Specifically, it retrieves the data from all the rows of the table (excluding the header), returning it in a structured format (as a JSON string). This is useful when you want to extract the contents of a table for validation or further processing in our tests.
 
 *Parameters:*
 
@@ -2426,7 +2724,7 @@ This results in an array of the text contents of the cells for that row.
 
     - Once all rows are processed, the map() function returns an array of arrays. Each inner array contains the text content of the cells in that row.
 
-    - JSON.stringify(table): The entire table data is converted into a JSON string. This makes it easier to return and use the data in other parts of your program (such as assertions in tests).
+    - JSON.stringify(table): The entire table data is converted into a JSON string. This makes it easier to return and use the data in other parts of our program (such as assertions in tests).
 
 
 **elementEnabled**
@@ -3016,7 +3314,7 @@ import { logger } from "../logger"
 *waitForResult Enum:*
 
 *An enum declaration in TypeScript (and other programming languages) is a way to define a set of named constants, often referred to as enumeration members. These constants are typically related and represent a fixed set of possible values for a variable.
-Enums make your code more readable, structured, and type-safe by replacing "magic values" (like numbers or strings) with meaningful names.*
+Enums make our code more readable, structured, and type-safe by replacing "magic values" (like numbers or strings) with meaningful names.*
 
 ```ts
 export const enum waitForResult {
@@ -3050,7 +3348,7 @@ This code defines a TypeScript type called waitForResultWithContext
 
     - Property Name: result
     - Type: waitForResult
-        - waitForResult is likely another type or enum defined elsewhere in your code.
+        - waitForResult is another type or enum defined above in our code.
         - It represents the status of some operation (e.g., PASS, FAIL, or similar outcomes).
 
 - replace?: string:
@@ -3151,7 +3449,7 @@ Here’s what each extracted variable represents:
 - target = '':
     - Extracts the target property from options.
     - If options.target is undefined, it defaults to an empty string ('').
-    - target is metadata, likely representing the specific element or item the function is waiting for. This can be useful for logging or error messages (e.g., if you’re waiting for a button to appear, target could be set to "Submit Button").
+    - target is metadata, representing the specific element or item the function is waiting for. This can be useful for logging or error messages (e.g., if you’re waiting for a button to appear, target could be set to "Submit Button").
 
 - type = 'element':
     - Extracts the type property from options.
@@ -3181,7 +3479,7 @@ This line of code defines a helper function called sleep, which introduces a del
 - => new Promise(...):
     - This is an arrow function returning a new Promise.
     - A Promise in JavaScript (and TypeScript) is a construct that represents an operation that will complete in the future, either successfully or with a failure.
-    - By using a Promise, sleep becomes an asynchronous function, meaning it can be awaited in other parts of your code, allowing the code to pause at this function until the specified delay is over.
+    - By using a Promise, sleep becomes an asynchronous function, meaning it can be awaited in other parts of our code, allowing the code to pause at this function until the specified delay is over.
 
 - resolve => setTimeout(resolve, ms):
     - Inside the Promise constructor, we provide a function with a single parameter called resolve.
@@ -3220,7 +3518,7 @@ These two lines are setting up variables that are essential for tracking the sta
 - Details:
     - let is used here, allowing notAvailableContext to be reassigned later in the function.
     -The type is string | undefined, which means that notAvailableContext can either hold a string value or be undefined.
-        - string: This will hold a context message, likely indicating which element or condition couldn’t be found, making error messages more informative.
+        - string: This will hold a context message, indicating which element or condition couldn’t be found, making error messages more informative.
         - undefined: The variable is initially undefined, indicating that no context message is available until it’s set.
     - The notAvailableContext variable is often set when the waitFor function checks a condition and determines that the target isn’t available. For instance, if an element or condition fails to load, notAvailableContext can hold the name or identifier of that element.
 
@@ -3316,7 +3614,7 @@ Purpose: Checks if result is of type waitForResultWithContext, meaning it contai
         - Details:
 
         - (result as waitForResultWithContext).replace casts result to the waitForResultWithContext type and accesses its replace property.
-        - replace likely contains a message or identifier for additional context when the condition isn’t met (e.g., describing why an element isn’t available).
+        - replace contains a message or identifier for additional context when the condition isn’t met (e.g., describing why an element isn’t available).
         - Assigning this to notAvailableContext saves this extra context, allowing it to be referenced later (e.g., for logging or error messages).
 
 - 4. resultAs = (result as waitForResultWithContext).result
@@ -3356,7 +3654,7 @@ if (resultAs === waitForResult.PASS) {
 
 This part of the code is the core logic that evaluates the result of the predicate function and decides whether the waitFor function should continue, exit successfully, or throw an error.
 
-Here, resultAs is the result of the predicate function. It has been processed earlier in the code to ensure it is a valid waitForResult value. The possible values for resultAs are likely defined in an enum like this:
+Here, resultAs is the result of the predicate function. It has been processed earlier in the code to ensure it is a valid waitForResult value. The possible values for resultAs are defined in an enum like this:
 
 ```Ts
 enum waitForResult {
@@ -3500,7 +3798,7 @@ If this exceeds timeout, it exits the loop and throws an error with a clear mess
     - Purpose:
 
         - Passes the caught error to the handleError function for structured handling and logging.
-        - This allows consistent error processing across your automation framework.
+        - This allows consistent error processing across our automation framework.
 
     - Parameters Passed:
 
@@ -3533,7 +3831,7 @@ If this exceeds timeout, it exits the loop and throws an error with a clear mess
 
 - Retry Loop: The code waits (sleep) between retries, logging each delay (logger.debug).
 - Timeout Handling: If the total wait time exceeds the timeout value, an error is thrown with detailed information.
-- Error Management: The catch block ensures all errors (expected or unexpected) are processed through the handleError function, maintaining consistent error handling in your framework.
+- Error Management: The catch block ensures all errors (expected or unexpected) are processed through the handleError function, maintaining consistent error handling in our framework.
 
 **Wait for Selector function:**
 

@@ -617,6 +617,15 @@ src > features > delete-contact.feature.
 </details>
 <br>
 
+- After the execution, the tests will pass and a test report will be created automatically:
+
+<details>
+<summary>Click to open the execution result</summary>
+
+![Execution command](./assets/readme-images/execution-result.png)
+
+</details>
+<br>
 
 [Back to Index](#index)
 

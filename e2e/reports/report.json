@@ -1,1 +1,148 @@
-[]
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "as-a-user-i-can-interact-with-login-forms;as-a-user-i-can-populate-login-details-leveraging-environment-variables",
+        "keyword": "Scenario Outline",
+        "line": 23,
+        "name": "As a user I can populate login details leveraging environment variables",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 2569585300
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 7,
+            "name": "I am on the \"home\" page",
+            "match": {
+              "location": "src\\step-definitions\\navigation.ts:12"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 6011077399
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 8,
+            "name": "I click the \"playground\" button",
+            "match": {
+              "location": "src\\step-definitions\\click.ts:15"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1101725999
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 9,
+            "name": "I am directed to the \"playground\" page",
+            "match": {
+              "location": "src\\step-definitions\\navigation.ts:32"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4020300
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "I fill in the \"email\" input with \"$.TEST_EMAIL\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 2071806899
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "I fill in the \"password\" input with \"$.TEST_PASSWORD\"",
+            "match": {
+              "location": "src\\step-definitions\\form.ts:24"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 251559300
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "the \"email\" should contain the value \"admin@testingtalkshub.com.au\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:91"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 54165600
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 13,
+            "name": "the \"password\" should contain the value \"4S42xAr12\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:91"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 67156100
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 1977173800
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@dev",
+            "line": 3
+          },
+          {
+            "name": "@smoke",
+            "line": 4
+          },
+          {
+            "name": "@regression",
+            "line": 5
+          },
+          {
+            "name": "@production",
+            "line": 20
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "as-a-user-i-can-interact-with-login-forms",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "As a user I can interact with login forms",
+    "tags": [],
+    "uri": "src\\features\\playground\\login.feature"
+  }
+]

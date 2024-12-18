@@ -343,6 +343,8 @@ console.log(identity<string>("Hello"));  // Output: Hello
 <a name="index"></a>
 
 ## Index
+
+
 1. [Installation](#installation)
 
     1.1 [VisualStudioCodeSettings](#visual-studio-code-settings)
@@ -379,6 +381,7 @@ console.log(identity<string>("Hello"));  // Output: Hello
         - [Input-helper.ts](#input-helper-ts-file)
         - [Mock-behavior.ts](#mock-behavior-ts-file)
         - [Wait-for-behavior.ts](#wait-for-behavior-ts-file)
+        - [Navigation-behavior.ts](#navigation-behavior-ts-file)
 
 
           
@@ -581,6 +584,39 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 <br>
 
 ### The installation and visual studio configurations are completed.
+
+
+#### Note: This base template project is already packed with example features tests for each different actions, pointing to the dummy website.
+
+- To guarantee that the npm install correctly installed all the dependencies, select one of the example tests in the features tests folder:
+
+for example, choose the "delete-contact.feature" test
+
+Path:
+
+src > features > delete-contact.feature.
+
+- Instert a @dev tag on the test scenario to be executed:
+
+<details>
+<summary>Click to open The test image</summary>
+
+![FirstTestExecution](./assets/readme-images/first-test-execution.png)
+
+</details>
+<br>
+
+
+- On the terminal, Execute the test with the command ".\run_tests.bat production dev"
+
+<details>
+<summary>Click to open the execution command</summary>
+
+![Execution command](./assets/readme-images/execution-command.png)
+
+</details>
+<br>
+
 
 [Back to Index](#index)
 
@@ -4318,6 +4354,574 @@ export const waitForSelectorInIframe = async (
 
 [Back to Index](#index)
 
+
+#### Navigation behavior ts file
+
+File content:
+
+```ts
+import { Page } from 'playwright';
+import {GlobalConfig, GlobalVariables, PageId} from '../env/global';
+import {waitForResult} from "./wait-for-behavior";
+
+export const navigateToPage = async (
+    page: Page,
+    pageId: PageId,
+    { pagesConfig, hostsConfig }: GlobalConfig
+): Promise<void> => {
+    const {
+        UI_AUTOMATION_HOST: hostName = 'localhost',
+    } = process.env;
+
+    const hostPath = hostsConfig[`${hostName}`];
+
+    const url = new URL(hostPath);
+
+    const pageConfigItem = pagesConfig[pageId];
+    url.pathname = pageConfigItem.route;
+
+    await page.goto(url.href);
+};
+
+const pathMatchesPageId = (
+    path: string,
+    pageId: PageId,
+    { pagesConfig }: GlobalConfig
+): boolean => {
+    const pageRegexString = pagesConfig[pageId].regex
+    const pageRegex = new RegExp(pageRegexString)
+    return pageRegex.test(path)
+};
+
+export const currentPathMatchesPageId = (
+    page: Page,
+    pageId: PageId,
+    globalConfig: GlobalConfig
+): waitForResult => {
+    const { pathname: currentPath } = new URL(page.url())
+    if (pathMatchesPageId(currentPath, pageId, globalConfig)) {
+        return waitForResult.PASS
+    }
+    return waitForResult.ELEMENT_NOT_AVAILABLE
+};
+
+export const getCurrentPageId = (
+    page: Page,
+    globalConfig: GlobalConfig
+): PageId => {
+    const { pagesConfig } = globalConfig;
+
+    const pageConfigPageIds = Object.keys(pagesConfig);
+
+    const { pathname: currentPath } = new URL(page.url());
+
+    const currentPageId = pageConfigPageIds.find(pageId =>
+        pathMatchesPageId(currentPath, pageId, globalConfig)
+    );
+
+    if (!currentPageId) {
+        throw Error(
+            `Failed to get page name from current route ${currentPath}, \
+      possible pages: ${JSON.stringify(pagesConfig)}`
+        );
+    }
+
+    return currentPageId;
+};
+
+export const reloadPage = async (page: Page): Promise<void> => {
+    await page.reload()
+}
+```
+<details>
+<summary>Click to open navigation-behavior.ts file description</summary>
+<br>
+
+This file provides utility functions for managing navigation and URL validation in the test automation framework. The functions handle tasks such as navigating to a specific page, verifying if the current page matches an expected identifier, and retrieving the current page's ID based on the route.
+
+
+*Imports:*
+
+```ts
+import { Page } from 'playwright';
+import { GlobalConfig, GlobalVariables, PageId } from '../env/global';
+import { waitForResult } from "./wait-for-behavior";
+```
+
+1. import { Page } from 'playwright';
+
+    - Playwright provides tools to interact with web browsers programmatically. The Page class represents a single browser tab or iframe.
+
+    - Purpose: This allows the code to control and interact with web pages, such as navigating URLs or accessing page content.
+
+  
+2. import { GlobalConfig, GlobalVariables, PageId } from '../env/global';
+
+
+    - These are type definitions (from global.ts) used to structure data. For example:
+        - GlobalConfig: Contains mappings for page routes, hosts, etc.
+        - PageId: Represents unique identifiers for pages.
+
+    - Purpose: To provide type safety and ensure consistent use of configuration objects.
+
+3. import { waitForResult } from "./wait-for-behavior";
+
+    - This imports an enumeration from our Wait-for-behavior.ts file to handle different wait results (e.g., success, failure, or unavailability).
+
+    - Purpose: To integrate logic for waiting or checking page readiness.
+
+*Navigate to page funcion:*
+
+```ts
+export const navigateToPage = async (
+    page: Page,
+    pageId: PageId,
+    { pagesConfig, hostsConfig }: GlobalConfig
+): Promise<void> => {
+    const {
+        UI_AUTOMATION_HOST: hostName = 'localhost',
+    } = process.env;
+
+    const hostPath = hostsConfig[`${hostName}`];
+
+    const url = new URL(hostPath);
+
+    const pageConfigItem = pagesConfig[pageId];
+    url.pathname = pageConfigItem.route;
+
+    await page.goto(url.href);
+};
+```
+
+- This function navigates to a specific page in our test environment using Playwright by constructing a URL dynamically based on:
+
+    - The environment (e.g., staging, production) through hostsConfig.
+    - The page identifier (e.g., HomePage, CheckoutPage) through pagesConfig.
+    - This ensures flexibility and environment-agnostic navigation without hardcoding URLs.
+
+
+*Function Signature:*
+
+```ts
+export const navigateToPage = async (
+    page: Page,
+    pageId: PageId,
+    { pagesConfig, hostsConfig }: GlobalConfig
+): Promise<void> => { ... }
+```
+
+*Parameters:*
+
+- page: Page:
+
+    - A Playwright Page object that represents the current browser tab or frame. This is the interface through which all interactions with the web page occur (e.g., navigation, clicks).
+
+- pageId: PageId:
+
+    - A unique identifier (usually a string or enum) that corresponds to a specific page in our pagesConfig object.
+
+- { pagesConfig, hostsConfig }: GlobalConfig:
+
+    - Destructured from GlobalConfig, which contains mappings for:
+        - pagesConfig: Details about the routes for each page, such as /checkout or /home.
+        - hostsConfig: The base URLs for different environments (e.g., https://staging.example.com).
+
+*Return Value:*
+
+- Promisevoid>:
+    - The function is asynchronous because it interacts with the browser (page.goto()), which involves network operations. It doesn’t return any value, but it ensures the browser is navigated to the desired page.
+
+
+**Step-by-Step Breakdown:**
+
+1. Extracting the Host Name
+
+```ts
+const { UI_AUTOMATION_HOST: hostName = 'localhost' } = process.env;
+```
+
+- What It Does:
+
+    - This line reads the environment variable UI_AUTOMATION_HOST (e.g., staging, production, or localhost). If the variable is not set, it defaults to 'localhost'.
+
+- Why It's Needed:
+
+    - Environment variables allow us to dynamically configure the host (base URL) without modifying the code. This is especially useful when running tests in different environments (e.g., CI/CD pipelines, local development).
+
+2. Getting the Host Path
+
+```ts
+const hostPath = hostsConfig[`${hostName}`];
+```
+
+- What It Does:
+
+    - Looks up the hostsConfig object using the extracted hostName. For example:
+
+```ts
+const hostsConfig = {
+    localhost: 'http://localhost:3000',
+    staging: 'https://staging.example.com',
+    production: 'https://www.example.com'
+};
+```
+
+- If hostName is 'staging', hostPath will be 'https://staging.example.com'.
+
+    - Why It's Needed:
+
+        - To construct the full URL, the function needs the base URL (e.g., protocol, domain, and port).
+
+3. Creating the URL Object
+
+```ts
+const url = new URL(hostPath);
+```
+
+- What It Does:
+    - Creates a new URL object using the hostPath. For example:
+
+```ts
+const url = new URL('https://staging.example.com');
+```
+
+- A URL object makes it easy to manipulate different parts of the URL (e.g., pathname, searchParams).
+
+    - Why It's Needed:
+        - This object simplifies appending the page-specific route (e.g., /checkout) to the base URL.
+
+4. Fetching the Route for the Specified Page
+
+
+```ts
+const pageConfigItem = pagesConfig[pageId];
+url.pathname = pageConfigItem.route;
+```
+- What It Does:
+
+    - pagesConfig[pageId]:
+        - Retrieves the configuration for the specified pageId. For example:
+
+
+```ts
+const pagesConfig = {
+    HomePage: { route: '/' },
+    CheckoutPage: { route: '/checkout' },
+};
+```
+- If pageId is 'CheckoutPage', pageConfigItem will be { route: '/checkout' }.
+
+- url.pathname = pageConfigItem.route:
+    - Updates the pathname of the URL object with the route for the specific page.
+
+**Example:**
+
+Original URL: https://staging.example.com
+After updating: https://staging.example.com/checkout
+
+- Why It's Needed:
+    - The route is appended to the base URL to form the full URL for navigation.
+
+5. Navigating to the URL
+
+```ts
+await page.goto(url.href);
+```
+
+- What It Does:
+    - The goto() method instructs the Playwright Page object to navigate to the constructed URL. For example:
+
+```ts
+await page.goto('https://staging.example.com/checkout');
+```
+
+- Why It's Needed:
+    - This is the actual step where the browser is directed to the specified page.
+
+- How It Works:
+    - The page.goto() method waits for the navigation to complete before resolving. It can also be configured with additional options (e.g., timeouts).
+
+
+*pathMatchesPageId funcion:*
+
+```ts
+const pathMatchesPageId = (
+    path: string,
+    pageId: PageId,
+    { pagesConfig }: GlobalConfig
+): boolean => {
+    const pageRegexString = pagesConfig[pageId].regex
+    const pageRegex = new RegExp(pageRegexString)
+    return pageRegex.test(path)
+};
+```
+- The function checks if a given path (URL or a part of it) matches a specific page's identifier (pageId) by testing the path against a pre-defined regular expression in the pagesConfig configuration.
+
+- This is useful for determining if a user is on the correct page based on the current path.
+
+
+*Function Signature:*
+
+```ts
+const pathMatchesPageId = (
+    path: string,
+    pageId: PageId,
+    { pagesConfig }: GlobalConfig
+): boolean => { ... }
+```
+
+*Parameters:*
+
+- path: string:
+    - The URL path (e.g., /checkout, /products/123) that you want to check.
+
+- pageId: PageId:
+    - A unique identifier (e.g., CheckoutPage, HomePage) corresponding to a specific page.
+
+- { pagesConfig }: GlobalConfig:
+    - Destructured from GlobalConfig, it contains mappings for the configurations of all pages, including their routes and regular expressions.
+
+- Return Value:
+    - boolean:
+        - Returns true if the provided path matches the regular expression defined for the pageId; otherwise, false.
+
+**Step-by-Step Breakdown:**
+
+1. Fetching the Page-Specific Regex String
+
+```ts
+const pageRegexString = pagesConfig[pageId].regex;
+```
+
+- What It Does:
+    - Retrieves the regular expression string for the given pageId from pagesConfig.
+
+For example, if the pagesConfig looks like this:
+
+```ts
+const pagesConfig = {
+    CheckoutPage: { route: '/checkout', regex: '^/checkout$' },
+    ProductPage: { route: '/products/:id', regex: '^/products/\\d+$' },
+};
+```
+
+And the pageId is 'CheckoutPage', pageRegexString will be '^/checkout$'.
+
+- Why It's Needed:
+    - Each page has a regex pattern that describes what paths it matches. The function needs to use this pattern to validate the path.
+
+2. Creating a Regular Expression Object
+
+```ts
+const pageRegex = new RegExp(pageRegexString);
+```
+
+- What It Does:
+    - Converts the pageRegexString (a plain string) into a JavaScript RegExp object. For example:
+
+```ts
+const pageRegex = new RegExp('^/checkout$');
+```
+
+- Why It's Needed:
+    - The RegExp object provides the .test() method, which can be used to evaluate whether a string matches the regex pattern.
+
+3. Testing the Path Against the Regex
+
+```ts
+return pageRegex.test(path);
+```
+
+- What It Does:
+    - Uses the test() method of the RegExp object to check if the provided path matches the regex pattern.
+
+Example:
+
+```ts
+pageRegex.test('/checkout'); // true if regex is '^/checkout$'
+pageRegex.test('/products/123'); // false if regex is '^/checkout$'
+```
+
+- Why It's Needed:
+    - This is the core logic of the function—it determines if the path corresponds to the page represented by pageId.
+
+
+*currentPathMatchesPageId funcion:*
+
+```ts
+export const currentPathMatchesPageId = (
+    page: Page,
+    pageId: PageId,
+    globalConfig: GlobalConfig
+): waitForResult => {
+    const { pathname: currentPath } = new URL(page.url())
+    if (pathMatchesPageId(currentPath, pageId, globalConfig)) {
+        return waitForResult.PASS
+    }
+    return waitForResult.ELEMENT_NOT_AVAILABLE
+};
+```
+- This function determines if the current URL path of a given page matches the route of a specific page identifier (pageId). It uses the pathMatchesPageId helper function to perform the validation and returns a waitForResult value based on the outcome.
+
+- This is useful in scenarios where you need to validate if the browser is currently on the correct page in a structured test automation framework.
+
+*Function Signature:*
+
+```Ts
+export const currentPathMatchesPageId = (
+    page: Page,
+    pageId: PageId,
+    globalConfig: GlobalConfig
+): waitForResult => { ... }
+```
+
+Parameters:
+
+page: Page:
+A Playwright Page object representing the browser tab or frame you are interacting with.
+pageId: PageId:
+A unique identifier for a specific page (e.g., CheckoutPage, ProductPage).
+globalConfig: GlobalConfig:
+Contains global configuration for the application, including the pagesConfig that maps each pageId to its route and regex.
+Return Value:
+
+waitForResult:
+Returns one of two predefined enum-like values:
+waitForResult.PASS: If the current page matches the given pageId.
+waitForResult.ELEMENT_NOT_AVAILABLE: If it does not match.
+Step-by-Step Breakdown
+1. Extract the Current Path
+typescript
+Copiar código
+const { pathname: currentPath } = new URL(page.url());
+What It Does:
+Retrieves the current URL of the page object using Playwright's page.url() method, converts it into a URL object, and extracts its pathname property.
+
+Example:
+If the current URL is https://example.com/checkout?sessionId=123, this extracts the path /checkout.
+
+2. Check Path Against PageId
+typescript
+Copiar código
+if (pathMatchesPageId(currentPath, pageId, globalConfig)) {
+    return waitForResult.PASS;
+}
+What It Does:
+
+Calls the helper function pathMatchesPageId to check if the extracted currentPath matches the regex for the provided pageId using the pagesConfig in globalConfig.
+If the path matches, the function returns waitForResult.PASS.
+Example: Suppose the currentPath is /checkout and:
+
+typescript
+Copiar código
+pagesConfig = {
+    CheckoutPage: { route: '/checkout', regex: '^/checkout$' },
+};
+The function will return waitForResult.PASS because /checkout matches the regex for CheckoutPage.
+
+3. Handle Non-Matching Paths
+typescript
+Copiar código
+return waitForResult.ELEMENT_NOT_AVAILABLE;
+What It Does:
+If the path does not match the regex for the given pageId, the function returns waitForResult.ELEMENT_NOT_AVAILABLE.
+
+Why It's Needed:
+This provides a clear indicator that the page is not currently on the expected route, allowing the calling code to handle the mismatch appropriately (e.g., retrying or throwing an error).
+
+
+*currentPathMatchesPageId function:*
+
+Explanation of the Three Functions
+These functions collectively contribute to URL-based page identification and control in a test automation framework using Playwright. Let's break them down:
+
+1. currentPathMatchesPageId
+This function checks if the current URL path of the page matches the route associated with a given pageId.
+
+Purpose:
+To determine whether the browser is currently on the expected page based on its path.
+
+Signature:
+typescript
+Copiar código
+export const currentPathMatchesPageId = (
+    page: Page,
+    pageId: PageId,
+    globalConfig: GlobalConfig
+): waitForResult
+Key Steps:
+Extracts the current path of the browser page using page.url().
+Uses pathMatchesPageId to validate if the path matches the regex for the provided pageId.
+Returns one of:
+waitForResult.PASS if the path matches.
+waitForResult.ELEMENT_NOT_AVAILABLE if it doesn't.
+Usage:
+Validation: Ensure the browser is on the correct page during test execution.
+Example:
+typescript
+Copiar código
+if (currentPathMatchesPageId(page, 'HomePage', globalConfig) !== waitForResult.PASS) {
+    throw new Error('Navigation to the Home Page failed.');
+}
+2. getCurrentPageId
+This function identifies the current page identifier (pageId) based on the browser's URL path.
+
+Purpose:
+To dynamically determine which page the browser is currently on by matching the URL path against the pagesConfig.
+
+Signature:
+typescript
+Copiar código
+export const getCurrentPageId = (
+    page: Page,
+    globalConfig: GlobalConfig
+): PageId
+Key Steps:
+Extracts the current path from the browser's URL.
+Iterates through all pageId values in the pagesConfig to find a match using pathMatchesPageId.
+If a match is found, it returns the corresponding pageId.
+If no match is found:
+Throws an error, including the current path and the possible pages from pagesConfig, aiding debugging.
+Example Use Case:
+Imagine you have a shared test scenario that can be executed from multiple pages. Before proceeding, you can programmatically determine the current page and adapt your test logic.
+
+Example:
+typescript
+Copiar código
+const currentPageId = getCurrentPageId(page, globalConfig);
+console.log(`You are currently on the ${currentPageId} page.`);
+Error Handling:
+If the browser's path does not match any pageId in pagesConfig, an error is thrown. Example error:
+
+sql
+Copiar código
+Failed to get page name from current route /unknown-path,
+possible pages: {"HomePage": {...}, "ProductPage": {...}}
+3. reloadPage
+This is a simple utility function to reload the current browser page using Playwright's page.reload() method.
+
+Purpose:
+To refresh the page during a test, often needed to validate state persistence, reset dynamic behaviors, or retry actions.
+
+Signature:
+typescript
+Copiar código
+export const reloadPage = async (page: Page): Promise<void>
+Key Steps:
+Calls Playwright's page.reload() method to reload the current browser page.
+Example Use Case:
+After a failed test assertion, you might reload the page and retry the operation to rule out temporary failures.
+
+Example:
+typescript
+Copiar código
+await reloadPage(page);
+console.log('The page has been reloaded.');
+
+</details>
+<br>
+
+[Back to Index](#index)
 
 
 

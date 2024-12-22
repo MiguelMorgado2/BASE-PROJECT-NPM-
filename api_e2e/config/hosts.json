@@ -1,0 +1,4 @@
+{
+    "localhost" : "https://localhost:5000",
+    "production" : "https://jsonplaceholder.typicode.com"
+  }

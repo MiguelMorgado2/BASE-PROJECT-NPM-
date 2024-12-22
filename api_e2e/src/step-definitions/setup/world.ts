@@ -1,6 +1,6 @@
 import playwright, {APIRequestContext} from "playwright"
 import { World, IWorldOptions, setWorldConstructor} from "@cucumber/cucumber";
-import {GlobalAPIResponseVariables} from "../../env/global";
+import {GlobalAPIResponseVariables, GlobalConfig} from "../../env/global";
 
 export type Api = {
     request: APIRequestContext
@@ -11,7 +11,10 @@ export class ScenarioWorld extends World {
         super(options);
 
         this.globalAPIResponseVariables = {}
+        this.globalConfig = options.parameters as GlobalConfig
     }
+
+    globalConfig: GlobalConfig
 
     globalAPIResponseVariables: GlobalAPIResponseVariables
 

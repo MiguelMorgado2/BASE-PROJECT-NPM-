@@ -1,0 +1,76 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "as-an-api-i-can-retrieve-posts;as-an-api-i-can-retrive-all-the-posts",
+        "keyword": "Scenario",
+        "line": 4,
+        "name": "As an API I can retrive all the posts",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 14703400
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 5,
+            "name": "I retrieve \"posts\"",
+            "match": {
+              "location": "src\\step-definitions\\get-steps.ts:4"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 282346499
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 6,
+            "name": "the response was successful",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\response-steps.ts:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3705299
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 7,
+            "name": "the response status code is 200",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\response-steps.ts:25"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1445600
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@dev",
+            "line": 3
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "as-an-api-i-can-retrieve-posts",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "As an API I can retrieve posts",
+    "tags": [],
+    "uri": "src\\features\\GET.feature"
+  }
+]

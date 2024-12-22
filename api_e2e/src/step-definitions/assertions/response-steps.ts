@@ -1,9 +1,9 @@
-import { Then } from "@cucumber/cucumber"
+import {DataTable, Then} from "@cucumber/cucumber"
 import { ScenarioWorld } from "../setup/world";
 import { expect } from "@playwright/test"
 
 Then(
-    /^the response was (successful)?(unsuccesful)?$/,
+    /^the response was (successful)?(unsuccessful)?$/,
     async function(this: ScenarioWorld, success: boolean, unsuccessful: boolean) {
         const {
             globalAPIResponseVariables
@@ -18,6 +18,22 @@ Then(
         } else {
             expect(response.ok()).toBeTruthy()
         }
+
+    }
+)
+
+Then(
+    /^the response status code is (\d*)$/,
+    async function(this: ScenarioWorld, statusCode: string) {
+        const {
+            globalAPIResponseVariables
+        } = this
+
+        console.log(`the response status code is ${statusCode}`)
+
+        const response = globalAPIResponseVariables.response
+
+        expect(response.status()).toBe(Number(statusCode))
 
     }
 )

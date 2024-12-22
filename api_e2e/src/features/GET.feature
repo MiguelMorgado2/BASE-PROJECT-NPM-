@@ -1,5 +1,6 @@
 Feature: As an API I can retrieve posts
 
+    @dev
     Scenario: As an API I can retrive all the posts
         Given I retrieve "posts"
         And the response was successful

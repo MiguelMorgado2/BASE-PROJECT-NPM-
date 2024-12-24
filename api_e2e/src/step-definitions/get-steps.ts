@@ -17,3 +17,23 @@ Given(
 
     }
 )
+
+Given(
+    /^I retrieve the ([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd) "([^"]*)"$/,
+    async function(this: ScenarioWorld, index: string, route: string) {
+        const {
+            api: { request },
+            globalConfig,
+            globalAPIResponseVariables
+        } = this
+
+        console.log(`I retrieve the ${index} ${route}`)
+
+        const currentIndex = Number(index.match(/\d/g)?.join(''))
+
+        const routeAtIndex = `${route}/${currentIndex}`
+
+        await getResponse(request, routeAtIndex, globalConfig, globalAPIResponseVariables)
+
+    }
+)

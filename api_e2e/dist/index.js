@@ -14,7 +14,7 @@ const hostsConfig = (0, _parseEnv.getJsonFromFile)((0, _parseEnv.env)('HOSTS_URL
 const worldParameters = {
   hostsConfig
 };
-const common = "./src/features/**/*.feature           --require-module ts-node/register           --require ./src/step-definitions/**/**/*.ts           --world-parameters ".concat(JSON.stringify(worldParameters), "\n          -f json:./reports/report.json           --format progress-bar");
+const common = "./src/features/**/*.feature           --require-module ts-node/register           --require ./src/step-definitions/**/**/*.ts           --world-parameters ".concat(JSON.stringify(worldParameters), "\n          -f json:./reports/report.json           --parallel ").concat((0, _parseEnv.env)('PARALLEL'), "           --retry ").concat((0, _parseEnv.env)('RETRY'), "           --format progress-bar");
 const dev = exports.dev = "".concat(common, " --tags '@dev'");
 const smoke = exports.smoke = "".concat(common, " --tags '@smoke'");
 const regression = exports.regression = "".concat(common, " --tags '@regression'");

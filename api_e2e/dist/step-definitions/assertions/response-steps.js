@@ -22,3 +22,16 @@ var _test = require("@playwright/test");
   const response = globalAPIResponseVariables.response;
   (0, _test.expect)(response.status()).toBe(Number(statusCode));
 });
+(0, _cucumber.Then)(/^the response json contains the attributes:$/, async function (dataTable) {
+  const {
+    globalAPIResponseVariables
+  } = this;
+  console.log("the response json contains the attributes: ".concat(dataTable.raw()));
+  const response = await globalAPIResponseVariables.response.json();
+  const expected_response = dataTable.raw();
+  for (let i = 0; i < expected_response.length; i++) {
+    for (let j = 0; j < expected_response[i].length; j++) {
+      (0, _test.expect)(JSON.stringify(response)).toContain(expected_response[i][j]);
+    }
+  }
+});

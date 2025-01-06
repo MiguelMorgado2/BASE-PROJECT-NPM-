@@ -1,13 +1,25 @@
 import dotenv from 'dotenv'
 import {env, getJsonFromFile} from "./env/parseEnv";
-import {GlobalConfig, HostsConfig} from "./env/global";
+import {GlobalConfig, HostsConfig, JsonPayloadMappings} from "./env/global";
+import * as fs from "fs";
 
 dotenv.config({ path: env('COMMON_CONFIG_FILE')})
 
 const hostsConfig: HostsConfig = getJsonFromFile(env('HOSTS_URLS_PATH'))
+const payloadFiles = fs.readdirSync(`${process.cwd()}${env('JSON_PAYLOAD_PATH')}`)
+
+const jsonPayloadMappings: JsonPayloadMappings = payloadFiles.reduce(
+    (payloadConfigAcc, file) => {
+        const key = file.replace('.json', '')
+        const payloadMappings = getJsonFromFile(`${env('JSON_PAYLOAD_PATH')}${file}`)
+        return {...payloadConfigAcc, [key]: payloadMappings}
+    },
+    {}
+)
 
 const worldParameters: GlobalConfig = {
-    hostsConfig
+    hostsConfig,
+    jsonPayloadMappings
 }
 
 const common = `./src/features/**/*.feature \

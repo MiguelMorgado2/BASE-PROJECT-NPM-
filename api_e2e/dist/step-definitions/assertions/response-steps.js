@@ -35,3 +35,16 @@ var _test = require("@playwright/test");
     }
   }
 });
+(0, _cucumber.Then)(/^the response text contains the attributes:$/, async function (dataTable) {
+  const {
+    globalAPIResponseVariables
+  } = this;
+  console.log("the response text contains the attributes: ".concat(dataTable.raw()));
+  const response = await globalAPIResponseVariables.response.text();
+  const expected_response = dataTable.raw();
+  for (let i = 0; i < expected_response.length; i++) {
+    for (let j = 0; j < expected_response[i].length; j++) {
+      (0, _test.expect)(response).toContain(expected_response[i][j]);
+    }
+  }
+});

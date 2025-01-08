@@ -18,7 +18,7 @@ Feature: As a user I can intercept a REST api and mock the response
     Then the "full name" should not be displayed
 
   @smoke
-  @regression 
+  @regression @dev 
   Scenario: As a user I can mock a single user
     Given I am on the "home" page
     And the "api" endpoint for "users" is mocked with "single user"

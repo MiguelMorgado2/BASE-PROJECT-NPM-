@@ -17,3 +17,27 @@ Given(
         await interceptResponse(page, mockServerKey, mockConfigKey, mockPayloadKey, globalConfig)
     }
 )
+
+Given(
+    /^the cookie "([^"]*)" is set with value "([^"]*)"$/,
+    async function (this: ScenarioWorld, cookieName: string, cookieValue: string) {
+      const {
+        screen: { page },
+      } = this;
+  
+      logger.log(`Setting cookie ${cookieName} with value ${cookieValue}`);
+  
+      await page.context().addCookies([
+        {
+          name: cookieName,
+          value: cookieValue,
+          domain: 'pt.iqos.com', // You can make this dynamic if needed
+          path: '/',
+          httpOnly: false,
+          secure: true,
+        },
+      ]);
+  
+      logger.log(`Cookie ${cookieName} has been set`);
+    }
+  );

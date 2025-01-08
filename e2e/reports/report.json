@@ -4,108 +4,95 @@
     "elements": [
       {
         "description": "",
-        "id": "as-a-user-i-can-interact-with-login-forms;as-a-user-i-can-populate-login-details-leveraging-environment-variables",
-        "keyword": "Scenario Outline",
-        "line": 23,
-        "name": "As a user I can populate login details leveraging environment variables",
+        "id": "as-a-user-i-can-intercept-a-rest-api-and-mock-the-response;as-a-user-i-can-mock-a-single-user",
+        "keyword": "Scenario",
+        "line": 22,
+        "name": "As a user I can mock a single user",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 2569585300
+              "duration": 1527985299
             }
           },
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 7,
+            "line": 23,
             "name": "I am on the \"home\" page",
             "match": {
               "location": "src\\step-definitions\\navigation.ts:12"
             },
             "result": {
               "status": "passed",
-              "duration": 6011077399
+              "duration": 4222688900
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 8,
+            "line": 24,
+            "name": "the \"api\" endpoint for \"users\" is mocked with \"single user\"",
+            "match": {
+              "location": "src\\step-definitions\\mock.ts:7"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 46808899
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 25,
             "name": "I click the \"playground\" button",
             "match": {
               "location": "src\\step-definitions\\click.ts:15"
             },
             "result": {
               "status": "passed",
-              "duration": 1101725999
+              "duration": 1255419299
             }
           },
           {
             "arguments": [],
-            "keyword": "When ",
-            "line": 9,
+            "keyword": "And ",
+            "line": 26,
             "name": "I am directed to the \"playground\" page",
             "match": {
               "location": "src\\step-definitions\\navigation.ts:32"
             },
             "result": {
               "status": "passed",
-              "duration": 4020300
+              "duration": 12240400
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 27,
+            "name": "the \"1st\" \"full name\" should not contain the text \"Leanne Graham\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:199"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 4167142100
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 10,
-            "name": "I fill in the \"email\" input with \"$.TEST_EMAIL\"",
+            "line": 28,
+            "name": "the \"1st\" \"full name\" should contain the text \"Todd Smith\"",
             "match": {
-              "location": "src\\step-definitions\\form.ts:24"
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:199"
             },
             "result": {
               "status": "passed",
-              "duration": 2071806899
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 11,
-            "name": "I fill in the \"password\" input with \"$.TEST_PASSWORD\"",
-            "match": {
-              "location": "src\\step-definitions\\form.ts:24"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 251559300
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 12,
-            "name": "the \"email\" should contain the value \"admin@testingtalkshub.com.au\"",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:91"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 54165600
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "And ",
-            "line": 13,
-            "name": "the \"password\" should contain the value \"4S42xAr12\"",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:91"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 67156100
+              "duration": 29870800
             }
           },
           {
@@ -113,36 +100,32 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 1977173800
+              "duration": 743966300
             }
           }
         ],
         "tags": [
           {
-            "name": "@dev",
-            "line": 3
-          },
-          {
             "name": "@smoke",
-            "line": 4
+            "line": 20
           },
           {
             "name": "@regression",
-            "line": 5
+            "line": 21
           },
           {
-            "name": "@production",
-            "line": 20
+            "name": "@dev",
+            "line": 21
           }
         ],
         "type": "scenario"
       }
     ],
-    "id": "as-a-user-i-can-interact-with-login-forms",
+    "id": "as-a-user-i-can-intercept-a-rest-api-and-mock-the-response",
     "line": 1,
     "keyword": "Feature",
-    "name": "As a user I can interact with login forms",
+    "name": "As a user I can intercept a REST api and mock the response",
     "tags": [],
-    "uri": "src\\features\\playground\\login.feature"
+    "uri": "src\\features\\playground\\mock.feature"
   }
 ]

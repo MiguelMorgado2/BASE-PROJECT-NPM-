@@ -17,5 +17,6 @@
   "cancel" : "[data-id='cancel-button']",
   "playground" : "[data-id='playground-button']",
   "no items message" : "[data-id='no-items-message']",
-  "error message" : "[data-id='error-message']"
+  "error message" : "[data-id='error-message']",
+  "cart item": "(//span[@class='mat-mdc-button-touch-target'])[2]"
 }

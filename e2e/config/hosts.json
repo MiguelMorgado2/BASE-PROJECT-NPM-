@@ -1,5 +1,5 @@
 {
-    "localhost": "http://localhost:3000/",
-    "production": "https://bookcart.azurewebsites.net/",
-    "api" : "https://bookcart.azurewebsites.net/api/shoppingcart/"
-  }
+  "localhost": "http://localhost:3000/",
+  "production": "https://bookcart.azurewebsites.net/",
+  "api": "https://bookcart.azurewebsites.net/api/"
+}

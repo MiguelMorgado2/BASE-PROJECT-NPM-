@@ -368,7 +368,7 @@ console.log(identity<string>("Hello")); // Output: Hello
 
      - [GET Feature](#get-feature-file)
 
-   - [Reporter](#e2e-src-reporter-folder)
+   - [Reporter](#cucumber-report-ts-file)
 
    - [Step Definitions](#e2e-src-step-definitions-folder)
 
@@ -1019,6 +1019,75 @@ It defines the Behavior of your API. Each part of this file has a specific job:
 - Focus on Logic: Beginners can write a Scenario without knowing how to code yet. You focus on what to test, and the step-definitions (which we will see next) handle how to do it.
 
 - Data Tables: Notice the | id | 1 | section. This is a DataTable. It’s a clean way to check many different pieces of information at once without writing multiple lines of text.
+
+### NOTE: The same logic applies for the other feature files inside the Features folder.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Cucumber report ts file:
+
+```ts
+import reporter, { Options } from "cucumber-html-reporter";
+import { env } from "../env/parseEnv";
+import dotenv from "dotenv";
+
+dotenv.config({ path: env("COMMON_CONFIG_FILE") });
+
+const options: Options = {
+  theme: "bootstrap",
+  jsonFile: env("JSON_REPORT_FILE"),
+  output: env("HTML_REPORT_FILE"),
+  reportSuiteAsScenarios: true,
+  launchReport: false,
+};
+
+reporter.generate(options);
+```
+
+<details>
+<summary>Click to open cucumber-report code description</summary>
+<br>
+
+Location: api_e2e/src/reporter/cucumber-report.ts
+
+#### What it is
+
+This is the Presentation Layer of your project. While the tests are running, they generate messy, technical data that is hard for humans to read. This file acts as a "Graphic Designer"—it takes those technical results and transforms them into a beautiful, professional HTML dashboard.
+
+#### What it does
+
+This script automates the creation of your post-test reports using three main steps:
+
+1. Loading Configurations
+
+- dotenv.config: It uses the env tool we discussed earlier to find the COMMON_CONFIG_FILE. This tells the reporter where to look for important settings, like file paths.
+
+2. Setting the "Look and Feel" (options)
+
+- This section defines exactly how the final report will look:
+
+  - theme: 'bootstrap': It applies a modern, clean web design to the report.
+
+  - jsonFile: It tells the reporter where the "raw" test data is hidden.
+
+  - output: It defines the final name and location of the readable HTML file.
+
+- launchReport: false: It tells the computer not to automatically pop open your web browser every single time a test finishes (which can be annoying during development).
+
+3. Generating the Report
+
+- reporter.generate(options): This is the final command that executes the transformation. It gathers the raw data, applies the theme, and saves the file to your disk.
+
+#### Why is this important:
+
+- Visual Feedback: Instead of staring at a black terminal screen with white text, you get colorful charts (Green for Pass, Red for Fail).
+
+- Evidence: If a test fails, this report provides a clear record of exactly what went wrong, which you can share with your team or developers to prove there is a bug.
+
+- Professionalism: Using a structured reporter shows that your automation framework is "Production Ready." It makes it easy for managers or stakeholders to see the health of the API at a glance.
 
 </details>
 <br>

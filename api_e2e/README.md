@@ -370,6 +370,8 @@ console.log(identity<string>("Hello")); // Output: Hello
 
    - [Reporter](#cucumber-report-ts-file)
 
+   - [Common Env](#common-env-file)
+
    - [Step Definitions](#e2e-src-step-definitions-folder)
 
      - [assertions](#e2e-src-assertions-folder)
@@ -1088,6 +1090,58 @@ This script automates the creation of your post-test reports using three main st
 - Evidence: If a test fails, this report provides a clear record of exactly what went wrong, which you can share with your team or developers to prove there is a bug.
 
 - Professionalism: Using a structured reporter shows that your automation framework is "Production Ready." It makes it easy for managers or stakeholders to see the health of the API at a glance.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Common env file:
+
+```ts
+CUCUMBER_PUBLISH_QUIET = true;
+API_AUTOMATION_HOST = production;
+HOSTS_URLS_PATH = /config/hosst.json;
+JSON_REPORT_FILE = "./reports/report.json";
+HTML_REPORT_FILE = "./reports/cucumber-html-report.html";
+JSON_PAYLOAD_PATH = "/config/json_payloads/";
+PARALLEL = 1;
+RETRY = 1;
+```
+
+<details>
+<summary>Click to open the common env code description</summary>
+<br>
+
+Location: api_e2e/src/reporter/cucumber-report.ts
+
+- Location: api_e2e/env/common.env
+
+#### What it is
+
+This is a Configuration File (specifically an Environment file). While the .ts files we looked at earlier are the "logic" that reads data, this file is the "Control Panel" for your entire project. It contains a list of settings that change how the automation behaves without you having to touch a single line of code.
+
+#### What it does
+
+It stores Key-Value pairs that act as global constants for your tests. Here is what each setting controls:
+
+- CUCUMBER_PUBLISH_QUIET=true: This keeps your terminal clean. It tells Cucumber not to nag you about uploading your reports to their public cloud every time you run a test.
+
+API_AUTOMATION_HOST=production: This tells the framework which key to look for in your hosts.json. By changing this one word to localhost, you can redirect your entire test suite to a different server.
+
+HOSTS_URLS_PATH & JSON_PAYLOAD_PATH: These define the "Home Address" for your configuration folders. It tells the parseEnv.ts tool exactly where to find your URLs and JSON data.
+
+JSON_REPORT_FILE & HTML_REPORT_FILE: These tell the cucumber-report.ts file exactly where to save the results of your tests so you can find them later in the reports folder.
+
+PARALLEL & RETRY: These are performance settings. PARALLEL=1 means tests run one by one, and RETRY=1 means if a test fails due to a random network glitch, the system will automatically try to run it one more time before marking it as a failure.
+
+#### Why is this important:
+
+- Centralized Control: Imagine you have 100 tests. If you want to change where the reports are saved, you don't edit 100 files; you change one line here.
+
+- Environmental Flexibility: This file allows your project to be "Portable." When you move your code from your laptop to a professional server, you often only need to update this common.env file to make everything work perfectly in the new location.
+
+- Readability: It serves as a "Quick Look" at how the project is configured. Anyone can open this file and immediately see which host is being tested and where the payloads are stored.
 
 </details>
 <br>

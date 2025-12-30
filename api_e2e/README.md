@@ -373,7 +373,7 @@ console.log(identity<string>("Hello")); // Output: Hello
      - [ParsEnv.ts](#parsenv-ts-file)
      - [Global.ts](#global-ts-file)
 
-     2.3 [SRC-Folder](#e2e--src-folder)
+       2.3 [SRC-Folder](#e2e--src-folder)
 
      - [Step-Definitions-Folder](#e2e--src--step-definitions-folder)
 
@@ -404,7 +404,7 @@ Open Visual Studio Code:
 <details>
 <summary>Click to open Visual Studio image</summary>
 
-![VsCode](./assets/readme-images/vscode1.png)
+![VsCode](/assets/readme-images-api/vscode1.png)
 
 </details>
 <br>

@@ -1,7 +1,14 @@
-# Playwright + cucumber + typescript
+# API AUTOMATION FRAMEWORK WITH > Playwright + cucumber + typescript
 
-The purpose of this documentation is to explain how we can use an existing automation base structure, in any automation project.
-Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
+Welcome to the API_E2E Automation Framework.
+
+This project is designed as a modular, production-ready foundation for professional API testing.
+
+Our primary objective is to empower testers—regardless of their experience level—to hit the ground running. By simply navigating to the api_e2e directory and executing a standard npm install, you will have a fully functional Playwright and Cucumber environment ready for execution.
+
+While this base structure provides the essential architecture for request handling, data mapping, and automated reporting, it is intended to be a flexible starting point.
+
+As you integrate this into your specific technical landscape, we encourage you to adapt the configurations, expand the step definitions, and enhance the utility helpers to meet the unique demands and robustness required by your project.
 
 Before diving into the documentation tutorial, its important to have knowledge on the tools and language used in this particular project:
 

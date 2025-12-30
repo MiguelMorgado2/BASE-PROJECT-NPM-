@@ -404,7 +404,7 @@ Open Visual Studio Code:
 <details>
 <summary>Click to open Visual Studio image</summary>
 
-![VsCode](/assets/readme-images-api/vscode1.png)
+![VsCode](/assets/readme-images-api/VSCODE1.png)
 
 </details>
 <br>
@@ -414,11 +414,21 @@ Go to Extensions and install the Cucumber (Gherkin) Full Support:
 <details>
 <summary>Click to open Cucumber extension image</summary>
 
-![Gherkin](./assets/readme-images/Gherkin.png)
+![Gherkin](/assets/readme-images/Gherkin.png)
 
 </details>
 <br>
- 
+
+On Visual Studio Code, click on the option "Open Folder" and open the project folder you saved on the previous step.
+
+<details>
+<summary>Click to open Visual Studio Code with project</summary>
+
+![VsCode](../assets/readme-images-api/project-opened.png)
+
+</details>
+<br>
+
 The following dependencies are already created in the Package.json file:
 
 ```ts
@@ -428,39 +438,30 @@ The following dependencies are already created in the Package.json file:
   "description": "",
   "main": "index.js",
   "scripts": {
-    "precucumber": "rimraf reports && mkdir reports && echo {} > reports/report.json",
+    "lint": "eslint . --ext .ts",
+    "test": "rimraf dist && npx playwright test --reporter=html",
     "transpile": "rimraf dist && babel --extensions .ts --out-dir dist src",
+    "precucumber": "rimraf reports && mkdir reports && echo {} > reports/report.json",
     "cucumber": "npm run transpile && cucumber-js",
-    "cucumber:localhost": "npm run transpile && cucumber-js",
-    "cucumber:production": "npm run transpile && cucumber-js",
-    "postcucumber": "cross-env COMMON_CONFIG_FILE=env/common.env ts-node ./src/reporter/cucumber-report.ts"
+    "postcucumber" : "ts-node ./src/reporter/cucumber-report.ts"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@babel/cli": "^7.25.6",
-    "@babel/core": "^7.25.2",
-    "@babel/preset-env": "^7.25.4",
-    "@babel/preset-react": "^7.24.7",
-    "@babel/preset-typescript": "^7.24.7",
-    "@cucumber/cucumber": "^10.9.0",
-    "@playwright/test": "^1.46.1",
-    "@types/body-parser": "^1.19.5",
-    "@types/cucumber-html-reporter": "^5.0.1",
-    "@types/faker": "^5.5.3",
-    "@types/node": "^22.5.1",
-    "axe-html-reporter": "^2.2.11",
-    "axe-playwright": "^2.0.3",
-    "cross-env": "^7.0.3",
-    "dotenv": "^16.4.5",
-    "faker": "^5.5.3",
-    "playwright": "^1.46.1",
-    "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
-  },
   "dependencies": {
-    "cucumber-html-reporter": "^7.1.1"
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-typescript": "^7.18.6",
+    "@cucumber/cucumber": "^11.1.1",
+    "@playwright/test": "^1.29.1",
+    "@typescript-eslint/eslint-plugin": "^5.48.0",
+    "@typescript-eslint/parser": "^5.48.0",
+    "cucumber-html-reporter": "^6.0.0",
+    "dotenv": "^16.4.7",
+    "eslint": "^8.31.0",
+    "playwright": "^1.29.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
   }
 }
 ```
@@ -472,7 +473,7 @@ Open the Terminal in VS Code:
 <details>
 <summary>Click to open Terminal access image</summary>
 
-![OpenTerminal](./assets/readme-images/OpenTerminal.png)
+![OpenTerminal](/assets/readme-images-api/new-terminal.png)
 
 </details>
 <br>
@@ -482,21 +483,21 @@ Open the Terminal in VS Code:
 <details>
 <summary>Click to open Terminal image</summary>
 
-![TerminalOpened](./assets/readme-images/TerminalOpened.png)
+![TerminalOpened](/assets/readme-images-api/terminal-opened.png)
 
 </details>
 <br>
  
-Navigate to the e2e folder, which is where our end to end project structure is created.
+Navigate to the api_e2e folder, which is where our end to end project structure is created.
 
-To do this, type “cd e2e” and enter.
+To do this, type “cd api_e2e” and enter.
 
-The route is now pointing to the e2e folder:
+The route is now pointing to the api_e2e folder:
 
 <details>
 <summary>Click to open Route image</summary>
 
-![RouteE2e](./assets/readme-images/RouteE2e.png)
+![RouteE2e](/assets/readme-images-api/project-opened-on-terminal.png)
 
 </details>
 <br>
@@ -514,7 +515,7 @@ The project structure inside the e2e folder, looks like this:
 <details>
 <summary>Click to open Project Structure image</summary>
 
-![ProjectStructure1](./assets/readme-images/ProjectStructure1.png)
+![ProjectStructure1](/assets/readme-images-api/project-structure.png)
 
 </details>
 <br>
@@ -525,12 +526,12 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 
 **Note: Without this configuration, it will not be possible to execute the test cases.**
 
-• Click CTRL + , to open the settings:
+• Open Visual Studio code settings:
 
 <details>
 <summary>Click to open Cucumber Settings image</summary>
 
-![CucumberSettings](./assets/readme-images/OpenSettings.png)
+![CucumberSettings](/assets/readme-images-api/open-settings.png)
 
 </details>
 <br>
@@ -540,7 +541,7 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 <details>
 <summary>Click to open Cucumber Search image</summary>
 
-![CucumberSearch](./assets/readme-images/CucumberSearch.png)
+![CucumberSearch](/assets/readme-images-api/search-cucumber.png)
 
 </details>
 <br>
@@ -550,7 +551,7 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 <details>
 <summary>Click to open Edit Settings image</summary>
 
-![EditSettings](./assets/readme-images/EditSettings.png)
+![EditSettings](/assets/readme-images-api/cucumber-settings-open.png)
 
 </details>
 <br>
@@ -558,13 +559,13 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 •	Define where the steps file is in cucumber features and in cucumber.features:
 
 ```ts
-"e2e/src/features/*.feature"],
+"api_e2e/src/features/*.feature"],
 ```
 
 <details>
 <summary>Click to open Cucumber Feature image</summary>
 
-![CucumberFeature](./assets/readme-images/CucumberFeature.png)
+![CucumberFeature](/assets/readme-images-api/folder-point.png)
 
 </details>
 <br>
@@ -572,45 +573,45 @@ Configure the Visual Studio settings.json file, so the cucumber features and the
 •	Define where the steps definitions file is, in cucumber.glue:
 
 ```ts
-"e2e/src/step-definitions/*.ts", "e2e/src/step-definitions/assertions/*.ts";
+"api_e2e/src/step-definitions/**/*.ts",;
 ```
 
 <details>
 <summary>Click to open Cucumber Glue image</summary>
 
-![CucumberGlue](./assets/readme-images/CucumberGlue.png)
+![CucumberGlue](/assets/readme-images-api/step-definitions.png)
 
 </details>
 <br>
 
 ### The installation and visual studio configurations are completed.
 
-#### Note: This base template project is already packed with example features tests for each different actions, pointing to the dummy website.
+#### Note: This base template project is already packed with example features tests.
 
 - To guarantee that the npm install correctly installed all the dependencies, select one of the example tests in the features tests folder:
 
-for example, choose the "delete-contact.feature" test
+for example, choose the "GET.feature" test
 
 Path:
 
-src > features > delete-contact.feature.
+src > features > GET.feature.
 
-- Instert a @dev tag on the test scenario to be executed:
+- Instert a @dev tag on the test scenario to be executed and save:
 
 <details>
 <summary>Click to open The test image</summary>
 
-![FirstTestExecution](./assets/readme-images/first-test-execution.png)
+![FirstTestExecution](/assets/readme-images-api/get-feature-test.png)
 
 </details>
 <br>
 
-- On the terminal, Execute the test with the command ".\run_tests.bat production dev"
+- On the terminal, Execute the test with the command ".\run_tests.bat dev"
 
 <details>
 <summary>Click to open the execution command</summary>
 
-![Execution command](./assets/readme-images/execution-command.png)
+![Execution command](/assets/readme-images-api/ter-run.png)
 
 </details>
 <br>
@@ -620,7 +621,17 @@ src > features > delete-contact.feature.
 <details>
 <summary>Click to open the execution result</summary>
 
-![Execution command](./assets/readme-images/execution-result.png)
+![Execution command](/assets/readme-images-api/test-pass-terminal.png)
+
+</details>
+<br>
+
+To open the cucumber report, go to the folder "Reports > right click on "cucumber-html-report.html" and select "reveal on file explorer".
+
+<details>
+<summary>Click to open the cucumber report page</summary>
+
+![Execution command](/assets/readme-images-api/cucumber-report.png)
 
 </details>
 <br>

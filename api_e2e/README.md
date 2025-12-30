@@ -356,14 +356,17 @@ console.log(identity<string>("Hello")); // Output: Hello
    2.1 [Config-Folder](#e2e-config-folder)
 
    - [json_payloads](#json-payloads)
-   - [hosts.json](#json-hosts)
 
-     2.2 [SRC folder](#api_e2e-src-folder)
+     2.2 [SRC folder](#api-e2e-src-folder)
 
-   - [Env-Folder](#api_e2e--src--env-folder)
+   - [Env-Folder](#env-folder)
 
      - [ParsEnv.ts](#parsenv-ts-file)
      - [Global.ts](#global-ts-file)
+
+   - [Features Folder](#features-folder)
+
+     - [GET Feature](#get-feature-file)
 
    - [Reporter](#e2e-src-reporter-folder)
 
@@ -657,33 +660,367 @@ The config folder contains the following folder and files:
   - updated posts.jsons file;
 - hosts.json file.
 
-The env folder serves as a hub for managing environmental configurations and shared types, ensuring that the automation framework or project has access to the right settings and utilities, regardless of the environment it's operating in.
+The config folder serves as the centralized repository for non-code resources required to execute the API tests. It separates the "what" (data and environment) from the "how" (the test logic).
 
-#### parsEnv ts file:
+Here is the purpose of the components inside this folder:
 
-File content:
+1. ### json payloads:
+   This folder acts as a Data Bank for the API requests.
 
-This file is focused on retrieving environment variables and reading JSON data from files. It has two main functionalities:
+Request Templates: It stores the JSON bodies used for POST, PUT, or PATCH requests, such as new post.json and updated post.json.
 
-- Accessing environment variables;
-- Handling file-based JSON data.
+Maintenance: Instead of hardcoding large JSON objects inside the Step Definitions, we import these files. This makes the code cleaner and allows us to update a request structure in one single place.
+
+#### new post
 
 ```ts
+{
+    "title" : "New Post",
+    "body" : "This is a new post",
+    "userId" : 1
+  }
+```
+
+<details>
+<summary>Click to open new post code description</summary>
+<br>
+
+#### What is this file?
+
+This is a JSON (JavaScript Object Notation) file. It is the standard format used by APIs to exchange data between a client (our test script) and a server.
+
+Breakdown of the Fields:
+
+- "title": This is a Key. Its Value is "New Post". It tells the API what the heading of the post should be.
+
+- "body": This contains the actual content or message of the post.
+
+- "userId": This is a numerical ID that identifies which user is "creating" this post.
+
+#### What does it do?
+
+The primary purpose of this file in your automation project is to serve as Test Data.
+
+- Input Data: When your test runs a POST request (the command used to create something new on a server), your code reads this file and sends these specific details to the API.
+
+- Consistency: By keeping this in a separate file, you ensure that every time you run the "Create Post" test, it uses the exact same data, making your tests predictable and reliable.
+
+#### Why put it in the config folder?
+
+to have as separation of Concerns:
+
+- The Code: Stays in your src or steps folder (tells the test how to run).
+
+- The Data: Stays in the config/json_payloads folder (tells the test what to send).
+
+- This way, if you want to change the title of your test post, you don't have to touch the complex code; you just edit this simple text file.
+
+### NOTE: The same logic applies for the other jason files inside the json_payload folder.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+#### host
+
+```ts
+{
+    "localhost" : "https://localhost:5000",
+    "production" : "https://jsonplaceholder.typicode.com"
+  }
+```
+
+<details>
+<summary>Click to open host code description</summary>
+<br>
+
+#### What is this file?
+
+The hosts.json file acts as a GPS for your tests. It stores the Base URLs (addresses) of the different servers where your API might be running.
+
+Instead of typing the full URL (e.g., https://jsonplaceholder.typicode.com/posts) inside every single test, we just tell the test to look here to find the right "home address."
+
+### Data Structure
+
+The file maps environment nicknames to their actual web addresses:
+
+- localhost: Points to your own computer. This is used when a developer is writing new code and testing it locally before sharing it.
+
+- production: Points to the live, public API. In this project, it points to JSONPlaceholder, a common fake API used for testing.
+
+### What does this do in our tests?
+
+This file allows our automation to be Dynamic.
+
+- Switching Environments: If you want to run tests against your local machine, you tell the code to use the localhost key. If you want to test the real site, you switch to production.
+
+- Centralized Control: If the API address ever changes (e.g., moving from version1.com to version2.com), you only have to change it once in this file, and every single test in your project is automatically updated.
+
+- Concatenation: The test script takes the base URL from this file and adds the specific "endpoint" to the end of it.
+
+Example: production address + /posts = https://jsonplaceholder.typicode.com/posts
+
+### Why do we use this separate file?
+
+This is the first step toward Professional DevOps practices:
+
+- Security: It keeps environment-specific details out of the core logic.
+
+- Portability: It allows the same test suite to run on your laptop, a colleague's laptop, or a specialized server (like a Jenkins or GitHub Actions runner) without changing the code.
+
+- Efficiency: It prevents "Hardcoding." Hardcoding (writing the URL directly in the test) is a common beginner mistake that makes tests very difficult to maintain as the project grows.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+## API E2E SRC FOLDER:
+
+In an automation framework, the src (source) folder is the Engine Room. While the config folder holds the data, the src folder contains the actual logic, code, and test scenarios that drive the automation.
+
+- Location: api_e2e/src/
+
+- The src folder contains the "Source Code" of your project. This is where the actual testing happens. It is organized into sub-folders to keep the logic separated from the test descriptions, making the project easier to scale and debug.
+
+#### What does the SRC folder contain:
+
+1. features/
+
+- Purpose: Contains .feature files written in Gherkin (Given/When/Then).
+
+- Role: This is the "Human-Readable" part of your tests. It describes what the test does in plain English so that non-developers can understand the test scenarios.
+
+2. step-definitions/
+
+- Purpose: The bridge between Gherkin and Code.
+
+- Role: Every line written in a .feature file has a corresponding function here. When the test says "Given I have a new post," the code in this folder tells the computer exactly how to find that JSON file and prepare it.
+
+3. support/
+
+- Purpose: Helper functions and shared logic.
+
+- Role: Contains reusable code used across many tests, such as custom API clients, authentication handlers, or specialized loggers. Think of this as your "Toolbox."
+
+4. tests/
+
+- Purpose: Low-level test scripts.
+
+- Role: While features are for high-level scenarios, this folder often contains the specific Playwright or TypeScript logic that interacts directly with the API endpoints.
+
+5. reporter/
+
+- Purpose: Customizing test results.
+
+- Role: Contains the logic for how your test results are formatted (e.g., generating HTML dashboards or sending results to Slack).
+
+6. env/
+
+- Purpose: Technical environment variables.
+
+- Role: Stores configuration files (like .env) that handle sensitive or technical settings like timeouts, API keys, or secret tokens.
+
+### ENV Folder:
+
+This folder contains:
+
+- global.ts file;
+- parseEnv.ts file;
+
+#### Global TS file:
+
+```ts
+import { APIResponse } from "@playwright/test";
+
+export type GlobalAPIResponseVariables = { [key: string]: APIResponse };
+export type HostsConfig = Record<string, string>;
+export type JsonPayloadMappings = Record<string, string>;
+export type JsonPayloadName = string;
+
+export type GlobalConfig = {
+  hostsConfig: HostsConfig;
+  jsonPayloadMappings: JsonPayloadMappings;
+};
+```
+
+<details>
+<summary>Click to open global code description</summary>
+<br>
+
+- Location: api_e2e/src/env/global.ts
+
+#### What is this file?
+
+In technical terms, this is a TypeScript Definition File. Think of it as a "Rulebook" or a "Dictionary" for your project’s data.
+
+In TypeScript, we don't just use data; we define the "shape" that data must take. This file defines the Types (blueprints) that the rest of the automation code must follow.
+
+#### What it does
+
+This file ensures that different parts of your automation "speak the same language" and don't make mistakes. Here is a breakdown of the definitions inside:
+
+- GlobalAPIResponseVariables: It tells the system that when we store a response from the API (like a "Success" message), it must be a valid Playwright APIResponse. This prevents the code from accidentally trying to read a "Response" that doesn't exist.
+
+- HostsConfig & JsonPayloadMappings: These define that our configurations (like the ones in hosts.json) must be a "Record" consisting of a Key (the name) and a String (the value/address).
+
+- GlobalConfig: This is the "Master Blueprint." It tells the automation that whenever it loads the project configuration, it must include two things: a list of Hosts and a list of JSON Payloads.
+
+#### Why is this important:
+
+- Error Prevention: If you try to use a host that isn't a text string, or a payload that doesn't fit the mapping, the code editor will highlight it in red before you even run the test.
+
+- Auto-Complete: Because these types are defined here, when you start typing code in other files, your editor (like VS Code) will suggest the correct options to you.
+
+- Organization: It acts as a table of contents for the data structures used in the entire project.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+#### ParsEnv TS file:
+
+```ts
+export const env = (key: string): string => {
+  const value = process.env[key];
+  if (!value) {
+    throw Error(`🧨 No environment variable found for ${key} 🧨`);
+  }
+  return value;
+};
+
 export const getJsonFromFile = <T = Record<string, string>>(
   path: string
 ): T => {
   return require(`${process.cwd()}${path}`);
 };
-
-export const env = (key: string): string => {
-  const value = process.env[key];
-  if (!value) {
-    throw Error(`No environment variable found for ${key}`);
-  }
-  return value;
-};
-
-export const envNumber = (key: string): number => {
-  return Number(env(key));
-};
 ```
+
+<details>
+<summary>Click to open parsEnv code description</summary>
+<br>
+
+- Location: api_e2e/src/env/parseEnv.ts
+
+#### What is this file?
+
+This file is a Utility Helper. If global.ts was the "Rulebook," parseEnv.ts is the "Translator" or "Fetcher." It contains small, reusable functions (tools) that know exactly how to go into your folders or your computer's system to grab the information your tests need to run.
+
+#### What it does
+
+It provides two main "tools" (functions) to the rest of your project:
+
+1. The env tool (Variable Fetcher)
+
+- Purpose: It searches your computer's "Environment Variables" for a specific name (key).
+
+- The "Safety Net": If you ask for a variable that doesn't exist (like a missing API Key), instead of the test crashing quietly or acting weirdly, this tool throws a loud error: 🧨 No environment variable found for... 🧨.
+
+- It forces you to fix configuration mistakes immediately rather than wasting time wondering why a test failed.
+
+2. The getJsonFromFile tool (File Loader)
+
+- Purpose: It knows how to find and open the JSON files we talked about earlier (like your new post.json).
+
+- How it works: It takes the "path" (the address of the file) and combines it with process.cwd() (which is just code-speak for "the folder where this project is currently running").
+
+- Result: It turns a text file on your hard drive into an actual JavaScript object that your test can send to an API.
+
+#### Why is this important:
+
+- Don't Repeat Yourself (DRY): Without this file, you would have to write complex code to "find and open files" inside every single test. Now, you just call getJsonFromFile and it’s done in one line.
+
+- Error Handling: Beginners often struggle with "Undefined" errors. The 🧨 emoji error message makes it very clear what went wrong—you simply forgot to set a variable!
+
+- Dynamic Paths: You don't have to worry about whether your project is running on a Mac, Windows, or a Linux server; process.cwd() handles the pathing logic for you automatically.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Features Folder:
+
+### Get Feature File:
+
+```ts
+Feature: As an API I can retrieve posts
+
+  @smoke @regression @dev
+  Scenario: As an API I can retrieve all the posts
+    Given I retrieve "posts"
+    And the response was successful
+    Then the response status code is 200
+
+  @smoke @regression
+  Scenario: As an API I can retrieve a single post
+    Given I retrieve the 1st "posts"
+    And the response was successful
+    Then the response status code is 200
+    And the response json contains the attributes:
+      | id     | 1 |
+      | userId | 1 |
+
+  @smoke @regression
+  Scenario: As an API I cannot retrieve animals
+    Given I retrieve "animals"
+    And the response was unsuccessful
+    Then the response status code is 404
+```
+
+<details>
+<summary>Click to open GET feature code description</summary>
+<br>
+
+Location: api_e2e/src/features/GET.feature
+
+#### What it is
+
+This is a Gherkin file. Gherkin is a plain-English language that allows anyone—developers, testers, or business managers—to read and understand what the automation is testing without needing to look at code. It uses a structured syntax called Given/When/Then.
+
+#### What it does
+
+It defines the Behavior of your API. Each part of this file has a specific job:
+
+1. The Feature Header
+
+- Feature: As an API I can retrieve posts: This is the high-level goal. It tells you that every test (Scenario) inside this file is related to fetching data from the API.
+
+2. Tags (@smoke, @regression, @dev)
+
+- Purpose: These are labels used to organize and filter your tests.
+
+- How they work: Remember the command .\run_tests.bat @smoke? That command tells the system to only run the scenarios that have that specific tag.
+
+3. Scenarios (The Test Cases)
+
+- Each Scenario represents one specific thing you want to verify:
+
+  - Scenario 1 (Retrieve all): Checks if the API can return a full list of posts.
+
+  - Scenario 2 (Retrieve single): Checks if the API can find one specific post (ID #1) and verifies that the data inside (ID and UserID) is correct.
+
+  - Scenario 3 (Error handling): Checks what happens when you ask for something that doesn't exist (animals). It verifies that the API is smart enough to say "Not Found" (404).
+
+4. The Steps (The "Gherkin" Keywords)
+
+- Given: Sets up the initial state (e.g., "I am looking for posts").
+
+- And: Adds more conditions to the previous step.
+
+- Then: This is the Assertion. This is where the test passes or fails based on the outcome (e.g., "Is the status code 200?").
+
+#### Why is this important:
+
+- Documentation that executes: This isn't just a text file; it is the actual "manual" for your API. If the API changes, the "manual" will fail, letting you know immediately.
+
+- Focus on Logic: Beginners can write a Scenario without knowing how to code yet. You focus on what to test, and the step-definitions (which we will see next) handle how to do it.
+
+- Data Tables: Notice the | id | 1 | section. This is a DataTable. It’s a clean way to check many different pieces of information at once without writing multiple lines of text.
+
+</details>
+<br>
+
+[Back to Index](#index)

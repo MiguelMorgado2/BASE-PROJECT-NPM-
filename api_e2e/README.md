@@ -7,6 +7,9 @@
 The purpose of this documentation is to explain how we can use an existing automation base structure, in any automation project.
 Its important to know that there are multiple ways of structuring a playwright + cucumber automation, and this is just one of them.
 
+</details>
+<br>
+
 Before diving into the documentation tutorial, its important to have knowledge on the tools and language used in this particular project:
 
 ([What is playwright](https://playwright.dev/docs/intro))

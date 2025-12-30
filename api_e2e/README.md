@@ -372,32 +372,32 @@ console.log(identity<string>("Hello")); // Output: Hello
 
    - [Common Env](#common-env-file)
 
-   - [Step Definitions](#e2e-src-step-definitions-folder)
+   - [Support Folder](#support-folder)
 
-     - [assertions](#e2e-src-assertions-folder)
+     - [host helper](#host-helper-file)
+     - [payload-helper](#payload-helper-file)
+     - [rest helper](#rest-helper-file)
 
-       - [response steps](#e2e-src-response-steps-file)
+   - [Step Definitions](#step-definitions-folder)
 
-     - [setup](#e2e-src-setup-folder)
+     - [assertions](#assertions-folder)
 
-       - [hooks](#e2e-src-hooks-file)
-       - [world](#e2e-src-world-file)
+       - [response steps](#response-steps-file)
 
-     - [delete steps](#e2e-src-delete-steps-file)
-     - [get steps](#e2e-src-get-steps-file)
-     - [patch steps](#e2e-src-patch-steps-file)
-     - [post steps](#e2e-src-post-steps-file)
-     - [put steps](#e2e-src-put-steps-file)
+     - [setup](#setup-folder)
 
-   - [Support](#e2e-src-support-folder)
+       - [hooks](#hooks-file)
+       - [world](#world-file)
 
-     - [host helper](#e2e-src-host-helper-file)
-     - [payload-helper](#e2e-src-payload-helper-file)
-     - [rest helper](#e2e-src-rest-helper-file)
+     - [delete steps](#delete-steps-file)
+     - [get steps](#get-steps-file)
+     - [patch steps](#patch-steps-file)
+     - [post steps](#post-steps-file)
+     - [put steps](#put-steps-file)
 
-     - [index](#e2e-src-index-file)
+     - [index](#index-file)
 
-       2.3 [run tests bat](#e2e-src-run-test-bat-file)
+       2.3 [run tests bat](#run-test-bat-file)
 
 ## Installation
 
@@ -1113,8 +1113,6 @@ RETRY = 1;
 <summary>Click to open the common env code description</summary>
 <br>
 
-Location: api_e2e/src/reporter/cucumber-report.ts
-
 - Location: api_e2e/env/common.env
 
 #### What it is
@@ -1147,3 +1145,1148 @@ PARALLEL & RETRY: These are performance settings. PARALLEL=1 means tests run one
 <br>
 
 [Back to Index](#index)
+
+#### Support Folder
+
+The support folder contains the "machinery" that powers your tests. Let's start with the host-helper.ts.
+
+### Host helper file:
+
+```ts
+import { GlobalConfig } from "../env/global";
+
+export const retrieveHostURL = ({ hostsConfig }: GlobalConfig): URL => {
+  const { API_AUTOMATION_HOST: hostname = "production" } = process.env;
+
+  const hostPath = hostsConfig[hostname];
+
+  const url = new URL(hostPath);
+
+  return url;
+};
+```
+
+<details>
+<summary>Click to open the host helper code description</summary>
+<br>
+
+- Location: api_e2e/src/support/host-helper.ts
+
+#### What it is
+
+This file is a Logic Helper. If the hosts.json file is your GPS address book, then host-helper.ts is the Navigator.
+
+- Its job is to look at your current settings, find the correct address (URL) from your address book, and prepare it so the automation can travel there.
+
+#### What it does
+
+This script contains a specific function called retrieveHostURL that performs a step-by-step process:
+
+- Check the Environment: It looks at your common.env file (via process.env) to see which host you want to use (e.g., production or localhost). If you haven't specified one, it defaults to 'production'.
+
+- Look up the Address: It takes that name (like "production") and looks it up inside your hostsConfig (the data loaded from hosts.json).
+
+- Validate the URL: It takes the text string (e.g., "https://jsonplaceholder.typicode.com") and converts it into a formal URL Object. This is like verifying that an address is a real place before you start driving.
+
+- Handover: It returns that validated URL so that your API tests know exactly where to send their requests.
+
+#### Why is this important:
+
+- Automatic Intelligence: You don't have to manually tell the test which URL to use every time. This script "figures it out" for you based on your configuration.
+
+- Safety: By converting the text to a "URL Object," it ensures that if you accidentally typed a bad address in your config file (like forgetting the https://), the system can catch that error early.
+
+- Code Reusability: Instead of writing the logic to find the URL inside every single test file, we write it once here and reuse it everywhere.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Payload helper file:
+
+```ts
+import { env } from "../env/parseEnv";
+
+export const payloadExists = (jsonPayload: any): void => {
+  if (jsonPayload === undefined) {
+    throw Error(
+      `🧨 JSON Payload not defined in ${env("JSON_PAYLOAD_PATH")} 🧨`
+    );
+  }
+  return jsonPayload;
+};
+```
+
+<details>
+<summary>Click to open the Payload helper code description</summary>
+<br>
+
+- Location: api_e2e/src/support/payload-helper.ts
+
+#### What it is
+
+This file acts as a Quality Inspector for your data. In API testing, if you try to send a request with a file that doesn't exist or is empty, the test will fail with a confusing error message. This "helper" exists to catch those mistakes early and explain exactly what went wrong in plain English.
+
+#### What it does
+
+It contains a safety function called payloadExists that performs a "check-up" on your JSON files:
+
+- The Existence Check: Whenever the automation tries to load a file (like new post.json), this function checks if the data actually arrived.
+
+- The Panic Button (Error Handling): If the file is missing or undefined, the function stops the test immediately and throws a clear error: 🧨 JSON Payload not defined in [path] 🧨.
+
+- The Green Light: If the file is found and valid, it simply passes the data along to the test so the API request can be made.
+
+#### Why is this important:
+
+- Clearer Debugging: Without this, a missing file might cause a "Crash" with a generic error like Cannot read property 'title' of undefined. With this helper, you get a specific message telling you exactly which folder is missing the file.
+
+- Path Transparency: By using the env('JSON_PAYLOAD_PATH') inside the error message, the helper reminds you exactly where the system is looking for your files.
+
+- Prevents "Silent Failures": It ensures that a test never "half-runs" with missing data. It’s better for a test to fail immediately with a good explanation than to continue and give a false result.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Rest helper file:
+
+```ts
+import { APIRequestContext, APIResponse } from "playwright";
+import {
+  GlobalConfig,
+  GlobalAPIResponseVariables,
+  JsonPayloadName,
+} from "../env/global";
+import { retrieveHostURL } from "./host-helper";
+import { payloadExists } from "./payload-helper";
+
+export const getResponse = async (
+  request: APIRequestContext,
+  route: string,
+  globalConfig: GlobalConfig,
+  globalAPIResponseVariables: GlobalAPIResponseVariables
+): Promise<APIResponse> => {
+  const url = retrieveHostURL(globalConfig);
+
+  const response = await request.get(url.href + route);
+
+  globalAPIResponseVariables.response = response;
+
+  return response;
+};
+
+export const deleteResponse = async (
+  request: APIRequestContext,
+  route: string,
+  globalConfig: GlobalConfig,
+  globalAPIResponseVariables: GlobalAPIResponseVariables
+): Promise<APIResponse> => {
+  const url = retrieveHostURL(globalConfig);
+
+  const response = await request.delete(url.href + route);
+
+  globalAPIResponseVariables.response = response;
+
+  return response;
+};
+
+export const postResponse = async (
+  request: APIRequestContext,
+  route: string,
+  jsonPayloadName: JsonPayloadName,
+  globalConfig: GlobalConfig,
+  globalAPIResponseVariables: GlobalAPIResponseVariables
+): Promise<APIResponse> => {
+  const url = retrieveHostURL(globalConfig);
+
+  const payload = payloadExists(
+    globalConfig.jsonPayloadMappings[jsonPayloadName]
+  );
+
+  const response = await request.post(url.href + route, { data: payload });
+
+  globalAPIResponseVariables.response = response;
+
+  return response;
+};
+
+export const patchResponse = async (
+  request: APIRequestContext,
+  route: string,
+  jsonPayloadName: JsonPayloadName,
+  globalConfig: GlobalConfig,
+  globalAPIResponseVariables: GlobalAPIResponseVariables
+): Promise<APIResponse> => {
+  const url = retrieveHostURL(globalConfig);
+
+  const payload = payloadExists(
+    globalConfig.jsonPayloadMappings[jsonPayloadName]
+  );
+
+  const response = await request.patch(url.href + route, { data: payload });
+
+  globalAPIResponseVariables.response = response;
+
+  return response;
+};
+
+export const putResponse = async (
+  request: APIRequestContext,
+  route: string,
+  jsonPayloadName: JsonPayloadName,
+  globalConfig: GlobalConfig,
+  globalAPIResponseVariables: GlobalAPIResponseVariables
+): Promise<APIResponse> => {
+  const url = retrieveHostURL(globalConfig);
+
+  const payload = payloadExists(
+    globalConfig.jsonPayloadMappings[jsonPayloadName]
+  );
+
+  const response = await request.put(url.href + route, { data: payload });
+
+  globalAPIResponseVariables.response = response;
+
+  return response;
+};
+```
+
+<details>
+<summary>Click to open the Rest helper code description</summary>
+<br>
+
+- Location: api_e2e/src/support/rest-helper.ts
+
+#### What it is
+
+This is the Core Communication Engine of your framework. It uses Playwright to send actual HTTP requests to the API. Instead of writing complex networking code inside your tests, you use these pre-built functions to perform the standard "actions" of the web: GET, POST, PUT, PATCH, and DELETE.
+
+#### What it does
+
+This file contains specialized functions for each type of API interaction. Every function follows a similar "Mission Plan":
+
+- Find the Destination: It calls retrieveHostURL to get the base address (e.g., https://jsonplaceholder.typicode.com).
+
+- Combine the Route: It attaches the specific endpoint (like /posts) to that address.
+
+- Attach the Data (for POST/PUT/PATCH): It uses payloadExists to grab the JSON data you want to send.
+
+- Execute the Action: It tells Playwright to send the request (e.g., request.post).
+
+- Record the Result: It saves the API's answer into globalAPIResponseVariables.response so that your tests can check it later.
+
+#### The "Action" Breakdown:
+
+- getResponse: Asks the API for information (Reading).
+
+- postResponse: Sends new data to the API (Creating).
+
+- putResponse: Replaces an entire record with new data (Updating).
+
+- patchResponse: Updates only a specific part of a record (Modifying).
+
+- deleteResponse: Tells the API to remove a record (Deleting).
+
+#### Why is this important:
+
+- Standardization: Every time you send a POST request, it happens exactly the same way. This prevents "flaky" tests caused by inconsistent code.
+
+- Abstraction: As a beginner, you don't need to worry about the "headers" or "connection strings." You just say "I want to post this JSON to this route," and this helper handles the technical details.
+
+- Centralized Storage: Because every function saves the result in globalAPIResponseVariables.response, your "Then" steps (assertions) always know exactly where to look to see if the test passed.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+#### Step Definitions folder:
+
+The step-definitions folder is where the human-readable steps from your .feature files are mapped to machine-executable code.
+
+When Cucumber reads a line like Then the response status code is 200, it looks inside this folder to find the exact TypeScript function that knows how to perform that check. It acts as the bridge between your test requirements and the Playwright engine.
+
+#### Assertions folder
+
+### Response steps file:
+
+```ts
+import { DataTable, Then } from "@cucumber/cucumber";
+import { ScenarioWorld } from "../setup/world";
+import { expect } from "@playwright/test";
+
+Then(
+  /^the response was (successful)?(unsuccessful)?$/,
+  async function (
+    this: ScenarioWorld,
+    success: boolean,
+    unsuccessful: boolean
+  ) {
+    const { globalAPIResponseVariables } = this;
+
+    console.log(
+      `the response was ${unsuccessful ? "unsuccessful " : "successful "} `
+    );
+
+    const response = globalAPIResponseVariables.response;
+
+    if (unsuccessful) {
+      expect(response.ok()).toBeFalsy();
+    } else {
+      expect(response.ok()).toBeTruthy();
+    }
+  }
+);
+
+Then(
+  /^the response status code is (\d*)$/,
+  async function (this: ScenarioWorld, statusCode: string) {
+    const { globalAPIResponseVariables } = this;
+
+    console.log(`the response status code is ${statusCode}`);
+
+    const response = globalAPIResponseVariables.response;
+
+    expect(response.status()).toBe(Number(statusCode));
+  }
+);
+
+Then(
+  /^the response json contains the attributes:$/,
+  async function (this: ScenarioWorld, dataTable: DataTable) {
+    const { globalAPIResponseVariables } = this;
+
+    console.log(
+      `the response json contains the attributes: ${dataTable.raw()}`
+    );
+
+    const response = await globalAPIResponseVariables.response.json();
+
+    const expected_response = dataTable.raw();
+
+    for (let i = 0; i < expected_response.length; i++) {
+      for (let j = 0; j < expected_response[i].length; j++) {
+        expect(JSON.stringify(response)).toContain(expected_response[i][j]);
+      }
+    }
+  }
+);
+
+Then(
+  /^the response text contains the attributes:$/,
+  async function (this: ScenarioWorld, dataTable: DataTable) {
+    const { globalAPIResponseVariables } = this;
+
+    console.log(
+      `the response text contains the attributes: ${dataTable.raw()}`
+    );
+
+    const response = await globalAPIResponseVariables.response.text();
+
+    const expected_response = dataTable.raw();
+
+    for (let i = 0; i < expected_response.length; i++) {
+      for (let j = 0; j < expected_response[i].length; j++) {
+        expect(response).toContain(expected_response[i][j]);
+      }
+    }
+  }
+);
+```
+
+<details>
+<summary>Click to open the Response Steps code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/assertions/response-steps.ts
+
+#### What it is
+
+This file contains your Assertions (also known as "Checks" or "Verifications"). In the world of testing, an assertion is a "pass/fail" checkpoint. This specific file focuses on inspecting the Response we get back from the API to make sure it matches our expectations.
+
+#### What it does
+
+It provides four main verification tools (Steps) for your features:
+
+1. Success/Failure Check
+   - Step: Then the response was successful
+
+- Action: It checks if the API returned a "success" status (usually codes between 200–299). If you write unsuccessful, it checks that the API properly returned an error.
+
+2. Status Code Check
+   - Step: Then the response status code is 200
+
+- Action: It looks at the exact number the server sent back. If you expect a 200 but the server sends a 404, this step will fail the test and tell you exactly what the difference was.
+
+3. JSON Attribute Check
+   - Step: And the response json contains the attributes:
+
+- Action: This is a powerful tool that uses a DataTable. It converts the API's response into a JSON object and loops through your table to ensure every piece of data you expected (like id or userId) is actually present in the response.
+
+4. Raw Text Check
+   - Step: And the response text contains the attributes:
+
+- Action: Similar to the JSON check, but it looks at the response as a plain "blob" of text. This is useful for checking error messages or simple text responses that aren't formatted as JSON.
+
+#### Why is this important:
+
+- Reusability: You only had to write the logic for checking a status code once. Now, you can use that same English sentence in 100 different feature files.
+
+- Clear Logs: Notice the console.log lines. When your test runs, it prints exactly what it is checking to the terminal, making it very easy to follow the progress.
+
+- Separation of Logic: By keeping assertions in their own sub-folder (assertions), the project stays organized. You know exactly where to go if you want to add a new way to verify an API response.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+#### Setup folder
+
+The setup folder contains the "Global Managers" of your project. It handles the preparation and cleanup required for every test. Without this folder, your tests wouldn't have a place to store data or a way to start themselves properly.
+
+### Hooks file:
+
+```ts
+import { Before } from "@cucumber/cucumber";
+import { ScenarioWorld } from "./world";
+
+Before(async function (this: ScenarioWorld, scenario) {
+  console.log(`Running cucumber scenario ${scenario.pickle.name}`);
+
+  const ready = await this.init();
+  return ready;
+});
+```
+
+<details>
+<summary>Click to open the Hooks code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/setup/hooks.ts
+
+#### What it is
+
+In Cucumber, Hooks are blocks of code that run at specific points in the test lifecycle (like before or after a scenario). Think of hooks.ts as the "Janitor and Pre-flight Crew" of your automation. It ensures the "room" is ready before the test starts and cleaned up when it finishes.
+
+#### What it does
+
+The file currently uses a Before hook, which performs the following actions every single time a test scenario begins:
+
+- Logging: It prints Running cucumber scenario [Name] to your terminal. This makes it easy to track which test is currently running in your logs.
+
+- Initialization: It calls this.init(). This is a crucial step that prepares the "World" (where your variables and API settings live) so that the steps have everything they need to run.
+
+- Synchronization: By using await, it ensures the setup is 100% complete before the first line of your .feature file is executed.
+
+#### Why is this important:
+
+- Automation of Repetitive Tasks: You don't have to manually "start" the engine in every test; the Before hook does it for you automatically.
+
+- Traceability: If a test fails, the log created by this hook tells you exactly which scenario was running, saving you time during debugging.
+
+- Reliability: It ensures every test starts with a "Fresh Slate," which prevents data from one test from accidentally interfering with another.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### World file:
+
+```ts
+import playwright, { APIRequestContext } from "playwright";
+import { World, IWorldOptions, setWorldConstructor } from "@cucumber/cucumber";
+import { GlobalAPIResponseVariables, GlobalConfig } from "../../env/global";
+
+export type Api = {
+  request: APIRequestContext;
+};
+
+export class ScenarioWorld extends World {
+  constructor(options: IWorldOptions) {
+    super(options);
+
+    this.globalAPIResponseVariables = {};
+    this.globalConfig = options.parameters as GlobalConfig;
+  }
+
+  globalConfig: GlobalConfig;
+
+  globalAPIResponseVariables: GlobalAPIResponseVariables;
+
+  api!: Api;
+
+  async init(): Promise<Api> {
+    const request = await this.newRequest();
+
+    this.api = { request };
+
+    return this.api;
+  }
+
+  private newRequest = async (): Promise<APIRequestContext> => {
+    const request = await playwright.request.newContext({
+      extraHTTPHeaders: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+
+    return request;
+  };
+}
+
+setWorldConstructor(ScenarioWorld);
+```
+
+<details>
+<summary>Click to open the World file code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/setup/world.ts
+
+#### What it is
+
+In Cucumber, the World is an isolated context (a "storage box") that is created for each individual scenario. It allows different step definitions to share information with each other. For example, if one step creates a post and another step checks that post, the "World" is where that information is held so both steps can see it.
+
+#### What it does
+
+This file defines the ScenarioWorld class, which manages three main things:
+
+1. Data Storage (globalConfig & globalAPIResponseVariables)
+
+- globalConfig: It stores all the settings we defined in common.env (like which host we are using).
+
+- globalAPIResponseVariables: This is the "temporary memory" that holds the API's response so that your assertion steps (like response-steps.ts) can inspect it later.
+
+2. The API Request Engine (newRequest)
+
+- This is a private helper that uses Playwright to set up the technical communication rules.
+
+- It automatically adds extraHTTPHeaders (like 'Content-type': 'application/json') to every request, so you don't have to manually tell the API you are sending JSON every single time.
+
+3. The Initialization (init)
+
+- Remember this.init() in the hooks.ts file? This is what it runs.
+
+- It triggers the creation of a new request context, ensuring that every test starts with a clean, fresh connection to the server.
+
+#### Why is this important:
+
+- State Management: Without the "World," Step A wouldn't know what Step B just did. This file provides the "shared memory" that makes multi-step tests possible.
+
+- Clean Code: By setting the default headers (like application/json) here once, you save yourself from repeating that code in every single test file.
+
+- Isolation: Because a new "World" is created for every scenario, you don't have to worry about data from "Test 1" accidentally leaking into "Test 2." Each test gets its own private "Cockpit."
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Delete steps file:
+
+```ts
+import { Given } from "@cucumber/cucumber";
+import { ScenarioWorld } from "./setup/world";
+import { deleteResponse } from "../support/rest-helper";
+
+Given(
+  /^I delete the ([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd) "([^"]*)"$/,
+  async function (this: ScenarioWorld, index: string, route: string) {
+    const {
+      api: { request },
+      globalConfig,
+      globalAPIResponseVariables,
+    } = this;
+
+    console.log(`I delete the ${index} ${route}`);
+
+    const currentIndex = Number(index.match(/\d/g)?.join(""));
+
+    const routeAtIndex = `${route}/${currentIndex}`;
+
+    await deleteResponse(
+      request,
+      routeAtIndex,
+      globalConfig,
+      globalAPIResponseVariables
+    );
+  }
+);
+```
+
+<details>
+<summary>Click to open the Delete steps file code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/delete-steps.ts
+
+#### What it is
+
+This file is an Action Definition. While the assertions folder checks the results, this file defines the intent to perform a specific action—in this case, telling the API to delete a specific resource. It uses a Regular Expression (the complex text between /^...$/) to allow for flexible, human-like sentences in your feature files.
+
+#### What it does
+
+This file defines a single, powerful Given step that handles the logic for deleting items by their position or ID:
+
+- The "Delete" Logic
+
+  - The Step: Given I delete the 1st "posts" (or 2nd, 3rd, 10th, etc.).
+
+  - Smart Indexing: The code uses a "Regex" to look at words like 1st or 23rd and extract just the number (1 or 23).
+
+  - Route Building: It automatically builds the correct URL path for the API. For example, if you say 1st "posts", it creates the path posts/1.
+
+  - The Execution: It pulls the request engine and the globalConfig from the World we discussed earlier and passes them to the deleteResponse helper to perform the actual work.
+
+#### Why is this important:
+
+- Natural Language: You don't have to write DELETE /posts/1. You can write a sentence that sounds like English, making the test easier to read for everyone on the team.
+
+- Flexibility: Because of the number processing (1st, 2nd, etc.), you can use this one single step to delete any item in any category (posts, users, comments) just by changing the words in the .feature file.
+
+- Console Transparency: Like your other steps, it logs exactly what it is doing (I delete the 1st posts) so you can follow the test's progress in real-time.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### get steps file:
+
+```ts
+import { Given } from "@cucumber/cucumber";
+import { ScenarioWorld } from "./setup/world";
+import { getResponse } from "../support/rest-helper";
+
+Given(
+  /^I retrieve "([^"]*)"$/,
+  async function (this: ScenarioWorld, route: string) {
+    const {
+      api: { request },
+      globalAPIResponseVariables,
+      globalConfig,
+    } = this;
+
+    console.log(`I retrieve ${route}`);
+
+    await getResponse(request, route, globalConfig, globalAPIResponseVariables);
+  }
+);
+
+Given(
+  /^I retrieve the ([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd) "([^"]*)"$/,
+  async function (this: ScenarioWorld, index: string, route: string) {
+    const {
+      api: { request },
+      globalConfig,
+      globalAPIResponseVariables,
+    } = this;
+
+    console.log(`I retrieve the ${index} ${route}`);
+
+    const currentIndex = Number(index.match(/\d/g)?.join(""));
+
+    const routeAtIndex = `${route}/${currentIndex}`;
+
+    await getResponse(
+      request,
+      routeAtIndex,
+      globalConfig,
+      globalAPIResponseVariables
+    );
+  }
+);
+```
+
+<details>
+<summary>Click to open the Get steps file code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/get-steps.ts
+
+#### What it is
+
+This file contains the Retrieval Logic. It translates the simple English "I retrieve..." into an HTTP GET request. Like the delete steps, it uses Regular Expressions to capture specific words from your feature file—such as the name of the resource (e.g., "posts") or the specific number of an item (e.g., "1st").
+
+#### What it does
+
+This file defines two different ways to ask the API for information:
+
+1. Retrieve All (The General Search)
+
+- The Step: Given I retrieve "posts"
+
+- Action: This sends a request to the main endpoint (e.g., https://api.com/posts).
+
+- Result: It tells the API, "Give me everything you have in this category."
+
+2. Retrieve a Specific Item (The Targeted Search)
+
+- The Step: Given I retrieve the 1st "posts"
+
+- Action: 1. It uses a number filter to turn 1st into the number 1. 2. It attaches that number to the route, creating a specific path like posts/1. 3. It sends the request to the API.
+
+- Result: It tells the API, "I only want the information for this one specific item."
+
+#### Why is this important:
+
+- Dynamic Routing: You don't have to write a new piece of code every time you want to test a different part of the API. You can simply change the word in your feature file from "posts" to "comments" or "users", and this code handles it automatically.
+
+- Data Persistence: Once the data is retrieved, it is saved into globalAPIResponseVariables. This allows your "Then" steps to check the content of what was just downloaded.
+
+- Human-Readable Indices: Using 1st, 2nd, or 3rd in the feature files makes the tests feel more natural and less like a math equation, while the code behind the scenes handles the "translation" to computer-friendly numbers.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### patch steps file:
+
+```ts
+import { Given } from "@cucumber/cucumber";
+import { ScenarioWorld } from "./setup/world";
+import { JsonPayloadName } from "../env/global";
+import { patchResponse } from "../support/rest-helper";
+
+Given(
+  /^I patch the ([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd) "([^"]*)" with an "([^"]*)"$/,
+  async function (
+    this: ScenarioWorld,
+    index: string,
+    route: string,
+    jsonPayloadName: JsonPayloadName
+  ) {
+    const {
+      api: { request },
+      globalConfig,
+      globalAPIResponseVariables,
+    } = this;
+
+    console.log(`I patch the ${index} ${route} with an ${jsonPayloadName}`);
+
+    const currentIndex = Number(index.match(/\d/g)?.join(""));
+
+    const routeAtIndex = `${route}/${currentIndex}`;
+
+    await patchResponse(
+      request,
+      routeAtIndex,
+      jsonPayloadName,
+      globalConfig,
+      globalAPIResponseVariables
+    );
+  }
+);
+```
+
+<details>
+<summary>Click to open the Patch steps file code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/patch-steps.ts
+
+#### What it is
+
+This file contains the Partial Update Logic. A PATCH request is used when you want to change only a specific part of an existing item (like just the title of a post) rather than replacing the whole thing. This step definition bridges the gap between your human-readable test, the specific resource on the server, and the data file you want to send.
+
+#### What it does
+
+This file defines a sophisticated Given step that manages three pieces of information simultaneously:
+
+- The Step: Given I patch the 1st "posts" with an "new title"
+
+- Targeting the Resource:
+
+  - It takes the index (e.g., 1st) and extracts the number 1.
+
+  - It combines it with the route (e.g., posts) to create the specific address: posts/1.
+
+  - Loading the Data: It looks for the JsonPayloadName (e.g., new title) inside your configuration mappings.
+
+  - Executing the Modification: It calls the patchResponse helper, passing the Playwright request engine, the specific route, and the data payload to be updated.
+
+  - Logging: It prints a clear message to the console showing which item is being patched and with which data file.
+
+#### Why is this important:
+
+- Surgical Precision: This allows you to test that the API is smart enough to update a single field without accidentally deleting or changing other data in the same record.
+
+- Connecting the Dots: This is the first time we see the World, the Config, and the Support Helpers all working together to move a file from your config/json_payloads/ folder onto the API server.
+
+- Dynamic Reusability: You can use this same line of code to patch anything—a user's email, a post's title, or a comment's body—simply by changing the name of the JSON payload file in your feature.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Post steps file:
+
+```ts
+import { Given } from "@cucumber/cucumber";
+import { ScenarioWorld } from "./setup/world";
+import { JsonPayloadName } from "../env/global";
+import { postResponse } from "../support/rest-helper";
+
+Given(
+  /^I create a new "([^"]*)" with "([^"]*)"$/,
+  async function (
+    this: ScenarioWorld,
+    route: string,
+    jsonPayloadName: JsonPayloadName
+  ) {
+    const {
+      api: { request },
+      globalConfig,
+      globalAPIResponseVariables,
+    } = this;
+
+    console.log(`I create a new ${route} with ${jsonPayloadName}`);
+
+    await postResponse(
+      request,
+      route,
+      jsonPayloadName,
+      globalConfig,
+      globalAPIResponseVariables
+    );
+  }
+);
+```
+
+<details>
+<summary>Click to open the Post steps file code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/post-steps.ts
+
+#### What it is
+
+This file contains the Creation Logic. It maps the Gherkin command for creating data to an HTTP POST request. While the "Get" and "Delete" steps focus on existing IDs, the post-steps.ts focuses on taking a name (like "new post") and finding the corresponding JSON file to upload to the API.
+
+#### What it does
+
+This file defines a Given step that acts as the "Submit" button for your test data:
+
+- The Step: Given I create a new "posts" with "new post".
+
+- Identifying the Target: It takes the route (e.g., "posts") to know where to send the data on the server.
+
+- Mapping the Data: It takes the jsonPayloadName (e.g., "new post") and looks up the physical file path using the configurations we set up in the env and config folders.
+
+- The Handover: It extracts the request engine and globalConfig from the World.
+
+- Execution: It calls the postResponse helper, which packages the JSON data and the URL together to send the request to the API.
+
+#### Why is this important:
+
+- Data-Driven Testing: You can create hundreds of different types of posts just by adding new JSON files to your config folder and referencing their names in your feature files—no new code required.
+
+- State Change: This is a "Write" operation. After this step runs successfully, you would typically use a "Get" step or an "Assertion" step to verify that the new item actually exists on the server.
+
+- Simplified Workflow: By using this step, you don't have to worry about the technical details of headers or body formatting; you just provide the name of the file you want to "upload".
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Put steps file:
+
+```ts
+import { Given } from "@cucumber/cucumber";
+import { ScenarioWorld } from "./setup/world";
+import { JsonPayloadName } from "../env/global";
+import { putResponse } from "../support/rest-helper";
+
+Given(
+  /^I update the ([0-9]+th|[0-9]+st|[0-9]+nd|[0-9]+rd) "([^"]*)" with an "([^"]*)"$/,
+  async function (
+    this: ScenarioWorld,
+    index: string,
+    route: string,
+    jsonPayloadName: JsonPayloadName
+  ) {
+    const {
+      api: { request },
+      globalConfig,
+      globalAPIResponseVariables,
+    } = this;
+
+    console.log(`I update the ${index} ${route} with an ${jsonPayloadName}`);
+
+    const currentIndex = Number(index.match(/\d/g)?.join(""));
+
+    const routeAtIndex = `${route}/${currentIndex}`;
+
+    await putResponse(
+      request,
+      routeAtIndex,
+      jsonPayloadName,
+      globalConfig,
+      globalAPIResponseVariables
+    );
+  }
+);
+```
+
+<details>
+<summary>Click to open the Put steps file code description</summary>
+<br>
+
+- Location: api_e2e/src/step-definitions/put-steps.ts
+
+#### What it is
+
+This file contains the Replacement Logic. In API terms, a PUT request is used to update an existing resource by replacing it entirely with new data. This step definition takes a specific item (like the "1st post") and sends a complete JSON payload to overwrite whatever was there before.
+
+#### What it does
+
+This file defines a Given step that manages the complete transformation of a piece of data:
+
+- The Step: Given I update the 1st "posts" with an "new post".
+
+- Locating the Target: \* It parses the index (e.g., 1st) to get the ID 1.
+
+- It builds the specific URL path: posts/1.
+
+- Loading the New Version: It fetches the JSON data named "new post" from your configuration.
+
+- The Overwrite: It calls the putResponse helper, sending the new data to the specific address to replace the old record.
+
+- Storage: Just like the other steps, the API's confirmation response is saved in the World so you can verify the update was successful in the next step.
+
+#### Why is this important:
+
+- PUT vs. PATCH: While PATCH (which we saw earlier) is for small tweaks, PUT is for a "Complete Overhaul." Having both allows you to test that your API handles both types of updates correctly.
+
+- Consistency: This step uses the same "Index" logic as the Delete and Get steps (1st, 2nd, etc.), making the language consistent across your entire testing suite.
+
+- Error Prevention: Because it uses the putResponse helper, it automatically benefits from the safety checks in payload-helper.ts, ensuring you don't try to update a post with a file that doesn't exist.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Index file:
+
+If the other files were individual instruments, index.ts is the Conductor of the entire orchestra.
+
+```ts
+import dotenv from "dotenv";
+import { env, getJsonFromFile } from "./env/parseEnv";
+import { GlobalConfig, HostsConfig, JsonPayloadMappings } from "./env/global";
+import * as fs from "fs";
+
+dotenv.config({ path: env("COMMON_CONFIG_FILE") });
+
+const hostsConfig: HostsConfig = getJsonFromFile(env("HOSTS_URLS_PATH"));
+const payloadFiles = fs.readdirSync(
+  `${process.cwd()}${env("JSON_PAYLOAD_PATH")}`
+);
+
+const jsonPayloadMappings: JsonPayloadMappings = payloadFiles.reduce(
+  (payloadConfigAcc, file) => {
+    const key = file.replace(".json", "");
+    const payloadMappings = getJsonFromFile(
+      `${env("JSON_PAYLOAD_PATH")}${file}`
+    );
+    return { ...payloadConfigAcc, [key]: payloadMappings };
+  },
+  {}
+);
+
+const worldParameters: GlobalConfig = {
+  hostsConfig,
+  jsonPayloadMappings,
+};
+
+const common = `./src/features/**/*.feature \
+          --require-module ts-node/register \
+          --require ./src/step-definitions/**/**/*.ts \
+          --world-parameters ${JSON.stringify(worldParameters)}
+          -f json:./reports/report.json \
+          --parallel ${env("PARALLEL")} \
+          --retry ${env("RETRY")} \
+          --format progress-bar`;
+
+const dev = `${common} --tags '@dev'`;
+const smoke = `${common} --tags '@smoke'`;
+const regression = `${common} --tags '@regression'`;
+
+console.log(`\n 👾 👾 👾 👾 👾 👾 👾 👾 👾 👾 \n`);
+
+export { dev, smoke, regression };
+```
+
+<details>
+<summary>Click to open the Index file code description</summary>
+<br>
+
+- Location: api_e2e/src/index.ts
+
+#### What it is
+
+This is the Orchestrator. It is the first file to "wake up" when you run your tests. Its job is to gather all the configurations, files, and settings we’ve discussed and bundle them together into a single "Instruction Manual" that it hands over to the Cucumber engine to start the tests.
+
+#### What it does
+
+This file performs four critical setup phases:
+
+1. Environment Activation
+
+- dotenv.config: It reads your common.env file. This is the moment the project learns things like "I am testing in production" and "Save my reports in this folder."
+
+2. Data Mapping (The "Brain" Building)
+
+- hostsConfig: It loads the hosts.json address book.
+
+- jsonPayloadMappings: This is very clever—it scans your json_payloads folder and automatically maps every .json file to a name. This is why you can just type "new post" in a feature file; this code has already linked that name to the actual file on your hard drive.
+
+3. Defining the "World Parameters"
+
+- It takes all that mapped data and packages it into worldParameters. This package is then injected into the World (world.ts), which is why every test step has instant access to your URLs and JSON data.
+
+4. The Execution Commands
+
+- The common variable builds the actual command line that runs Cucumber. It defines:
+
+- Where the tests are: ./src/features/\*_/_.feature
+
+- Where the code is: ./src/step-definitions/**/**/\*.ts
+
+- Reporting settings: Generates the report.json for your HTML reporter.
+
+- Performance: Sets how many tests run at once (PARALLEL) and if they should RETRY on failure.
+
+#### Why is this important:
+
+- The "Switchboard": At the bottom, you see dev, smoke, and regression. This is where the magic happens! When you run a "smoke" test, this file adds the --tags '@smoke' filter, telling the system exactly which scenarios to pick.
+
+- Automatic Discovery: Because of the fs.readdirSync logic, you never have to "register" a new JSON payload. Just drop a new file into the folder, and index.ts will find it and make it available to your tests automatically.
+
+- One Entry Point: You don't have to manage complex command lines in your terminal. This file stores all the complicated technical flags so you can just focus on running @smoke or @regression.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### Run tests bat file:
+
+To wrap up the entire project, let's look at the run_tests.bat file. This is the "Ignition Key" for your automation engine.
+
+```ts
+set tag=%1
+
+set COMMON_CONFIG_FILE=env/common.env
+
+npm run cucumber -- --profile %tag% || npm run postcucumber
+```
+
+<details>
+<summary>Click to open the run tests bat file code description</summary>
+<br>
+
+- Location: api_e2e/run_tests.bat
+
+#### What it is
+
+This is a Batch File, a simple script used on Windows to run a sequence of commands in the terminal. Instead of you having to remember and type long, complex commands every time you want to test the API, this file does the heavy lifting for you. It acts as the "Single Point of Entry" for the user.
+
+#### What it does
+
+The script follows a specific logic to ensure the environment is ready and the results are processed:
+
+- Captures the Tag (set tag=%1):
+
+- It takes the first word you type after the filename and saves it.
+
+- Example: If you type run_tests.bat @smoke, it sets the variable tag to @smoke.
+
+- Sets the Config Path:
+
+  - It explicitly tells the system where to find the common.env file. This ensures that no matter where you are in your folders, the script knows exactly where the "Control Panel" is.
+
+  - The "Success or Failure" Chain (||):
+
+  - npm run cucumber: It starts the main test execution using the tag you provided.
+
+  - The || (OR) Operator: This is a safety feature. It tells the computer: "Run the tests, but even if the tests fail (find a bug), proceed to the next command anyway."
+
+  - npm run postcucumber: This triggers the Reporter we discussed earlier (cucumber-report.ts).
+
+#### Why is this important:
+
+- Simplicity: You don't need to be a coding expert to run the tests. You just open your terminal and type one short command.
+
+- Guaranteed Reporting: Without the || npm run postcucumber part, if a test failed, the script might just stop, and you would never get your beautiful HTML report. This file ensures the report is generated every single time, whether the API is working or not.
+
+- Workflow Efficiency: It bridges the gap between your Source Code and your Terminal. It makes the transition from writing a test to seeing the results fast and seamless.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+### cucumber json file:
+
+To wrap up the configuration files, let's look at the cucumber.js file. This is a tiny but vital file that acts as the "Forwarding Address" for your project.
+
+```ts
+module.exports = require("./dist");
+```
+
+<details>
+<summary>Click to open the cucumber json file code description</summary>
+<br>
+
+- Location: api_e2e/cucumber.js
+
+#### What it is
+
+This is the Main Entry Configuration for the Cucumber framework. When you run the command npm run cucumber, the first thing the Cucumber engine does is look for a file named exactly cucumber.js in your root folder to understand how it should behave.
+
+#### What it does
+
+This file contains only one line of code, but it performs a massive job:
+
+- require('./dist'): It tells Cucumber, "Don't look at my raw TypeScript files in the src folder. Instead, go to the dist folder and run the compiled version of the index.ts file."
+
+- The Connection: Remember when we explained that index.ts gathers all the tags (@smoke, @dev), the world parameters, and the file paths? This cucumber.js file is the bridge that hands all that organized information directly to the Cucumber engine.
+
+#### Why is this important:
+
+- Clean Execution: Beginners often wonder why they can't just run TypeScript files directly. This file handles the "hand-off" from your readable TypeScript code to the high-performance JavaScript code inside the dist (distribution) folder.
+
+- Standardization: By using this file, you follow the official Cucumber standard. It means you don't have to pass 20 different settings every time you type a command in the terminal; the settings are already "pre-loaded" through this shortcut.
+
+- The "Auto-Pilot" Button: Once this is set up, you never have to touch it again. It works silently in the background to make sure your run_tests.bat command knows exactly where to find the logic it needs to execute your features.
+
+</details>
+<br>
+
+[Back to Index](#index)
+
+# 🏁 The Framework is Complete!
+
+You have now seen every single component of this architecture:
+
+run_tests.bat: The spark that starts the engine.
+
+cucumber.js: The link that tells the engine where the instructions are.
+
+index.ts: The brain that organizes the instructions.
+
+features/: The human-readable goals.
+
+step-definitions/: The translators.
+
+support/: The muscle that talks to the API.

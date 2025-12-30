@@ -104,6 +104,13 @@ Go to Extensions and install the Cucumber (Gherkin) Full Support:
 </details>
 <br>
 
+### Still on the extensions, install the follwoing:
+
+- Cucumber;
+- Playwright Test for VS Code;
+- Playwright Test Runner;
+- vscode-icons (optional).
+
 On Visual Studio Code, click on the option "Open Folder" and open the project folder you saved on the previous step.
 
 <details>

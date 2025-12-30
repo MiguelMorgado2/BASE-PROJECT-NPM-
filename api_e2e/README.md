@@ -351,43 +351,48 @@ console.log(identity<string>("Hello")); // Output: Hello
 
    1.1 [VisualStudioCodeSettings](#visual-studio-code-settings)
 
-2. [e2e-Folder-Level](#folders-and-files-explanation)
+2. [api_e2e-Folders](#folders-and-files-explanation)
 
-   2.1 [Config-Folder](#e2e--config-folder)
+   2.1 [Config-Folder](#e2e-config-folder)
 
-   - [Mapings-folder](#e2e--config--mappings-folder)
+   - [json_payloads](#json-payloads)
+   - [hosts.json](#json-hosts)
 
-     - [Common.json](#common-json)
-     - [Create-Contact.json](#create-contact-json)
-     - [Home.json](#home-json)
-     - [Playground.json](#playground-json)
+     2.2 [SRC folder](#api_e2e-src-folder)
 
-   - [Emails.json](#e2e--config--emails-json-file)
-   - [Errors.json](#e2e--config--errors-json-file)
-   - [Hosts.json](#e2e--config--hosts-json-file)
-   - [Mocks.json](#e2e--config--mocks-json-file)
-   - [Pages.json](#e2e--config--pages-json-file)
-
-     2.2 [Env-Folder](#e2e--src--env-folder)
+   - [Env-Folder](#api_e2e--src--env-folder)
 
      - [ParsEnv.ts](#parsenv-ts-file)
      - [Global.ts](#global-ts-file)
 
-       2.3 [SRC-Folder](#e2e--src-folder)
+   - [Reporter](#e2e-src-reporter-folder)
 
-     - [Step-Definitions-Folder](#e2e--src--step-definitions-folder)
+   - [Step Definitions](#e2e-src-step-definitions-folder)
 
-       - [Setup-Folder](#e2e--src--step-definitions--setup-folder)
-         - [World.ts](#world-ts-file)
+     - [assertions](#e2e-src-assertions-folder)
 
-     - [Support-Folder](#e2e--src--support-folder)
-       - [Browser-behavior.ts](#browser-behavior-ts-file)
-       - [Error-helper.ts](#error-helper-ts-file)
-       - [Html-behavior.ts](#html-behavior-ts-file)
-       - [Input-helper.ts](#input-helper-ts-file)
-       - [Mock-behavior.ts](#mock-behavior-ts-file)
-       - [Wait-for-behavior.ts](#wait-for-behavior-ts-file)
-       - [Navigation-behavior.ts](#navigation-behavior-ts-file)
+       - [response steps](#e2e-src-response-steps-file)
+
+     - [setup](#e2e-src-setup-folder)
+
+       - [hooks](#e2e-src-hooks-file)
+       - [world](#e2e-src-world-file)
+
+     - [delete steps](#e2e-src-delete-steps-file)
+     - [get steps](#e2e-src-get-steps-file)
+     - [patch steps](#e2e-src-patch-steps-file)
+     - [post steps](#e2e-src-post-steps-file)
+     - [put steps](#e2e-src-put-steps-file)
+
+   - [Support](#e2e-src-support-folder)
+
+     - [host helper](#e2e-src-host-helper-file)
+     - [payload-helper](#e2e-src-payload-helper-file)
+     - [rest helper](#e2e-src-rest-helper-file)
+
+     - [index](#e2e-src-index-file)
+
+       2.3 [run tests bat](#e2e-src-run-test-bat-file)
 
 ## Installation
 
@@ -639,3 +644,46 @@ To open the cucumber report, go to the folder "Reports > right click on "cucumbe
 [Back to Index](#index)
 
 ## FOLDERS AND FILES EXPLANATION:
+
+### E2E CONFIG FOLDER:
+
+### api_e2e \> config folder:
+
+The config folder contains the following folder and files:
+
+- json payloads folder;
+  - new post.json file;
+  - new title.json file;
+  - updated posts.jsons file;
+- hosts.json file.
+
+The env folder serves as a hub for managing environmental configurations and shared types, ensuring that the automation framework or project has access to the right settings and utilities, regardless of the environment it's operating in.
+
+#### parsEnv ts file:
+
+File content:
+
+This file is focused on retrieving environment variables and reading JSON data from files. It has two main functionalities:
+
+- Accessing environment variables;
+- Handling file-based JSON data.
+
+```ts
+export const getJsonFromFile = <T = Record<string, string>>(
+  path: string
+): T => {
+  return require(`${process.cwd()}${path}`);
+};
+
+export const env = (key: string): string => {
+  const value = process.env[key];
+  if (!value) {
+    throw Error(`No environment variable found for ${key}`);
+  }
+  return value;
+};
+
+export const envNumber = (key: string): number => {
+  return Number(env(key));
+};
+```

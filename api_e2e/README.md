@@ -397,7 +397,7 @@ console.log(identity<string>("Hello")); // Output: Hello
 
      - [index](#index-file)
 
-       2.3 [run tests bat](#run-test-bat-file)
+       2.3 [run tests bat](#run-tests-bat-file)
 
 ## Installation
 

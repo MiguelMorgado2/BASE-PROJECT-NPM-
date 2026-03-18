@@ -35,6 +35,7 @@ Este README foi criado para explicar o projeto `api_e2e` do primeiro ficheiro ao
 ### 2.3 Código fonte (`src/`)
 
 Ordem lida na execução:
+
 1. `src/index.ts` (entry point) monta os comandos Cucumber.
 2. `src/env/parseEnv.ts` e `src/env/global.ts` definem tipos/func helpers.
 3. `src/support/host-helper.ts`, `payload-helper.ts`, `rest-helper.ts` fazem requests API.
@@ -87,6 +88,7 @@ Ordem lida na execução:
 ## 4) Explicação linha-a-linha de cada ficheiro principal
 
 ### 4.1 `package.json`
+
 ```json
 {
   "name": "e2e",
@@ -106,150 +108,164 @@ Ordem lida na execução:
 ```
 
 ### 4.2 `playwright.config.ts`
+
 ```ts
-import { PlaywrightTestConfig } from '@playwright/test'
+import { PlaywrightTestConfig } from "@playwright/test";
 
 const config: PlaywrightTestConfig = {
-    use: {
-        baseURL: 'https://jsonplaceholder.typicode.com', // host base para requests
-        extraHTTPHeaders: {
-            'Content-type' : 'application/json; charset=UTF-8' // cabeçalho padrão
-        },
-    }
-}
+  use: {
+    baseURL: "https://jsonplaceholder.typicode.com", // host base para requests
+    extraHTTPHeaders: {
+      "Content-type": "application/json; charset=UTF-8", // cabeçalho padrão
+    },
+  },
+};
 
-export default config
+export default config;
 ```
 
 ### 4.3 `src/index.ts` (fluxo principal que cria flags)
+
 ```ts
-import dotenv from 'dotenv' // biblioteca para .env
-import {env, getJsonFromFile} from "./env/parseEnv" // utilitários de environment
-import {GlobalConfig, HostsConfig, JsonPayloadMappings} from "./env/global" // tipos TS
-import * as fs from "fs" // filesystem
+import dotenv from "dotenv"; // biblioteca para .env
+import { env, getJsonFromFile } from "./env/parseEnv"; // utilitários de environment
+import { GlobalConfig, HostsConfig, JsonPayloadMappings } from "./env/global"; // tipos TS
+import * as fs from "fs"; // filesystem
 
-dotenv.config({ path: env('COMMON_CONFIG_FILE')}) // lê ficheiro .env definido em COMMON_CONFIG_FILE
+dotenv.config({ path: env("COMMON_CONFIG_FILE") }); // lê ficheiro .env definido em COMMON_CONFIG_FILE
 
-const hostsConfig: HostsConfig = getJsonFromFile(env('HOSTS_URLS_PATH')) // lê hosts.json
-const payloadFiles = fs.readdirSync(`${process.cwd()}${env('JSON_PAYLOAD_PATH')}`) // lista payload JSON
+const hostsConfig: HostsConfig = getJsonFromFile(env("HOSTS_URLS_PATH")); // lê hosts.json
+const payloadFiles = fs.readdirSync(
+  `${process.cwd()}${env("JSON_PAYLOAD_PATH")}`,
+); // lista payload JSON
 
 const jsonPayloadMappings: JsonPayloadMappings = payloadFiles.reduce(
-    (payloadConfigAcc, file) => {
-        const key = file.replace('.json', '') // remove .json para chave simples
-        const payloadMappings = getJsonFromFile(`${env('JSON_PAYLOAD_PATH')}${file}`) // lê payload
-        return {...payloadConfigAcc, [key]: payloadMappings}
-    },
-    {}
-)
+  (payloadConfigAcc, file) => {
+    const key = file.replace(".json", ""); // remove .json para chave simples
+    const payloadMappings = getJsonFromFile(
+      `${env("JSON_PAYLOAD_PATH")}${file}`,
+    ); // lê payload
+    return { ...payloadConfigAcc, [key]: payloadMappings };
+  },
+  {},
+);
 
 const worldParameters: GlobalConfig = {
-    hostsConfig,
-    jsonPayloadMappings
-}
+  hostsConfig,
+  jsonPayloadMappings,
+};
 
 const common = `./src/features/**/*.feature \
           --require-module ts-node/register \
           --require ./src/step-definitions/**/**/*.ts \
           --world-parameters ${JSON.stringify(worldParameters)}
           -f json:./reports/report.json \
-          --parallel ${env('PARALLEL')} \
-          --retry ${env('RETRY')} \
-          --format progress-bar`
+          --parallel ${env("PARALLEL")} \
+          --retry ${env("RETRY")} \
+          --format progress-bar`;
 
-const dev = `${common} --tags '@dev'`
-const smoke = `${common} --tags '@smoke'`
-const regression = `${common} --tags '@regression'`
+const dev = `${common} --tags '@dev'`;
+const smoke = `${common} --tags '@smoke'`;
+const regression = `${common} --tags '@regression'`;
 
-console.log(`\n 👾 👾 👾 👾 👾 👾 👾 👾 👾 👾 \n`)
+console.log(`\n 👾 👾 👾 👾 👾 👾 👾 👾 👾 👾 \n`);
 
-export { dev, smoke, regression }
+export { dev, smoke, regression };
 ```
 
 ### 4.4 `src/env/parseEnv.ts`
+
 ```ts
 export const env = (key: string): string => {
-    const value = process.env[key]
-    if (!value) {
-        throw Error(`🧨 No environment variable found for ${key} 🧨`) // falha rápido se não estiver definido
-    }
-    return value
-}
+  const value = process.env[key];
+  if (!value) {
+    throw Error(`🧨 No environment variable found for ${key} 🧨`); // falha rápido se não estiver definido
+  }
+  return value;
+};
 
-export const getJsonFromFile = <T = Record<string, string>>(path: string): T => {
-    return require(`${process.cwd()}${path}`) // require JSON com caminho absoluto do project
-}
+export const getJsonFromFile = <T = Record<string, string>>(
+  path: string,
+): T => {
+  return require(`${process.cwd()}${path}`); // require JSON com caminho absoluto do project
+};
 ```
 
 ### 4.5 `src/env/global.ts`
-```ts
-import {APIResponse} from "@playwright/test";
 
-export type GlobalAPIResponseVariables = { [key:string]: APIResponse} // guarda resposta da API
-export type HostsConfig = Record<string, string> // nome -> URL
-export type JsonPayloadMappings = Record<string, string> // nomePayload -> JSON
-export type JsonPayloadName = string
+```ts
+import { APIResponse } from "@playwright/test";
+
+export type GlobalAPIResponseVariables = { [key: string]: APIResponse }; // guarda resposta da API
+export type HostsConfig = Record<string, string>; // nome -> URL
+export type JsonPayloadMappings = Record<string, string>; // nomePayload -> JSON
+export type JsonPayloadName = string;
 
 export type GlobalConfig = {
-    hostsConfig: HostsConfig
-    jsonPayloadMappings: JsonPayloadMappings
-}
+  hostsConfig: HostsConfig;
+  jsonPayloadMappings: JsonPayloadMappings;
+};
 ```
 
 ### 4.6 `src/support/host-helper.ts`
+
 ```ts
-import { GlobalConfig } from "../env/global"
+import { GlobalConfig } from "../env/global";
 
-export const retrieveHostURL = (
-    { hostsConfig }: GlobalConfig
-): URL => {
-    const {
-        API_AUTOMATION_HOST: hostname = 'production'
-    } = process.env
+export const retrieveHostURL = ({ hostsConfig }: GlobalConfig): URL => {
+  const { API_AUTOMATION_HOST: hostname = "production" } = process.env;
 
-    const hostPath = hostsConfig[hostname] // escolhe URL pelo nome
+  const hostPath = hostsConfig[hostname]; // escolhe URL pelo nome
 
-    const url = new URL(hostPath)
+  const url = new URL(hostPath);
 
-    return url
-}
+  return url;
+};
 ```
 
 ### 4.7 `src/support/payload-helper.ts`
+
 ```ts
-import { env } from "../env/parseEnv"
+import { env } from "../env/parseEnv";
 
 export const payloadExists = (jsonPayload: any): void => {
-    if (jsonPayload === undefined) {
-        throw Error(`🧨 JSON Payload not defined in ${env('JSON_PAYLOAD_PATH')} 🧨`)
-    }
-    return jsonPayload
-}
+  if (jsonPayload === undefined) {
+    throw Error(
+      `🧨 JSON Payload not defined in ${env("JSON_PAYLOAD_PATH")} 🧨`,
+    );
+  }
+  return jsonPayload;
+};
 ```
 
 ### 4.8 `src/support/rest-helper.ts` (requests reais)
+
 ```ts
-import { APIRequestContext, APIResponse} from "playwright"
-import {GlobalConfig, GlobalAPIResponseVariables, JsonPayloadName} from "../env/global";
-import {retrieveHostURL} from "./host-helper";
-import {payloadExists} from "./payload-helper";
+import { APIRequestContext, APIResponse } from "playwright";
+import {
+  GlobalConfig,
+  GlobalAPIResponseVariables,
+  JsonPayloadName,
+} from "../env/global";
+import { retrieveHostURL } from "./host-helper";
+import { payloadExists } from "./payload-helper";
 
 export const getResponse = async (
-    request: APIRequestContext,
-    route: string,
-    globalConfig: GlobalConfig,
-    globalAPIResponseVariables: GlobalAPIResponseVariables
+  request: APIRequestContext,
+  route: string,
+  globalConfig: GlobalConfig,
+  globalAPIResponseVariables: GlobalAPIResponseVariables,
 ): Promise<APIResponse> => {
+  const url = retrieveHostURL(globalConfig);
 
-    const url = retrieveHostURL(globalConfig)
+  const response = await request.get(url.href + route);
 
-    const response = await request.get(url.href+route)
+  globalAPIResponseVariables.response = response;
 
-    globalAPIResponseVariables.response = response
+  return response;
+};
 
-    return response
-}
-
-// ... deleteResponse, postResponse, patchResponse, putResponse 
+// ... deleteResponse, postResponse, patchResponse, putResponse
 // funcionam de forma muito semelhante:
 // - recuperam host
 // - constroem route
@@ -259,89 +275,125 @@ export const getResponse = async (
 ```
 
 ### 4.9 `src/step-definitions/setup/world.ts`
+
 ```ts
-import playwright, {APIRequestContext} from "playwright"
-import { World, IWorldOptions, setWorldConstructor} from "@cucumber/cucumber";
-import {GlobalAPIResponseVariables, GlobalConfig} from "../../env/global";
+import playwright, { APIRequestContext } from "playwright";
+import { World, IWorldOptions, setWorldConstructor } from "@cucumber/cucumber";
+import { GlobalAPIResponseVariables, GlobalConfig } from "../../env/global";
 
 export type Api = {
-    request: APIRequestContext
-}
+  request: APIRequestContext;
+};
 
 export class ScenarioWorld extends World {
-    constructor(options: IWorldOptions) {
-        super(options);
-        this.globalAPIResponseVariables = {}
-        this.globalConfig = options.parameters as GlobalConfig // parametros vindos do src/index.ts
-    }
+  constructor(options: IWorldOptions) {
+    super(options);
+    this.globalAPIResponseVariables = {};
+    this.globalConfig = options.parameters as GlobalConfig; // parametros vindos do src/index.ts
+  }
 
-    globalConfig: GlobalConfig
-    globalAPIResponseVariables: GlobalAPIResponseVariables
-    api!: Api
+  globalConfig: GlobalConfig;
+  globalAPIResponseVariables: GlobalAPIResponseVariables;
+  api!: Api;
 
-    async init(): Promise<Api> {
-        const request = await this.newRequest()
-        this.api = { request }
-        return this.api
-    }
+  async init(): Promise<Api> {
+    const request = await this.newRequest();
+    this.api = { request };
+    return this.api;
+  }
 
-    private newRequest = async (): Promise<APIRequestContext> => {
-        const request = await playwright.request.newContext({
-            extraHTTPHeaders: {
-                'Content-type' : 'application/json; charset=UTF-8'
-            },
-        })
-        return request
-    }
+  private newRequest = async (): Promise<APIRequestContext> => {
+    const request = await playwright.request.newContext({
+      extraHTTPHeaders: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    return request;
+  };
 }
 
-setWorldConstructor(ScenarioWorld)
+setWorldConstructor(ScenarioWorld);
 ```
 
 ### 4.10 `src/step-definitions/setup/hooks.ts`
+
 ```ts
-import { Before } from "@cucumber/cucumber"
+import { Before } from "@cucumber/cucumber";
 import { ScenarioWorld } from "./world";
 
 Before(async function (this: ScenarioWorld, scenario) {
-    console.log(`Running cucumber scenario ${scenario.pickle.name}`)
-    const ready = await this.init() // inicializa API request context
-    return ready
-})
+  console.log(`Running cucumber scenario ${scenario.pickle.name}`);
+  const ready = await this.init(); // inicializa API request context
+  return ready;
+});
 ```
 
 ### 4.11 `src/step-definitions/get-steps.ts`
-```ts
-Given(/^I retrieve "([^"]*)"$/, async function(this: ScenarioWorld, route: string) {
-    const { api: { request }, globalAPIResponseVariables, globalConfig } = this
-    await getResponse(request, route, globalConfig, globalAPIResponseVariables)
-})
 
-Given(/^I retrieve the ... "([^"]*)"$/, async function(this: ScenarioWorld, index: string, route: string) {
-    const currentIndex = Number(index.match(/\d/g)?.join(''))
-    const routeAtIndex = `${route}/${currentIndex}`
-    await getResponse(request, routeAtIndex, globalConfig, globalAPIResponseVariables)
-})
+```ts
+Given(
+  /^I retrieve "([^"]*)"$/,
+  async function (this: ScenarioWorld, route: string) {
+    const {
+      api: { request },
+      globalAPIResponseVariables,
+      globalConfig,
+    } = this;
+    await getResponse(request, route, globalConfig, globalAPIResponseVariables);
+  },
+);
+
+Given(
+  /^I retrieve the ... "([^"]*)"$/,
+  async function (this: ScenarioWorld, index: string, route: string) {
+    const currentIndex = Number(index.match(/\d/g)?.join(""));
+    const routeAtIndex = `${route}/${currentIndex}`;
+    await getResponse(
+      request,
+      routeAtIndex,
+      globalConfig,
+      globalAPIResponseVariables,
+    );
+  },
+);
 ```
 
 ### 4.12 `src/step-definitions/post-steps.ts` (cria)
+
 ```ts
-Given(/^I create a new "([^"]*)" with "([^"]*)"$/, async function(this: ScenarioWorld, route: string, jsonPayloadName: JsonPayloadName) {
-    await postResponse(request, route, jsonPayloadName, globalConfig, globalAPIResponseVariables)
-})
+Given(
+  /^I create a new "([^"]*)" with "([^"]*)"$/,
+  async function (
+    this: ScenarioWorld,
+    route: string,
+    jsonPayloadName: JsonPayloadName,
+  ) {
+    await postResponse(
+      request,
+      route,
+      jsonPayloadName,
+      globalConfig,
+      globalAPIResponseVariables,
+    );
+  },
+);
 ```
 
 ### 4.13 `src/step-definitions/patch-steps.ts`, `put-steps.ts`, `delete-steps.ts` (semelhante)
+
 - Cada um extrai índice com regex, monta `routeAtIndex`, chama `patchResponse/putResponse/deleteResponse`.
 
 ### 4.14 `src/step-definitions/assertions/response-steps.ts` (validações)
+
 - `the response was successful` → `response.ok()` true/false.
-- `status code` → `response.status()`  exato.
+- `status code` → `response.status()` exato.
 - `response json contains attributes` → `response.json()` e `expect(JSON.stringify(response)).toContain(... )`.
 - `response text contains attributes` → `response.text()` e `toContain(... )`.
 
 ### 4.15 `src/features/*.feature`
+
 Cada cenário BDD mapeia os steps com regex. Exemplo em GET:
+
 ```gherkin
 Given I retrieve "posts"
 And the response was successful
@@ -349,22 +401,23 @@ Then the response status code is 200
 ```
 
 ### 4.16 `src/reporter/cucumber-report.ts`
+
 ```ts
-import reporter, { Options } from 'cucumber-html-reporter'
-import { env } from '../env/parseEnv'
+import reporter, { Options } from "cucumber-html-reporter";
+import { env } from "../env/parseEnv";
 import dotenv from "dotenv";
 
-dotenv.config({ path: env('COMMON_CONFIG_FILE')})
+dotenv.config({ path: env("COMMON_CONFIG_FILE") });
 
 const options: Options = {
-    theme: 'bootstrap',
-    jsonFile: env('JSON_REPORT_FILE'),
-    output: env('HTML_REPORT_FILE'),
-    reportSuiteAsScenarios: true,
-    launchReport: false
-}
+  theme: "bootstrap",
+  jsonFile: env("JSON_REPORT_FILE"),
+  output: env("HTML_REPORT_FILE"),
+  reportSuiteAsScenarios: true,
+  launchReport: false,
+};
 
-reporter.generate(options)
+reporter.generate(options);
 ```
 
 ---
@@ -408,50 +461,57 @@ reporter.generate(options)
 ## 8) Versão literal (linha a linha) - o mais literal possível
 
 ### 8.1 `src/index.ts` linha a linha
+
 ```ts
-import dotenv from 'dotenv' // importa dotenv para ler ficheiros .env
-import {env, getJsonFromFile} from "./env/parseEnv" // importa helpers de env/JSON
-import {GlobalConfig, HostsConfig, JsonPayloadMappings} from "./env/global" // importa tipos TS
-import * as fs from "fs" // importa filesystem
+import dotenv from "dotenv"; // importa dotenv para ler ficheiros .env
+import { env, getJsonFromFile } from "./env/parseEnv"; // importa helpers de env/JSON
+import { GlobalConfig, HostsConfig, JsonPayloadMappings } from "./env/global"; // importa tipos TS
+import * as fs from "fs"; // importa filesystem
 
-dotenv.config({ path: env('COMMON_CONFIG_FILE')}) // carrega ficheiro de ambiente apontado por COMMON_CONFIG_FILE
+dotenv.config({ path: env("COMMON_CONFIG_FILE") }); // carrega ficheiro de ambiente apontado por COMMON_CONFIG_FILE
 
-const hostsConfig: HostsConfig = getJsonFromFile(env('HOSTS_URLS_PATH')) // lê host config (e.g. /config/hosts.json)
-const payloadFiles = fs.readdirSync(`${process.cwd()}${env('JSON_PAYLOAD_PATH')}`) // obtém nomes dos ficheiros de payload
+const hostsConfig: HostsConfig = getJsonFromFile(env("HOSTS_URLS_PATH")); // lê host config (e.g. /config/hosts.json)
+const payloadFiles = fs.readdirSync(
+  `${process.cwd()}${env("JSON_PAYLOAD_PATH")}`,
+); // obtém nomes dos ficheiros de payload
 
-const jsonPayloadMappings: JsonPayloadMappings = payloadFiles.reduce( // transforma lista de ficheiros em objecto de payloads
-    (payloadConfigAcc, file) => {
-        const key = file.replace('.json', '') // cria chave sem .json
-        const payloadMappings = getJsonFromFile(`${env('JSON_PAYLOAD_PATH')}${file}`) // lê o JSON do payload
-        return {...payloadConfigAcc, [key]: payloadMappings} // adiciona ao acumulador
-    },
-    {}
-)
+const jsonPayloadMappings: JsonPayloadMappings = payloadFiles.reduce(
+  // transforma lista de ficheiros em objecto de payloads
+  (payloadConfigAcc, file) => {
+    const key = file.replace(".json", ""); // cria chave sem .json
+    const payloadMappings = getJsonFromFile(
+      `${env("JSON_PAYLOAD_PATH")}${file}`,
+    ); // lê o JSON do payload
+    return { ...payloadConfigAcc, [key]: payloadMappings }; // adiciona ao acumulador
+  },
+  {},
+);
 
 const worldParameters: GlobalConfig = {
-    hostsConfig,
-    jsonPayloadMappings
-}
+  hostsConfig,
+  jsonPayloadMappings,
+};
 
 const common = `./src/features/**/*.feature \
           --require-module ts-node/register \
           --require ./src/step-definitions/**/**/*.ts \
           --world-parameters ${JSON.stringify(worldParameters)}
           -f json:./reports/report.json \
-          --parallel ${env('PARALLEL')} \
-          --retry ${env('RETRY')} \
-          --format progress-bar`
+          --parallel ${env("PARALLEL")} \
+          --retry ${env("RETRY")} \
+          --format progress-bar`;
 
-const dev = `${common} --tags '@dev'` // comando de dev
-const smoke = `${common} --tags '@smoke'` // comando smoke
-const regression = `${common} --tags '@regression'` // comando regression
+const dev = `${common} --tags '@dev'`; // comando de dev
+const smoke = `${common} --tags '@smoke'`; // comando smoke
+const regression = `${common} --tags '@regression'`; // comando regression
 
-console.log(`\n 👾 👾 👾 👾 👾 👾 👾 👾 👾 👾 \n`) // print divertido
+console.log(`\n 👾 👾 👾 👾 👾 👾 👾 👾 👾 👾 \n`); // print divertido
 
-export { dev, smoke, regression } // exporta para Cucumber
+export { dev, smoke, regression }; // exporta para Cucumber
 ```
 
 ### 8.2 `src/support/rest-helper.ts` linha a linha parcial (cada função)
+
 ```ts
 import { APIRequestContext, APIResponse} from "playwright" // tipos Playwright
 import {GlobalConfig, GlobalAPIResponseVariables, JsonPayloadName} from "../env/global"; // tipos globais
@@ -484,7 +544,9 @@ export const postResponse = async (...) => {
 ```
 
 ### 8.3 Features - Linha a linha literal exemplos
+
 `src/features/GET.feature`:
+
 ```gherkin
 Feature: As an API I can retrieve posts
 
@@ -496,6 +558,7 @@ Feature: As an API I can retrieve posts
 ```
 
 `src/features/POST.feature`:
+
 ```gherkin
 Feature: As an API I can create posts
 
@@ -508,55 +571,74 @@ Feature: As an API I can create posts
 ```
 
 ### 8.4 `src/step-definitions/assertions/response-steps.ts` literal
+
 ```ts
-Then(/^the response was (successful)?(unsuccessful)?$/, async function(this: ScenarioWorld, success: boolean, unsuccessful: boolean) {
-    const { globalAPIResponseVariables } = this
-    const response = globalAPIResponseVariables.response
+Then(
+  /^the response was (successful)?(unsuccessful)?$/,
+  async function (
+    this: ScenarioWorld,
+    success: boolean,
+    unsuccessful: boolean,
+  ) {
+    const { globalAPIResponseVariables } = this;
+    const response = globalAPIResponseVariables.response;
     if (unsuccessful) {
-        expect(response.ok()).toBeFalsy() // se diz unsuccessful, espera false
+      expect(response.ok()).toBeFalsy(); // se diz unsuccessful, espera false
     } else {
-        expect(response.ok()).toBeTruthy() // caso contrario espera true
+      expect(response.ok()).toBeTruthy(); // caso contrario espera true
     }
-})
+  },
+);
 
-Then(/^the response status code is (\d*)$/, async function(this: ScenarioWorld, statusCode: string) {
-    const response = globalAPIResponseVariables.response
-    expect(response.status()).toBe(Number(statusCode)) // valida valor do status
-})
+Then(
+  /^the response status code is (\d*)$/,
+  async function (this: ScenarioWorld, statusCode: string) {
+    const response = globalAPIResponseVariables.response;
+    expect(response.status()).toBe(Number(statusCode)); // valida valor do status
+  },
+);
 
-Then(/^the response json contains the attributes:$/, async function(this: ScenarioWorld, dataTable: DataTable) {
-    const response = await globalAPIResponseVariables.response.json()
-    const expected_response = dataTable.raw()
+Then(
+  /^the response json contains the attributes:$/,
+  async function (this: ScenarioWorld, dataTable: DataTable) {
+    const response = await globalAPIResponseVariables.response.json();
+    const expected_response = dataTable.raw();
     for (let i = 0; i < expected_response.length; i++) {
       for (let j = 0; j < expected_response[i].length; j++) {
-        expect(JSON.stringify(response)).toContain(expected_response[i][j])
+        expect(JSON.stringify(response)).toContain(expected_response[i][j]);
       }
     }
-})
+  },
+);
 ```
 
 ### 8.5 `src/step-definitions/setup/world.ts` literal
+
 ```ts
 export class ScenarioWorld extends World {
-    constructor(options) {
-        super(options)
-        this.globalAPIResponseVariables = {} // local para armazenar response
-        this.globalConfig = options.parameters as GlobalConfig // parâmetros do world
-    }
-    async init() {
-        const request = await playwright.request.newContext({ extraHTTPHeaders: {'Content-type': 'application/json; charset=UTF-8'} })
-        this.api = { request }
-        return this.api
-    }
+  constructor(options) {
+    super(options);
+    this.globalAPIResponseVariables = {}; // local para armazenar response
+    this.globalConfig = options.parameters as GlobalConfig; // parâmetros do world
+  }
+  async init() {
+    const request = await playwright.request.newContext({
+      extraHTTPHeaders: { "Content-type": "application/json; charset=UTF-8" },
+    });
+    this.api = { request };
+    return this.api;
+  }
 }
 
-setWorldConstructor(ScenarioWorld)
+setWorldConstructor(ScenarioWorld);
 ```
 
 ---
 
 ### 8.6 Ficheiros de payload JSON (literal)
+
 `config/json_payloads/new post.json`:
+
 ```json
 {
   "title": "New Post",
@@ -564,13 +646,17 @@ setWorldConstructor(ScenarioWorld)
   "userId": 1
 }
 ```
+
 `config/json_payloads/new title.json`:
+
 ```json
 {
   "title": "Just an edited title"
 }
 ```
+
 `config/json_payloads/updated post.json`:
+
 ```json
 {
   "title": "Replacement post",
@@ -582,5 +668,5 @@ setWorldConstructor(ScenarioWorld)
 ---
 
 ### 8.7 Comentário final literal
-Isto é o mais literal possível com as linhas principais do projeto. Se quiser, posso criar uma versão ainda mais literal com todas as linhas de todos os `.feature` e `.ts` pequenos restantes de forma totalmente expandida.
 
+Isto é o mais literal possível com as linhas principais do projeto. Se quiser, posso criar uma versão ainda mais literal com todas as linhas de todos os `.feature` e `.ts` pequenos restantes de forma totalmente expandida.

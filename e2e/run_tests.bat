@@ -1,3 +1,4 @@
+@echo off
 :: Usage: .\run_tests.bat <ENV> <TAG> <MARKET> [TESTNAME]
 :: Example: .\run_tests.bat QAS smoke PT
 :: Example: .\run_tests.bat PRD regression GB "My scenario name"

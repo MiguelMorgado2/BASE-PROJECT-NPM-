@@ -1,0 +1,19 @@
+{
+  "name": "e2e-pw",
+  "version": "1.0.0",
+  "description": "Playwright + TypeScript E2E framework with Page Object Model",
+  "main": "index.js",
+  "scripts": {
+    "test:DEV": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=DEV playwright test",
+    "test:QAS": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=QAS playwright test",
+    "test:PRD": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=PRD playwright test"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "@playwright/test": "^1.46.1",
+    "@types/node": "^22.5.1",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.5.4"
+  }
+}

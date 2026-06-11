@@ -1,0 +1,11 @@
+{
+  "DEV_PT": "https://dev.pt.myapp.com/",
+  "DEV_GB": "https://dev.gb.myapp.com/",
+  "DEV_DE": "https://dev.de.myapp.com/",
+  "QAS_PT": "https://qas.pt.myapp.com/",
+  "QAS_GB": "https://qas.gb.myapp.com/",
+  "QAS_DE": "https://qas.de.myapp.com/",
+  "PRD_PT": "https://pt.myapp.com/",
+  "PRD_GB": "https://gb.myapp.com/",
+  "PRD_DE": "https://de.myapp.com/"
+}

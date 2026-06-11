@@ -1,0 +1,6 @@
+{
+  "email input": "[data-id='email']",
+  "password input": "[data-id='password']",
+  "submit button": "[data-id='submit']",
+  "error message": "[data-id='error-message']"
+}

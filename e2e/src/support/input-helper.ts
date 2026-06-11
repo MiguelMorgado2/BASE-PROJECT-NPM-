@@ -5,7 +5,7 @@ const isLookupVariable = (input: string, lookupTrigger: string): boolean => {
 }
 
 const getLookupVariable = (input: string, lookupTrigger: string, config: GlobalConfig): string => {
-    const key = input.substr(lookupTrigger.length)
+    const key = input.slice(lookupTrigger.length)
     const lookupValue = config.emailsConfig[key] ?? process.env[key]
 
     if (!lookupValue) {

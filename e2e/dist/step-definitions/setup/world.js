@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ScenarioWorld = void 0;
 var _playwright = _interopRequireDefault(require("playwright"));
 var _parseEnv = require("../../env/parseEnv");
+var _optionsHelper = require("../../support/options-helper");
 var _cucumber = require("@cucumber/cucumber");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class ScenarioWorld extends _cucumber.World {
@@ -30,7 +31,7 @@ class ScenarioWorld extends _cucumber.World {
   }
   newBrowser = async () => {
     const automationBrowsers = ['chromium', 'firefox', 'webkit'];
-    const automationBrowser = (0, _parseEnv.env)('UI_AUTOMATION_BROWSER');
+    const automationBrowser = (0, _optionsHelper.stringIsOfOptions)((0, _parseEnv.env)('UI_AUTOMATION_BROWSER'), automationBrowsers);
     const browserType = _playwright.default[automationBrowser];
     const browser = await browserType.launch({
       devtools: process.env.DEVTOOLS !== 'false',

@@ -14,8 +14,7 @@ export const clickElementAtIndex = async(
     elementIdentifier: ElementLocator,
     elementPosition: number,
 ): Promise<void> => {
-    const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`)
-    await element?.click()
+    await page.locator(elementIdentifier).nth(elementPosition).click()
 }
 
 export const inputElementValue = async (
@@ -80,7 +79,7 @@ export const getElement = async (
     page: Page,
     elementIdentifier: ElementLocator,
 ): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
-    const element = await page.$(elementIdentifier)
+    const element = await page.locator(elementIdentifier).first().elementHandle()
     return element
 }
 
@@ -88,8 +87,8 @@ export const getElements = async (
     page: Page,
     elementIdentifier: ElementLocator,
 ): Promise<ElementHandle<SVGElement | HTMLElement>[]> => {
-    const elements = await page.$$(elementIdentifier)
-    return elements
+    const elements = await page.locator(elementIdentifier).elementHandles()
+    return elements as ElementHandle<SVGElement | HTMLElement>[]
 }
 
 export const getElementAtIndex = async (
@@ -97,7 +96,7 @@ export const getElementAtIndex = async (
     elementIdentifier: ElementLocator,
     index: number,
 ): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
-    const elementAtIndex = await page.$(`${elementIdentifier}>>nth=${index}`)
+    const elementAtIndex = await page.locator(elementIdentifier).nth(index).elementHandle()
     return elementAtIndex
 }
 
@@ -105,17 +104,15 @@ export const getElementValue = async(
     page: Page,
     elementIdentifier: ElementLocator
 ): Promise<string | null> => {
-    const value = await page.$eval<string, HTMLSelectElement>(elementIdentifier, el => {
-        return el.value;
-    })
-    return value;
+    const value = await page.locator(elementIdentifier).inputValue()
+    return value
 }
 
 export const getIframeElement = async (
     page: Page,
     iframeIdentifier: ElementLocator
 ): Promise<Frame | undefined | null> => {
-    const elementHandle = await page.$(iframeIdentifier)
+    const elementHandle = await page.locator(iframeIdentifier).elementHandle()
     const elementIframe = await elementHandle?.contentFrame()
     return elementIframe
 }
@@ -124,7 +121,7 @@ export const getElementWithinIframe = async(
     elementIframe: Frame,
     elementIdentifier: ElementLocator,
 ): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
-    const visibleOnIframeElement = await elementIframe?.$(elementIdentifier)
+    const visibleOnIframeElement = await elementIframe?.locator(elementIdentifier).elementHandle()
     return visibleOnIframeElement
 }
 
@@ -151,7 +148,7 @@ export const getElementOnPage = async(
     pages: Array<Page>,
     pageIndex: number,
 ): Promise<ElementHandle<SVGElement | HTMLElement> | null> => {
-    const elementOnPage = await pages[pageIndex].$(elementIdentifier)
+    const elementOnPage = await pages[pageIndex].locator(elementIdentifier).elementHandle()
     return elementOnPage
 }
 
@@ -170,7 +167,7 @@ export const getAttributeText = async(
     elementIdentifier: ElementLocator,
     attribute: string,
 ): Promise<string | null> => {
-    const attributeText = page.locator(elementIdentifier).getAttribute(attribute)
+    const attributeText = await page.locator(elementIdentifier).getAttribute(attribute)
     return attributeText
 }
 
@@ -187,7 +184,7 @@ export const getElementTextAtIndex = async (
     elementIdentifier: ElementLocator,
     index: number
 ): Promise<string | null> => {
-    const textAtIndex = await page.textContent(`${elementIdentifier}>>nth=${index}`)
+    const textAtIndex = await page.locator(elementIdentifier).nth(index).textContent()
     return textAtIndex
 }
 
@@ -195,12 +192,13 @@ export const getTableData = async(
     page: Page,
     elementIdentifier: ElementLocator,
 ): Promise<string> => {
-    const table = await page.$$eval(elementIdentifier+" tbody tr", (rows) => {
-        return rows.map(row => {
-            const cells = row.querySelectorAll('td')
-            return Array.from(cells).map(cell => cell.textContent)
+    const rows = await page.locator(`${elementIdentifier} tbody tr`).all()
+    const table = await Promise.all(
+        rows.map(async row => {
+            const cells = await row.locator('td').all()
+            return Promise.all(cells.map(cell => cell.textContent()))
         })
-    })
+    )
     return JSON.stringify(table)
 }
 

@@ -23,21 +23,26 @@ Given(
     async function (this: ScenarioWorld, cookieName: string, cookieValue: string) {
       const {
         screen: { page },
+        globalConfig,
       } = this;
   
       logger.log(`Setting cookie ${cookieName} with value ${cookieValue}`);
+
+      const hostName = process.env.UI_AUTOMATION_HOST ?? 'localhost'
+      const hostUrl = globalConfig.hostsConfig[hostName]
+      const domain = new URL(hostUrl).hostname
   
       await page.context().addCookies([
         {
           name: cookieName,
           value: cookieValue,
-          domain: 'pt.iqos.com', // You can make this dynamic if needed
+          domain,
           path: '/',
           httpOnly: false,
           secure: true,
         },
       ]);
   
-      logger.log(`Cookie ${cookieName} has been set`);
+      logger.log(`Cookie ${cookieName} has been set on domain ${domain}`);
     }
   );

@@ -17,17 +17,20 @@ var _logger = require("../logger");
   const {
     screen: {
       page
-    }
+    },
+    globalConfig
   } = this;
   _logger.logger.log(`Setting cookie ${cookieName} with value ${cookieValue}`);
+  const hostName = process.env.UI_AUTOMATION_HOST ?? 'localhost';
+  const hostUrl = globalConfig.hostsConfig[hostName];
+  const domain = new URL(hostUrl).hostname;
   await page.context().addCookies([{
     name: cookieName,
     value: cookieValue,
-    domain: 'pt.iqos.com',
-    // You can make this dynamic if needed
+    domain,
     path: '/',
     httpOnly: false,
     secure: true
   }]);
-  _logger.logger.log(`Cookie ${cookieName} has been set`);
+  _logger.logger.log(`Cookie ${cookieName} has been set on domain ${domain}`);
 });

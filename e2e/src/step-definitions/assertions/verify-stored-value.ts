@@ -82,7 +82,7 @@ Then(
             globalConfig,
             {
                 target: elementKey,
-                failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}contain the ${variableKey} in global variables0 🧨`
+                failureMessage: `🧨 Expected ${elementKey} to ${negate ? 'not ' : ''}contain the ${variableKey} in global variables 🧨`
             }
         )
     }

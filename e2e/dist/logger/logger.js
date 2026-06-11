@@ -44,7 +44,7 @@ const getLogger = () => {
   if (!loggerSingleton) {
     const logLevel = (0, _parseEnv.env)('LOG_LEVEL');
     const validLogLevel = (0, _optionsHelper.stringIsOfOptions)(logLevel, LOG_LEVELS);
-    loggerSingleton = createLogger(validLogLevel);
+    loggerSingleton = Object.freeze(createLogger(validLogLevel));
   }
   return loggerSingleton;
 };

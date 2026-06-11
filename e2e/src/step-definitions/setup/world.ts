@@ -6,6 +6,7 @@ import playwright, {
     BrowserType
 } from "playwright";
 import { env } from '../../env/parseEnv'
+import { stringIsOfOptions } from '../../support/options-helper'
 import { World, IWorldOptions, setWorldConstructor} from "@cucumber/cucumber";
 import { GlobalConfig, GlobalVariables } from '../../env/global';
 
@@ -45,9 +46,13 @@ export class ScenarioWorld extends World {
 
     private newBrowser = async (): Promise<Browser> => {
 
-        const automationBrowsers = ['chromium', 'firefox', 'webkit']
+        const automationBrowsers = ['chromium', 'firefox', 'webkit'] as const
         type AutomationBrowser = typeof automationBrowsers[number]
-        const automationBrowser = env('UI_AUTOMATION_BROWSER') as AutomationBrowser
+
+        const automationBrowser = stringIsOfOptions<AutomationBrowser>(
+            env('UI_AUTOMATION_BROWSER'),
+            automationBrowsers
+        )
 
         const browserType: BrowserType = playwright[automationBrowser];
         const browser = await browserType.launch({

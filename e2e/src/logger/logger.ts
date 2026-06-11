@@ -43,12 +43,12 @@ const createLogger = (logLevel: LogLevel): Logger => {
     ) as Logger
 }
 
-let loggerSingleton: Logger | null =  null
+let loggerSingleton: Logger | null = null
 export const getLogger = (): Logger => {
     if (!loggerSingleton) {
         const logLevel = env('LOG_LEVEL')
         const validLogLevel = stringIsOfOptions<LogLevel>(logLevel, LOG_LEVELS)
-        loggerSingleton = createLogger(validLogLevel)
+        loggerSingleton = Object.freeze(createLogger(validLogLevel))
     }
     return loggerSingleton
 }

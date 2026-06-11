@@ -8,7 +8,7 @@ const isLookupVariable = (input, lookupTrigger) => {
   return !!(lookupTrigger && input.startsWith(lookupTrigger));
 };
 const getLookupVariable = (input, lookupTrigger, config) => {
-  const key = input.substr(lookupTrigger.length);
+  const key = input.slice(lookupTrigger.length);
   const lookupValue = config.emailsConfig[key] ?? process.env[key];
   if (!lookupValue) {
     throw Error(`Could not get ${input} lookup trigger`);

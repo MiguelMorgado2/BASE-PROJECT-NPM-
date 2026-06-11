@@ -4,95 +4,134 @@
     "elements": [
       {
         "description": "",
-        "id": "as-a-user-i-can-intercept-a-rest-api-and-mock-the-response;as-a-user-i-can-mock-a-single-user",
+        "id": "as-a-user-i-can-interact-with-buttons-at-index;as-a-user-i-can-interact-and-assert-on-buttons-at-index",
         "keyword": "Scenario",
-        "line": 22,
-        "name": "As a user I can mock a single user",
+        "line": 4,
+        "name": "As a user I can interact and assert on buttons at index",
         "steps": [
           {
             "keyword": "Before",
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 1815350300
+              "duration": 2021778800
             }
           },
           {
             "arguments": [],
             "keyword": "Given ",
-            "line": 23,
+            "line": 5,
             "name": "I am on the \"home\" page",
             "match": {
               "location": "src\\step-definitions\\navigation.ts:12"
             },
             "result": {
               "status": "passed",
-              "duration": 5867498599
+              "duration": 2121086300
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 24,
-            "name": "the \"api\" endpoint for \"users\" is mocked with \"single user\"",
-            "match": {
-              "location": "src\\step-definitions\\mock.ts:7"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 11859099
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "When ",
-            "line": 25,
+            "line": 6,
             "name": "I click the \"playground\" button",
             "match": {
               "location": "src\\step-definitions\\click.ts:15"
             },
             "result": {
               "status": "passed",
-              "duration": 1004149100
+              "duration": 599251299
             }
           },
           {
             "arguments": [],
-            "keyword": "And ",
-            "line": 26,
+            "keyword": "When ",
+            "line": 7,
             "name": "I am directed to the \"playground\" page",
             "match": {
               "location": "src\\step-definitions\\navigation.ts:32"
             },
             "result": {
               "status": "passed",
-              "duration": 3452099
-            }
-          },
-          {
-            "arguments": [],
-            "keyword": "Then ",
-            "line": 27,
-            "name": "the \"1st\" \"full name\" should not contain the text \"Leanne Graham\"",
-            "match": {
-              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:199"
-            },
-            "result": {
-              "status": "passed",
-              "duration": 1913875699
+              "duration": 1012099
             }
           },
           {
             "arguments": [],
             "keyword": "And ",
-            "line": 28,
-            "name": "the \"1st\" \"full name\" should contain the text \"Todd Smith\"",
+            "line": 8,
+            "name": "I click the \"1st\" \"my button\" button",
+            "match": {
+              "location": "src\\step-definitions\\click.ts:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 1769901799
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 9,
+            "name": "the \"1st\" \"my button\" should contain the text \"One\"",
             "match": {
               "location": "src\\step-definitions\\assertions\\verify-element-value.ts:199"
             },
             "result": {
               "status": "passed",
-              "duration": 32594300
+              "duration": 26393700
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 10,
+            "name": "I click the \"2nd\" \"my button\" button",
+            "match": {
+              "location": "src\\step-definitions\\click.ts:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 173639699
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 11,
+            "name": "the \"2nd\" \"my button\" should contain the text \"Two\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:199"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 48664100
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 12,
+            "name": "I click the \"3rd\" \"my button\" button",
+            "match": {
+              "location": "src\\step-definitions\\click.ts:42"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 100429500
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 13,
+            "name": "the \"3rd\" \"my button\" should contain the text \"Three\"",
+            "match": {
+              "location": "src\\step-definitions\\assertions\\verify-element-value.ts:199"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 46339499
             }
           },
           {
@@ -100,32 +139,32 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 459427700
+              "duration": 734579399
             }
           }
         ],
         "tags": [
           {
             "name": "@smoke",
-            "line": 20
+            "line": 3
           },
           {
             "name": "@regression",
-            "line": 21
+            "line": 3
           },
           {
             "name": "@dev",
-            "line": 21
+            "line": 3
           }
         ],
         "type": "scenario"
       }
     ],
-    "id": "as-a-user-i-can-intercept-a-rest-api-and-mock-the-response",
+    "id": "as-a-user-i-can-interact-with-buttons-at-index",
     "line": 1,
     "keyword": "Feature",
-    "name": "As a user I can intercept a REST api and mock the response",
+    "name": "As a user I can interact with buttons at index",
     "tags": [],
-    "uri": "src\\features\\playground\\mock.feature"
+    "uri": "src\\features\\playground\\buttons.feature"
   }
 ]

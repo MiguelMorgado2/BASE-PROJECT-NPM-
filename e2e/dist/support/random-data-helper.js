@@ -4,15 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.randomPassword = exports.randomInputTypes = exports.randomEmail = exports.getRandomData = void 0;
-var _faker = _interopRequireDefault(require("faker"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+var _faker = require("@faker-js/faker");
 const randomInputTypes = exports.randomInputTypes = ['email', 'password'];
 const randomEmail = () => {
-  return _faker.default.internet.exampleEmail();
+  return _faker.faker.internet.exampleEmail();
 };
 exports.randomEmail = randomEmail;
 const randomPassword = () => {
-  return _faker.default.internet.password();
+  return _faker.faker.internet.password();
 };
 exports.randomPassword = randomPassword;
 const getRandomData = randomInputType => {
@@ -21,8 +20,6 @@ const getRandomData = randomInputType => {
       return randomEmail();
     case 'password':
       return randomPassword();
-    default:
-      return '';
   }
 };
 exports.getRandomData = getRandomData;

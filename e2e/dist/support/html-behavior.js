@@ -9,8 +9,7 @@ const clickElement = async (page, elementIdentifier) => {
 };
 exports.clickElement = clickElement;
 const clickElementAtIndex = async (page, elementIdentifier, elementPosition) => {
-  const element = await page.$(`${elementIdentifier}>>nth=${elementPosition}`);
-  await element?.click();
+  await page.locator(elementIdentifier).nth(elementPosition).click();
 };
 exports.clickElementAtIndex = clickElementAtIndex;
 const inputElementValue = async (page, elementIdentifier, input) => {
@@ -46,35 +45,33 @@ const scrollElementIntoView = async (page, elementIdentifier) => {
 };
 exports.scrollElementIntoView = scrollElementIntoView;
 const getElement = async (page, elementIdentifier) => {
-  const element = await page.$(elementIdentifier);
+  const element = await page.locator(elementIdentifier).first().elementHandle();
   return element;
 };
 exports.getElement = getElement;
 const getElements = async (page, elementIdentifier) => {
-  const elements = await page.$$(elementIdentifier);
+  const elements = await page.locator(elementIdentifier).elementHandles();
   return elements;
 };
 exports.getElements = getElements;
 const getElementAtIndex = async (page, elementIdentifier, index) => {
-  const elementAtIndex = await page.$(`${elementIdentifier}>>nth=${index}`);
+  const elementAtIndex = await page.locator(elementIdentifier).nth(index).elementHandle();
   return elementAtIndex;
 };
 exports.getElementAtIndex = getElementAtIndex;
 const getElementValue = async (page, elementIdentifier) => {
-  const value = await page.$eval(elementIdentifier, el => {
-    return el.value;
-  });
+  const value = await page.locator(elementIdentifier).inputValue();
   return value;
 };
 exports.getElementValue = getElementValue;
 const getIframeElement = async (page, iframeIdentifier) => {
-  const elementHandle = await page.$(iframeIdentifier);
+  const elementHandle = await page.locator(iframeIdentifier).elementHandle();
   const elementIframe = await elementHandle?.contentFrame();
   return elementIframe;
 };
 exports.getIframeElement = getIframeElement;
 const getElementWithinIframe = async (elementIframe, elementIdentifier) => {
-  const visibleOnIframeElement = await elementIframe?.$(elementIdentifier);
+  const visibleOnIframeElement = await elementIframe?.locator(elementIdentifier).elementHandle();
   return visibleOnIframeElement;
 };
 exports.getElementWithinIframe = getElementWithinIframe;
@@ -89,7 +86,7 @@ const getTitleWithinPage = async (page, pages, pageIndex) => {
 };
 exports.getTitleWithinPage = getTitleWithinPage;
 const getElementOnPage = async (page, elementIdentifier, pages, pageIndex) => {
-  const elementOnPage = await pages[pageIndex].$(elementIdentifier);
+  const elementOnPage = await pages[pageIndex].locator(elementIdentifier).elementHandle();
   return elementOnPage;
 };
 exports.getElementOnPage = getElementOnPage;
@@ -99,7 +96,7 @@ const getElementTextWithinPage = async (page, elementIdentifier, pages, pageInde
 };
 exports.getElementTextWithinPage = getElementTextWithinPage;
 const getAttributeText = async (page, elementIdentifier, attribute) => {
-  const attributeText = page.locator(elementIdentifier).getAttribute(attribute);
+  const attributeText = await page.locator(elementIdentifier).getAttribute(attribute);
   return attributeText;
 };
 exports.getAttributeText = getAttributeText;
@@ -109,17 +106,16 @@ const getElementText = async (page, elementIdentifier) => {
 };
 exports.getElementText = getElementText;
 const getElementTextAtIndex = async (page, elementIdentifier, index) => {
-  const textAtIndex = await page.textContent(`${elementIdentifier}>>nth=${index}`);
+  const textAtIndex = await page.locator(elementIdentifier).nth(index).textContent();
   return textAtIndex;
 };
 exports.getElementTextAtIndex = getElementTextAtIndex;
 const getTableData = async (page, elementIdentifier) => {
-  const table = await page.$$eval(elementIdentifier + " tbody tr", rows => {
-    return rows.map(row => {
-      const cells = row.querySelectorAll('td');
-      return Array.from(cells).map(cell => cell.textContent);
-    });
-  });
+  const rows = await page.locator(`${elementIdentifier} tbody tr`).all();
+  const table = await Promise.all(rows.map(async row => {
+    const cells = await row.locator('td').all();
+    return Promise.all(cells.map(cell => cell.textContent()));
+  }));
   return JSON.stringify(table);
 };
 exports.getTableData = getTableData;

@@ -26,8 +26,9 @@ var _logger = require("../../logger");
   } = this;
   const scenarioStatus = scenario.result?.status;
   if (scenarioStatus === 'FAILED') {
+    const safeName = scenario.pickle.name.replace(/[^a-z0-9]/gi, '_');
     const screenshot = await page.screenshot({
-      path: `${(0, _parseEnv.env)('SCREENSHOT_PATH')}${scenario.pickle.name}.png`
+      path: `${(0, _parseEnv.env)('SCREENSHOT_PATH')}${safeName}.png`
     });
     await this.attach(screenshot, 'image/png');
   }

@@ -7,8 +7,9 @@
     "precucumber": "rimraf reports && mkdir reports && echo {} > reports/report.json",
     "transpile": "rimraf dist && babel --extensions .ts --out-dir dist src",
     "cucumber": "npm run transpile && cucumber-js",
-    "cucumber:localhost": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=localhost npm run transpile && cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=localhost cucumber-js",
-    "cucumber:production": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=production npm run transpile && cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=production cucumber-js",
+    "cucumber:DEV": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=DEV npm run transpile && cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=DEV cucumber-js",
+    "cucumber:QAS": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=QAS npm run transpile && cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=QAS cucumber-js",
+    "cucumber:PRD": "cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=PRD npm run transpile && cross-env COMMON_CONFIG_FILE=env/common.env NODE_ENV=PRD cucumber-js",
     "postcucumber": "cross-env COMMON_CONFIG_FILE=env/common.env ts-node ./src/reporter/cucumber-report.ts"
   },
   "author": "",

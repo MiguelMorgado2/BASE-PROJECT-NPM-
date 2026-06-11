@@ -5,6 +5,7 @@ export type WaitForTargetType = string
 export type MockConfigKey = string
 export type MockServerKey = string
 export type MockPayloadKey = string
+export type Market = string
 export type WaitForTarget = PageId | ElementKey
 export type PageElementMappings = Record<PageId, Record<ElementKey, ElementLocator>>
 export type MockPayloadMappings = Record<string, string>
@@ -28,4 +29,5 @@ export type GlobalConfig = {
     errorsConfig: ErrorsConfig
     emailsConfig: EmailsConfig
     mocksConfig: MocksConfig
+    market: Market
 };

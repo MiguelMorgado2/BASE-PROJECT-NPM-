@@ -5,16 +5,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.randomPassword = exports.randomInputTypes = exports.randomEmail = exports.getRandomData = void 0;
 var _faker = require("@faker-js/faker");
-const randomInputTypes = exports.randomInputTypes = ['email', 'password'];
-const randomEmail = () => {
+var randomInputTypes = exports.randomInputTypes = ['email', 'password'];
+var randomEmail = exports.randomEmail = function randomEmail() {
   return _faker.faker.internet.exampleEmail();
 };
-exports.randomEmail = randomEmail;
-const randomPassword = () => {
+var randomPassword = exports.randomPassword = function randomPassword() {
   return _faker.faker.internet.password();
 };
-exports.randomPassword = randomPassword;
-const getRandomData = randomInputType => {
+var getRandomData = exports.getRandomData = function getRandomData(randomInputType) {
   switch (randomInputType) {
     case 'email':
       return randomEmail();
@@ -22,4 +20,3 @@ const getRandomData = randomInputType => {
       return randomPassword();
   }
 };
-exports.getRandomData = getRandomData;

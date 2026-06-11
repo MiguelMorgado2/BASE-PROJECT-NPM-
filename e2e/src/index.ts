@@ -14,6 +14,7 @@ import {
 import fs from "fs"
 
 const environment = env('NODE_ENV')
+const market = env('MARKET')
 
 dotenv.config({ path: env('COMMON_CONFIG_FILE')})
 dotenv.config({ path: `${env('ENV_PATH')}${environment}.env`})
@@ -29,9 +30,12 @@ const payloadFiles = fs.readdirSync(`${process.cwd()}${env('MOCK_PAYLOAD_PATH')}
 
 const getEnvList = (): string[] => {
     const envList = Object.keys(hostsConfig)
+        .filter(key => key !== 'api')
+        .map(key => key.split('_')[0])
+        .filter((value, index, self) => self.indexOf(value) === index)
 
     if (envList.length === 0) {
-        throw Error(`🧨 No environments mapped in your ${env('HOSTS_URL_PATH')}`)
+        throw Error(`🧨 No environments mapped in your hosts.json 🧨`)
     }
 
     return envList
@@ -63,6 +67,7 @@ const worldParameters: GlobalConfig = {
     mocksConfig,
     pageElementMappings,
     mockPayloadMappings,
+    market,
 }
 
 const common = `./src/features/**/*.feature \

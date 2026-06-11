@@ -401,7 +401,7 @@ pre {
           </div>
           <div class="label-container">
             <div class="generated-on">
-              Thu Jun 11 2026 17:22:20 GMT+0100 (Western European Summer Time)
+              Thu Jun 11 2026 17:51:00 GMT+0100 (Western European Summer Time)
             </div>
           </div>
       </div>
@@ -454,7 +454,7 @@ pre {
 
     <div>
       <p class="text-left">
-        Execution Time: 4s 886ms
+        Execution Time: 3s 489ms
       </p>
       <p class="text-right">
         <a id="expand_all">Expand All</a>
@@ -481,15 +481,15 @@ pre {
                     <div class="tags">
                     </div>
                     
-                    <a data-toggle="collapse" href="#collapseFeaturee2e9d706178-ce1c-4f8f-a7cc-405f3701d730">
+                    <a data-toggle="collapse" href="#collapseFeaturee2e232b6ce3-8dab-4031-8d05-586df6583b7e">
                         <i class="glyphicon glyphicon-chevron-right"></i>
                         <i class="glyphicon glyphicon-chevron-down"></i>
-                        <b>Feature:</b>As a user I can interact with buttons at index
+                        <b>Feature:</b>As a user I can interact with login forms
                         <span class="label-container">
 
                         
 
-                        <span>4s 886ms</span>
+                        <span>3s 489ms</span>
                                 
               <span class="label label-success"
                                                          title="1 Scenarios Passed">1</span>
@@ -502,7 +502,7 @@ pre {
                     </a>
                 </h4>
             </div>
-            <div id="collapseFeaturee2e9d706178-ce1c-4f8f-a7cc-405f3701d730" class="panel-collapse collapse">
+            <div id="collapseFeaturee2e232b6ce3-8dab-4031-8d05-586df6583b7e" class="panel-collapse collapse">
                 <div class="panel-body">
                     
                     
@@ -515,23 +515,24 @@ pre {
                                 <div class="tags"> <span class="tag"> @smoke</span>
                                      <span class="tag"> @regression</span>
                                      <span class="tag"> @dev</span>
+                                     <span class="tag"> @QAS</span>
                                     
                                 </div>
                                 
-                                <a data-toggle="collapse" href="#collapseScenarioe2e54589089-5bfe-469d-a75e-8de7ce719a6e">
+                                <a data-toggle="collapse" href="#collapseScenarioe2ee30353a5-6f27-4f55-847b-515060f49c8f">
                                     <div>
 
                                         <div style="padding-right: 30px">
                                             <i class="glyphicon glyphicon-chevron-right"></i>
                                             <i class="glyphicon glyphicon-chevron-down"></i>
-                                            <b>Scenario:</b><div class="ellipsis" data-text="As a user I can interact and assert on buttons at index">As a user I can interact and assert on buttons at index</div>
+                                            <b>Scenario Outline:</b><div class="ellipsis" data-text="As a user I can populate login details leveraging environment variables">As a user I can populate login details leveraging environment variables</div>
                                         </div>
                                         <div>
                             <span class="label-container ">
-                                <span>4s 886ms</span>
+                                <span>3s 489ms</span>
                               
                               <span class="label label-success"
-                                                               title="9 Steps Passed">9</span>
+                                                               title="7 Steps Passed">7</span>
                               
                               
                               
@@ -544,7 +545,7 @@ pre {
                                 </a>
                             </h4>
                         </div>
-                        <div id="collapseScenarioe2e54589089-5bfe-469d-a75e-8de7ce719a6e"
+                        <div id="collapseScenarioe2ee30353a5-6f27-4f55-847b-515060f49c8f"
                              class="panel-collapse collapse">
                             <div class="panel-body">
                                 <div></div>
@@ -567,7 +568,7 @@ pre {
                             
                           
                               <span class="step-duration">
-                               2s 121ms
+                               2s 40ms
                               </span>
                             
                          
@@ -605,7 +606,7 @@ pre {
                             
                           
                               <span class="step-duration">
-                               599ms
+                               455ms
                               </span>
                             
                          
@@ -643,7 +644,7 @@ pre {
                             
                           
                               <span class="step-duration">
-                               1ms
+                               < 1ms
                               </span>
                             
                          
@@ -677,11 +678,11 @@ pre {
                                     
                                     <span class="text">
                         <span class="keyword highlight">And </span>
-                          <span class="stepname"> I click the &quot;1st&quot; &quot;my button&quot; button</span>
+                          <span class="stepname"> I fill in the &quot;email&quot; input with &quot;$.TEST_EMAIL&quot;</span>
                             
                           
                               <span class="step-duration">
-                               1s 769ms
+                               830ms
                               </span>
                             
                          
@@ -715,11 +716,11 @@ pre {
                                     
                                     <span class="text">
                         <span class="keyword highlight">And </span>
-                          <span class="stepname"> the &quot;1st&quot; &quot;my button&quot; should contain the text &quot;One&quot;</span>
+                          <span class="stepname"> I fill in the &quot;password&quot; input with &quot;$.TEST_PASSWORD&quot;</span>
                             
                           
                               <span class="step-duration">
-                               26ms
+                               49ms
                               </span>
                             
                          
@@ -753,11 +754,11 @@ pre {
                                     
                                     <span class="text">
                         <span class="keyword highlight">And </span>
-                          <span class="stepname"> I click the &quot;2nd&quot; &quot;my button&quot; button</span>
+                          <span class="stepname"> the &quot;email&quot; should contain the value &quot;admin@testingtalkshub.com.au&quot;</span>
                             
                           
                               <span class="step-duration">
-                               173ms
+                               21ms
                               </span>
                             
                          
@@ -791,87 +792,11 @@ pre {
                                     
                                     <span class="text">
                         <span class="keyword highlight">And </span>
-                          <span class="stepname"> the &quot;2nd&quot; &quot;my button&quot; should contain the text &quot;Two&quot;</span>
+                          <span class="stepname"> the &quot;password&quot; should contain the value &quot;qasPassword123&quot;</span>
                             
                           
                               <span class="step-duration">
-                               48ms
-                              </span>
-                            
-                         
-                            
-                          
-                          <!-- Adding data table data-->
-                          
-                      </span>
-                                
-                                
-
-                                    
-
-                                    
-
-                                    
-
-                                    
-                                </div>
-                                </p>
-                                
-                                
-                                
-                                <p class="scenario-container">
-                                <div class="row steps">
-                                    
-                                    
-                                    <span class="label label-success" title="Success"><i
-                                            class="glyphicon glyphicon-ok"></i></span>
-                                    
-                                    
-                                    <span class="text">
-                        <span class="keyword highlight">And </span>
-                          <span class="stepname"> I click the &quot;3rd&quot; &quot;my button&quot; button</span>
-                            
-                          
-                              <span class="step-duration">
-                               100ms
-                              </span>
-                            
-                         
-                            
-                          
-                          <!-- Adding data table data-->
-                          
-                      </span>
-                                
-                                
-
-                                    
-
-                                    
-
-                                    
-
-                                    
-                                </div>
-                                </p>
-                                
-                                
-                                
-                                <p class="scenario-container">
-                                <div class="row steps">
-                                    
-                                    
-                                    <span class="label label-success" title="Success"><i
-                                            class="glyphicon glyphicon-ok"></i></span>
-                                    
-                                    
-                                    <span class="text">
-                        <span class="keyword highlight">And </span>
-                          <span class="stepname"> the &quot;3rd&quot; &quot;my button&quot; should contain the text &quot;Three&quot;</span>
-                            
-                          
-                              <span class="step-duration">
-                               46ms
+                               90ms
                               </span>
                             
                          

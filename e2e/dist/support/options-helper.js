@@ -4,13 +4,12 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.stringIsOfOptions = void 0;
-const stringLevelIsT = (string, options) => {
+var stringLevelIsT = function stringLevelIsT(string, options) {
   return options.includes(string);
 };
-const stringIsOfOptions = (stringLevel, options) => {
+var stringIsOfOptions = exports.stringIsOfOptions = function stringIsOfOptions(stringLevel, options) {
   if (stringLevelIsT(stringLevel, options)) {
     return stringLevel;
   }
-  throw Error(`🧨 String '${stringLevel}' needs to be one of ${options} 🧨`);
+  throw Error("\uD83E\uDDE8 String '".concat(stringLevel, "' needs to be one of ").concat(options, " \uD83E\uDDE8"));
 };
-exports.stringIsOfOptions = stringIsOfOptions;

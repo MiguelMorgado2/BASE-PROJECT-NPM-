@@ -13,7 +13,13 @@ export const interceptResponse = async (
     mockPayloadKey: MockPayloadKey,
     { hostsConfig, mocksConfig, mockPayloadMappings }: GlobalConfig
 ): Promise<void> => {
-    const mockServerHostURL = hostsConfig[mockServerKey]
+    const environment = process.env.NODE_ENV ?? 'DEV'
+    const market = process.env.MARKET ?? 'PT'
+    const hostKey = mockServerKey === 'api'
+        ? 'api'
+        : `${environment}_${market}`
+
+    const mockServerHostURL = hostsConfig[hostKey]
     const mockServerRoute = mocksConfig[mockConfigKey]
     const mockServerPayload = mockPayloadMappings[mockPayloadKey]
 

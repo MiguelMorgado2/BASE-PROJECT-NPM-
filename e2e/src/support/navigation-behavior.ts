@@ -7,19 +7,22 @@ export const navigateToPage = async (
     pageId: PageId,
     { pagesConfig, hostsConfig }: GlobalConfig
 ): Promise<void> => {
-    const {
-        UI_AUTOMATION_HOST: hostName = 'localhost',
-    } = process.env;
+    const environment = process.env.NODE_ENV ?? 'DEV'
+    const market = process.env.MARKET ?? 'PT'
+    const hostKey = `${environment}_${market}`
 
-    const hostPath = hostsConfig[`${hostName}`];
+    const hostPath = hostsConfig[hostKey]
 
-    const url = new URL(hostPath);
+    if (!hostPath) {
+        throw Error(`🧨 No host found for environment "${hostKey}" in hosts.json 🧨`)
+    }
 
-    const pageConfigItem = pagesConfig[pageId];
-    url.pathname = pageConfigItem.route;
+    const url = new URL(hostPath)
+    const pageConfigItem = pagesConfig[pageId]
+    url.pathname = pageConfigItem.route
 
-    await page.goto(url.href);
-};
+    await page.goto(url.href)
+}
 
 const pathMatchesPageId = (
     path: string,

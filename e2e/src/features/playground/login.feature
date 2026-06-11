@@ -1,7 +1,6 @@
 Feature: As a user I can interact with login forms
 
-  @smoke
-  @regression
+  @smoke @regression @dev
   Scenario Outline: As a user I can populate login details leveraging environment variables
     Given I am on the "home" page
     And I click the "playground" button
@@ -11,19 +10,22 @@ Feature: As a user I can interact with login forms
     And the "email" should contain the value "admin@testingtalkshub.com.au"
     And the "password" should contain the value "<password>"
 
-  @localhost
-  Examples:
-    | password     |
-    | Password1234 |
+    @DEV
+    Examples:
+      | password       |
+      | devPassword123 |
 
-  @production
-  Examples:
-    | password  |
-    | 4S42xAr12 |
+    @QAS
+    Examples:
+      | password       |
+      | qasPassword123 |
 
+    @PRD
+    Examples:
+      | password  |
+      | 4S42xAr12 |
 
-  @smoke
-  @regression
+  @smoke @regression
   Scenario Outline: As a user I expect validation on the login input for an incorrect email
     Given I am on the "home" page
     And I click the "playground" button
@@ -38,9 +40,7 @@ Feature: As a user I can interact with login forms
       | cam.testingtalks |
       | cam.             |
 
-
-  @smoke
-  @regression
+  @smoke @regression
   Scenario: As a user I am able to input a random email
     Given I am on the "home" page
     And I click the "playground" button

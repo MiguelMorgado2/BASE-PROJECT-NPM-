@@ -1,4 +1,4 @@
-# TypeScript Tutorial — QA Automation
+# TypeScript Tutorial 1 — QA Automation
 > Documento de estudo progressivo. Atualizado ao longo das sessões de tutoria.
  
 ---

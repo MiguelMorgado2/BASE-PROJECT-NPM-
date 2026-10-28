@@ -1,0 +1,278 @@
+# TypeScript Tutorial — QA Automation
+> Documento de estudo progressivo. Atualizado ao longo das sessões de tutoria.
+ 
+---
+ 
+## Sessão 1 — Fundamentos
+ 
+---
+ 
+### Conceito 1 — Variables e Types
+ 
+Em TypeScript cada variable tem um **type** que define o que pode conter.
+Sem types (JavaScript puro), podes colocar qualquer valor em qualquer variable e só descobres erros quando o código corre.
+Com types, o editor sublinha os erros **antes de correres** uma única linha.
+ 
+#### Sintaxe
+ 
+```typescript
+let nomeDaVariable: type = valor;
+```
+ 
+#### Os tipos básicos (primitive types)
+ 
+| Type | O que representa | Exemplo |
+|---|---|---|
+| `string` | Texto | `"Login Test"` |
+| `number` | Número (inteiro ou decimal) | `200`, `3.14` |
+| `boolean` | Verdadeiro ou falso | `true`, `false` |
+ 
+#### Exemplos
+ 
+```typescript
+let testName: string = "Login Test";
+let statusCode: number = 200;
+let testPassed: boolean = true;
+```
+ 
+#### Declaration vs Assignment
+ 
+- **Declaration** — dizes que a variable existe, qual o nome e qual o type
+- **Assignment** — dás um valor à variable
+ 
+```typescript
+let statusCode: number;   // declaration
+statusCode = 200;         // assignment
+```
+ 
+Podes fazer os dois na mesma linha:
+ 
+```typescript
+let statusCode: number = 200;   // declaration + assignment
+```
+ 
+#### Type Inference
+ 
+O TypeScript consegue inferir o type automaticamente quando atribuis um valor logo na declaration:
+ 
+```typescript
+let statusCode = 200;   // TypeScript infere: number
+let testName = "Login"; // TypeScript infere: string
+```
+ 
+Nos primeiros tempos, **escreve sempre o type explicitamente** — ajuda a pensar no que cada variable deve conter.
+ 
+---
+ 
+### Conceito 2 — `const` vs `let`
+ 
+| Keyword | Quando usar |
+|---|---|
+| `let` | O valor pode ser **reatribuído** (alterado) mais tarde |
+| `const` | O valor é atribuído uma vez e **nunca muda** |
+ 
+**Reatribuir** significa dar um novo valor a uma variable que já tinha um valor:
+ 
+```typescript
+let retryCount: number = 0;
+retryCount = 1;   // reatribuição — o valor mudou
+retryCount = 2;   // reatribuição novamente
+```
+ 
+Com `const` isso não é possível:
+ 
+```typescript
+const apiUrl: string = "https://api.example.com";
+apiUrl = "https://outro-url.com";   // ❌ ERRO — não podes mudar um const
+```
+ 
+#### Regra de ouro
+ 
+> Usa sempre `const` por defeito. Só mudas para `let` quando precisares de reatribuir.
+ 
+#### Exemplos em QA Automation
+ 
+```typescript
+const endpointUrl: string = "https://api.example.com/actions";  // nunca muda — const
+const expectedStatusCode: number = 200;                          // nunca muda — const
+ 
+let retryCount: number = 0;    // vai sendo incrementado — let
+let actualStatusCode: number;  // vai receber o valor da resposta — let
+```
+ 
+---
+ 
+### Conceito 3 — Functions
+ 
+Uma **function** é um bloco de código com nome que podes reutilizar.
+ 
+#### Sintaxe
+ 
+```typescript
+function nomeDaFunction(parameter: type): returnType {
+  // código aqui
+}
+```
+ 
+- **parameter** — valor que a function recebe para trabalhar
+- **returnType** — type do valor que a function devolve
+ 
+#### Exemplo
+ 
+```typescript
+function checkStatusCode(actual: number, expected: number): boolean {
+  return actual === expected;
+}
+```
+ 
+Esta function recebe dois numbers e devolve `true` se forem iguais, `false` se não forem.
+ 
+#### Chamar uma function
+ 
+**Definir** uma function é criar a receita. **Chamar** uma function é usá-la:
+ 
+```typescript
+checkStatusCode(200, 200);   // chama a function com os valores 200 e 200
+```
+ 
+Para guardar o resultado numa variable:
+ 
+```typescript
+const result: boolean = checkStatusCode(200, 200);
+console.log(result);   // [LOG]: true
+```
+ 
+#### `if / else`
+ 
+Usado dentro de functions (e não só) para executar código consoante uma condição:
+ 
+```typescript
+function isResponseFast(responseTime: number): boolean {
+  if (responseTime < 500) {
+    return true;
+  } else {
+    return false;
+  }
+}
+```
+ 
+#### `console.log()`
+ 
+Usado para imprimir valores no output. Guardar um valor numa variable não o mostra automaticamente — tens de usar `console.log`:
+ 
+```typescript
+const result: boolean = isResponseFast(300);
+console.log(result);   // [LOG]: true
+```
+ 
+---
+ 
+### Conceito 4 — Operadores
+ 
+#### Assignment vs Comparison
+ 
+| Símbolo | Nome | O que faz | Quando usar |
+|---|---|---|---|
+| `=` | assignment | Guarda um valor numa variable | `let x = 5` |
+| `===` | strict equality | Compara se dois valores são iguais | Dentro de `if` |
+| `!==` | strict inequality | Compara se dois valores são diferentes | Dentro de `if` |
+ 
+> **Regra:** Um `=` → estás a **dar** um valor. Dois ou três `=` → estás a **comparar** valores.
+ 
+```typescript
+let retryCount: number = 0;         // = assignment — dá o valor 0
+ 
+if (retryCount === 3) { ... }       // === comparação — pergunta "é igual a 3?"
+if (retryCount !== 0) { ... }       // !== comparação — pergunta "é diferente de 0?"
+```
+ 
+#### Operadores de comparação completos
+ 
+| Símbolo | Significado | Exemplo QA |
+|---|---|---|
+| `===` | igual a | `statusCode === 200` |
+| `!==` | diferente de | `statusCode !== 404` |
+| `>` | maior que | `responseTime > 500` |
+| `<` | menor que | `responseTime < 500` |
+| `>=` | maior ou igual | `points >= 100` |
+| `<=` | menor ou igual | `points <= 100` |
+ 
+#### `==` vs `===`
+ 
+Em TypeScript usa sempre `===` (strict equality):
+ 
+```typescript
+200 == "200"    // true  — == converte o tipo antes de comparar ⚠️
+200 === "200"   // false — === compara tipo e valor ✅
+```
+ 
+O `===` é mais seguro porque não faz conversões automáticas de tipo.
+ 
+---
+ 
+### Onde usar os dois pontos `:`
+ 
+Os `:` em TypeScript servem **apenas** para type annotations:
+ 
+```typescript
+let nome: string               // depois do nome de uma variable
+function f(x: number)          // depois do nome de um parameter
+function f(): boolean          // depois dos parênteses da function (return type)
+```
+ 
+Em todo o resto — `if`, `return`, `=` — **não há `:`**.
+ 
+```typescript
+return true;    // ✅ sem :
+return: true;   // ❌ erro de sintaxe
+```
+ 
+---
+ 
+### Exercícios realizados
+ 
+#### Exercício 1 — `isResponseFast`
+ 
+Escreve uma function que recebe um `responseTime: number` e retorna `true` se for menor que 500.
+ 
+```typescript
+function isResponseFast(responseTime: number): boolean {
+  if (responseTime < 500) {
+    return true;
+  } else {
+    return false;
+  }
+}
+ 
+const result1: boolean = isResponseFast(300);
+const result2: boolean = isResponseFast(600);
+ 
+console.log(result1);  // [LOG]: true
+console.log(result2);  // [LOG]: false
+```
+ 
+#### Exercício 2 — `isValidStatusCode`
+ 
+Escreve uma function que recebe um `statusCode: number` e retorna `true` apenas se for igual a 200.
+ 
+```typescript
+function isValidStatusCode(statusCode: number): boolean {
+  if (statusCode === 200) {
+    return true;
+  } else {
+    return false;
+  }
+}
+ 
+const result1: boolean = isValidStatusCode(200);
+const result2: boolean = isValidStatusCode(300);
+const result3: boolean = isValidStatusCode(404);
+ 
+console.log(result1);  // [LOG]: true
+console.log(result2);  // [LOG]: false
+console.log(result3);  // [LOG]: false
+```
+ 
+---
+ 
+*Próximo conceito: **Objects** — como modelar respostas de APIs em TypeScript.*

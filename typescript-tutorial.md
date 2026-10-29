@@ -276,3 +276,146 @@ console.log(result3);  // [LOG]: false
 ---
  
 *Próximo conceito: **Objects** — como modelar respostas de APIs em TypeScript.*
+
+---
+
+## Sessão 2 — Objects
+
+---
+
+### Conceito 5 — Objects
+
+Um **object** agrupa propriedades relacionadas numa única estrutura.
+
+Em vez de variáveis soltas:
+
+```typescript
+let statusCode: number = 200;
+let responseTime: number = 340;
+let success: boolean = true;
+```
+
+Podes agrupar tudo num object:
+
+```typescript
+const response = {
+  statusCode: 200,
+  responseTime: 340,
+  success: true
+};
+```
+
+Para aceder a uma propriedade usa-se o `.` (dot notation):
+
+```typescript
+console.log(response.statusCode);  // [LOG]: 200
+console.log(response.success);     // [LOG]: true
+```
+
+---
+
+#### Type annotation com `interface`
+
+Para objects, o TypeScript usa uma **interface** — define a "forma" esperada antes de criar o object:
+
+```typescript
+interface ApiResponse {
+  statusCode: number;
+  body: string;
+}
+```
+
+Depois usas a interface como type:
+
+```typescript
+const response: ApiResponse = {
+  statusCode: 200,
+  body: "ok"
+};
+```
+
+A interface é um contrato. Se quebrares o contrato, o TypeScript avisa:
+
+```typescript
+const response: ApiResponse = {
+  statusCode: "200",  // ❌ ERRO — devia ser number, não string
+  body: "ok"
+};
+```
+
+#### Convenção de nomes
+
+- Interfaces e classes → `PascalCase` → `ApiResponse`
+- Variables e functions → `camelCase` → `response`, `myResponse`
+
+---
+
+#### Vários objects do mesmo type
+
+Podes criar quantos objects quiseres com a mesma interface — cada um precisa do seu próprio nome:
+
+```typescript
+const responseSuccess: ApiResponse = { statusCode: 200, body: "ok" };
+const responseFailure: ApiResponse = { statusCode: 400, body: "not found" };
+```
+
+---
+
+#### Objects em functions
+
+Podes passar um object como parameter de uma function:
+
+```typescript
+function isRequestSuccessful(response: ApiResponse): boolean {
+  if (response.statusCode === 200 && response.body !== "") {
+    return true;
+  } else {
+    return false;
+  }
+}
+```
+
+O parameter `response` é local — existe apenas dentro da função. Cá fora só tens acesso às variáveis que criaste nesse scope.
+
+Para usar o resultado cá fora:
+
+```typescript
+const result: boolean = isRequestSuccessful(responseSuccess);
+console.log(result);  // [LOG]: true
+```
+
+Ou diretamente, sem variável intermédia:
+
+```typescript
+console.log(isRequestSuccessful(responseSuccess));  // [LOG]: true
+```
+
+---
+
+### Exercício realizado — `isRequestSuccessful`
+
+```typescript
+interface ApiResponse {
+  statusCode: number;
+  body: string;
+}
+
+const responseSuccess: ApiResponse = { statusCode: 200, body: "response" };
+const responseFailure: ApiResponse = { statusCode: 400, body: "response" };
+
+function isRequestSuccessful(response: ApiResponse): boolean {
+  if (response.statusCode === 200 && response.body !== "") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log(isRequestSuccessful(responseSuccess));              // [LOG]: true
+console.log(isRequestSuccessful(responseFailure));              // [LOG]: false
+console.log(isRequestSuccessful({ statusCode: 200, body: "" })); // [LOG]: false
+```
+
+---
+
+*Próximo conceito: **Arrays** — como guardar listas de valores (e de objects) em TypeScript.*

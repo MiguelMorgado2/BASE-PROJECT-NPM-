@@ -418,4 +418,83 @@ console.log(isRequestSuccessful({ statusCode: 200, body: "" })); // [LOG]: false
 
 ---
 
+### Exercícios de consolidação
+
+#### Exercício — `isApiHealthy`
+
+```typescript
+interface ApiHealthCheck {
+  endpoint: string;
+  responseTime: number;
+  isOnline: boolean;
+}
+
+const apiIsHealthy: ApiHealthCheck = {
+  endpoint: "httpblablabla.com",
+  responseTime: 100,
+  isOnline: true,
+};
+
+const apiIsUnhealthy: ApiHealthCheck = {
+  endpoint: "httpblablabla.com",
+  responseTime: 600,
+  isOnline: false,
+};
+
+function isApiHealthy(response: ApiHealthCheck): boolean {
+  if (response.endpoint !== "" && response.responseTime < 500 && response.isOnline === true) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log(isApiHealthy(apiIsHealthy));    // [LOG]: true
+console.log(isApiHealthy(apiIsUnhealthy));  // [LOG]: false
+```
+
+#### Exercício — `canUserLogin`
+
+```typescript
+interface LoginPermission {
+  userName: string;
+  loginAttemptsNumber: number;
+  isAccountBlocked: boolean;
+}
+
+const userCanLogin: LoginPermission = {
+  userName: "Miguel",
+  loginAttemptsNumber: 2,
+  isAccountBlocked: false,
+};
+
+const userCannotLogin: LoginPermission = {
+  userName: "Miguel",
+  loginAttemptsNumber: 4,
+  isAccountBlocked: true,
+};
+
+function canUserLogin(response: LoginPermission): boolean {
+  if (response.loginAttemptsNumber < 3 && response.isAccountBlocked === false) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log(canUserLogin(userCanLogin));    // [LOG]: true
+console.log(canUserLogin(userCannotLogin)); // [LOG]: false
+```
+
+---
+
+### Notas importantes
+
+- **Erro de sintaxe** — o TypeScript sublinha e não deixa correr. Ex: esquecer `{` ou usar `,` em vez de `;` na interface.
+- **Erro de lógica** — o código corre mas devolve resultados errados. Ex: `> 2` em vez de `< 3`. Não há aviso — tens de detetar pelo resultado.
+- O parameter de uma função é **local** — só existe dentro das `{}` da função. Cá fora usa as variáveis que criaste.
+- Nos exercícios criamos objects à mão (**mock data**). Numa framework real, os dados chegam da API via Playwright.
+
+---
+
 *Próximo conceito: **Arrays** — como guardar listas de valores (e de objects) em TypeScript.*

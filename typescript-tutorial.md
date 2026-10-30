@@ -498,3 +498,121 @@ console.log(canUserLogin(userCannotLogin)); // [LOG]: false
 ---
 
 *Próximo conceito: **Arrays** — como guardar listas de valores (e de objects) em TypeScript.*
+
+---
+
+## Sessão 3 — Arrays
+
+---
+
+### Conceito 6 — Arrays
+
+Um **array** guarda vários valores numa única variável, em ordem.
+
+```typescript
+const statusCodes: number[] = [200, 404, 500];
+```
+
+O `number[]` significa "array de numbers". Funciona com qualquer type:
+
+```typescript
+const testNames: string[] = ["Login Test", "Logout Test", "Register Test"];
+const results: boolean[] = [true, false, true];
+```
+
+---
+
+#### Aceder a elementos — índice começa em 0
+
+```typescript
+const statusCodes: number[] = [200, 404, 500];
+
+console.log(statusCodes[0]);  // [LOG]: 200
+console.log(statusCodes[1]);  // [LOG]: 404
+console.log(statusCodes[2]);  // [LOG]: 500
+```
+
+---
+
+#### Percorrer um array — `for` loop
+
+Em vez de aceder elemento a elemento, o `for` loop faz isso automaticamente:
+
+```typescript
+for (const code of statusCodes) {
+  console.log(code);
+}
+// [LOG]: 200
+// [LOG]: 404
+// [LOG]: 500
+```
+
+O `code` é uma variável temporária — em cada volta tem o valor do elemento atual. O nome é escolhido por ti.
+
+**Como funciona por dentro:**
+- Volta 1 → `code = 200` → executa o código dentro de `{}`
+- Volta 2 → `code = 404` → executa o código dentro de `{}`
+- Volta 3 → `code = 500` → executa o código dentro de `{}`
+- Acabou o array → para
+
+---
+
+#### Arrays de objects
+
+```typescript
+interface ApiResponse {
+  statusCode: number;
+  body: string;
+}
+
+const apiResponses: ApiResponse[] = [
+  { statusCode: 200, body: "ok" },
+  { statusCode: 404, body: "not found" },
+  { statusCode: 500, body: "server error" },
+];
+
+for (const response of apiResponses) {
+  console.log(response.statusCode);  // acede à propriedade com dot notation
+}
+// [LOG]: 200
+// [LOG]: 404
+// [LOG]: 500
+```
+
+---
+
+#### Arrays + functions — o padrão completo
+
+```typescript
+interface ApiResponse {
+  statusCode: number;
+  body: string;
+}
+
+const apiResponses: ApiResponse[] = [
+  { statusCode: 200, body: "ok" },
+  { statusCode: 404, body: "not found" },
+  { statusCode: 500, body: "server error" },
+];
+
+function isRequestSuccessful(response: ApiResponse): boolean {
+  if (response.statusCode === 200) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+for (const response of apiResponses) {
+  console.log(isRequestSuccessful(response));
+}
+// [LOG]: true
+// [LOG]: false
+// [LOG]: false
+```
+
+Dentro do `for` loop, o `response` é um object individual em cada volta — passa-se diretamente à função como argumento.
+
+---
+
+*Próximo conceito: a definir na próxima sessão.*

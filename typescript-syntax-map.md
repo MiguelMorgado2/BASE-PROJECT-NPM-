@@ -3,6 +3,29 @@
 
 ---
 
+## Arrays
+
+```typescript
+const nomeDoArray: type[] = [valor1, valor2, valor3];
+```
+
+- Índice começa em **0** → `array[0]` é o primeiro elemento
+- Aceder a um elemento: `array[2]`
+- Array de objects: `ApiResponse[]`
+
+**`for` loop:**
+
+```typescript
+for (const nomeTemporario of nomeDoArray) {
+  console.log(nomeTemporario);
+}
+```
+
+- `nomeTemporario` é uma variável local — em cada volta tem o valor do elemento atual
+- Com objects: `nomeTemporario.propriedade`
+
+---
+
 ## Interface
 
 Define a "forma" de um object — quais as propriedades e os seus types.

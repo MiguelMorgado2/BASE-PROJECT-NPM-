@@ -859,3 +859,55 @@ for (const result of responses) {
 ---
 
 *Próximo conceito: a definir na próxima sessão.*
+
+---
+
+## Sessão 5 — Type Aliases
+
+---
+
+### Conceito 9 — Type Aliases
+
+O `type` é uma alternativa à `interface` — mas serve para casos diferentes.
+
+#### Para objects — funciona igual à interface
+
+```typescript
+type ApiResponse = {
+  statusCode: number;
+  body: string;
+};
+```
+
+#### Para union types — onde o `type` brilha
+
+```typescript
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+type Environment = "staging" | "production" | "development";
+type StatusCode = number | string;
+```
+
+Só os valores definidos são permitidos — qualquer outro valor dá erro:
+
+```typescript
+let method: HttpMethod = "GET";    // ✅
+let method2: HttpMethod = "PATCH"; // ❌ ERRO — não está na lista
+```
+
+---
+
+#### `interface` vs `type` — quando usar
+
+| | `interface` | `type` |
+|---|---|---|
+| Forma de um object | ✅ preferido | ✅ funciona |
+| Union types | ❌ | ✅ |
+| Valores fixos | ❌ | ✅ |
+
+**Regra prática:**
+- Estrutura de uma resposta de API → `interface`
+- Lista de valores possíveis (métodos HTTP, ambientes, status) → `type`
+
+---
+
+*Próximo conceito: a definir na próxima sessão.*

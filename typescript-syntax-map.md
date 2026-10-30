@@ -61,10 +61,33 @@ Padrão de uso:
 ```typescript
 if (typeof valor === "number") {
   // trata como number
-} else {
+} else if (typeof valor === "string") {
   // trata como string
+} else {
+  // safety net
 }
 ```
+
+---
+
+## Type Aliases
+
+```typescript
+// Para valores fixos — usa type
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+type Environment = "staging" | "production" | "development";
+
+// Para objects — usa interface (preferido)
+interface ApiResponse {
+  statusCode: number;
+  body: string;
+}
+```
+
+| | `interface` | `type` |
+|---|---|---|
+| Forma de um object | ✅ preferido | ✅ funciona |
+| Union types / valores fixos | ❌ | ✅ |
 
 ---
 

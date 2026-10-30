@@ -1,8 +1,77 @@
-# TypeScript Tutorial 1 — QA Automation
+# TypeScript Tutorial — QA Automation
 > Documento de estudo progressivo. Atualizado ao longo das sessões de tutoria.
- 
+
 ---
- 
+
+## Plano de Ensino Completo
+
+### Módulo 1 — Fundamentos ✅
+1. ✅ Variables e Types (`string`, `number`, `boolean`)
+2. ✅ `const` vs `let`
+3. ✅ Functions e `if/else`
+4. ✅ Operadores (`===`, `!==`, `>`, `<`, `&&`, `||`)
+5. ✅ Objects e Interfaces
+6. ✅ Arrays e `for` loop
+7. ✅ Optional properties `?`
+8. ✅ Union types `|` e `typeof`
+9. ✅ Type aliases (`type`)
+
+### Módulo 2 — Tipos e Estruturas
+10. Enums
+11. `any`, `unknown`, `void`, `never` — types especiais
+12. `null` e `undefined` — valores em falta
+13. Type assertions (`as`)
+14. Generics — introdução
+
+### Módulo 3 — Functions Avançadas
+15. Arrow functions (`=>`)
+16. Parâmetros opcionais e valores por defeito
+17. Rest parameters (`...args`)
+18. Overloads
+
+### Módulo 4 — Array Methods
+19. `.filter()` — filtrar elementos
+20. `.map()` — transformar elementos
+21. `.find()` — encontrar um elemento
+22. `.some()` e `.every()` — verificar condições
+23. `.reduce()` — agregar valores
+
+### Módulo 5 — Classes e OOP
+24. Classes e constructors
+25. Properties e methods
+26. `public`, `private`, `protected`
+27. Herança (`extends`)
+28. Interfaces com classes (`implements`)
+29. Decorators — introdução (uso em frameworks)
+
+### Módulo 6 — Async TypeScript
+30. `Promise` — o que é e como funciona
+31. `async` / `await`
+32. Tratamento de erros com `try/catch`
+33. Tipar respostas assíncronas
+
+### Módulo 7 — Módulos e Organização de Código
+34. `import` e `export`
+35. Organização de ficheiros e pastas
+36. `tsconfig.json` — configuração do compilador
+37. Namespaces vs módulos
+
+### Módulo 8 — QA Automation Aplicado
+38. Como tipar respostas de API com Playwright
+39. Criar helpers e utilitários reutilizáveis
+40. Page Objects com classes TypeScript
+41. Cucumber step definitions em TypeScript
+42. Tipar fixtures e configurações do Playwright
+43. Criar uma framework de API testing de raiz
+44. Criar uma framework de UI testing de raiz
+45. AI Regression Testing — camada de integração
+
+---
+
+> **Nota:** Os módulos 1-4 são os fundamentos que precisas para trabalhar de forma independente. Os módulos 5-7 dão-te fluência completa na linguagem. O módulo 8 é a aplicação prática ao teu contexto de QA Automation.
+
+---
+
 ## Sessão 1 — Fundamentos
  
 ---

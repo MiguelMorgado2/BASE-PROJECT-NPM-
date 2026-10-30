@@ -979,4 +979,88 @@ let method2: HttpMethod = "PATCH"; // ❌ ERRO — não está na lista
 
 ---
 
-*Próximo conceito: a definir na próxima sessão.*
+## Sessão 6 — Enums
+
+---
+
+### Conceito 10 — Enums
+
+Um **enum** define uma lista de valores válidos com nomes legíveis — semelhante ao `type` mas com melhor autocomplete no editor.
+
+```typescript
+enum HttpMethod {
+  Get = "GET",
+  Post = "POST",
+  Patch = "PATCH",
+  Put = "PUT",
+  Delete = "DELETE",
+}
+```
+
+Para usar o enum:
+
+```typescript
+console.log(HttpMethod.Get);  // [LOG]: "GET"
+```
+
+---
+
+#### Enum + Interface + Array — o padrão completo
+
+O enum define-se **antes** da interface porque a interface o usa como type:
+
+```typescript
+// 1. enum — lista de valores válidos
+enum HttpMethod {
+  Get = "GET",
+  Post = "POST",
+  Patch = "PATCH",
+  Put = "PUT",
+  Delete = "DELETE",
+}
+
+// 2. interface — usa o enum como type
+interface HttpRequest {
+  endpoint: string;
+  method: HttpMethod;
+}
+
+// 3. array — usa o enum para preencher os valores
+const methodTypes: HttpRequest[] = [
+  { endpoint: "endpoint1", method: HttpMethod.Get },
+  { endpoint: "endpoint2", method: HttpMethod.Patch },
+  { endpoint: "endpoint3", method: HttpMethod.Delete },
+  { endpoint: "endpoint4", method: HttpMethod.Post },
+];
+
+// 4. função — compara com o enum, não com a string direta
+function isMethodReadable(result: HttpRequest): boolean {
+  if (result.method === HttpMethod.Get) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// 5. for loop
+for (const readableMethod of methodTypes) {
+  console.log(isMethodReadable(readableMethod));
+}
+// [LOG]: true
+// [LOG]: false
+// [LOG]: false
+// [LOG]: false
+```
+
+---
+
+#### O que o enum acrescenta
+
+- **Segurança** — só os valores definidos são permitidos
+- **Legibilidade** — `HttpMethod.Get` é mais claro que `"GET"`
+- **Autocomplete** — o editor sugere as opções quando escreves `HttpMethod.`
+- **Manutenção** — se mudares o valor do enum, atualiza em todo o lado automaticamente
+
+---
+
+*Próximo conceito: **`any`, `unknown`, `void`, `never`** — types especiais.*

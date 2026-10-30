@@ -615,4 +615,144 @@ Dentro do `for` loop, o `response` é um object individual em cada volta — pas
 
 ---
 
+### Exercícios de consolidação
+
+#### Exercício — lista de resultados de testes
+
+```typescript
+interface Tests {
+  testName: string;
+  passed: boolean;
+}
+
+const allTests: Tests[] = [
+  { testName: "test1", passed: true },
+  { testName: "test2", passed: false },
+  { testName: "test3", passed: false },
+];
+
+function testResults(response: Tests): boolean {
+  if (response.passed === true) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+for (const result of allTests) {
+  console.log(testResults(result));
+}
+// [LOG]: true
+// [LOG]: false
+// [LOG]: false
+```
+
+#### Exercício — endpoints e tempo de resposta
+
+```typescript
+interface ApiList {
+  endpoints: string;
+  time: number;
+}
+
+const endpointsWithTime: ApiList[] = [
+  { endpoints: "endpoint1", time: 200 },
+  { endpoints: "endpoint2", time: 100 },
+  { endpoints: "endpoint3", time: 400 },
+  { endpoints: "endpoint4", time: 600 },
+];
+
+function isApiFast(response: ApiList): boolean {
+  if (response.time < 300) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+for (const fastApis of endpointsWithTime) {
+  console.log(isApiFast(fastApis));
+}
+// [LOG]: true
+// [LOG]: true
+// [LOG]: false
+// [LOG]: false
+```
+
+#### Exercício — produtos disponíveis para compra
+
+```typescript
+interface CelularPhones {
+  productName: string;
+  productPrice: number;
+  stock: boolean;
+}
+
+const productInformation: CelularPhones[] = [
+  { productName: "iphone 15", productPrice: 90, stock: true },
+  { productName: "iphone 16", productPrice: 700, stock: false },
+  { productName: "iphone 17", productPrice: 1000, stock: true },
+  { productName: "iphone 17 pro", productPrice: 1400, stock: false },
+];
+
+function availablePhones(product: CelularPhones): boolean {
+  if (product.stock === true && product.productPrice < 100) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+for (const phone of productInformation) {
+  console.log(availablePhones(phone));
+}
+// [LOG]: true
+// [LOG]: false
+// [LOG]: false
+// [LOG]: false
+```
+
+#### Exercício — voos prontos para embarque
+
+```typescript
+interface Flights {
+  destination: string;
+  seats: number;
+  isDelayed: boolean;
+}
+
+const flightsDetails: Flights[] = [
+  { destination: "Madrid", seats: 200, isDelayed: true },
+  { destination: "London", seats: 300, isDelayed: false },
+  { destination: "Lisbon", seats: 150, isDelayed: true },
+  { destination: "Dubai", seats: 350, isDelayed: false },
+];
+
+function isFlightReadyForDeparture(flight: Flights): boolean {
+  if (flight.seats > 0 && flight.isDelayed === false) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+for (const readyFlights of flightsDetails) {
+  console.log(isFlightReadyForDeparture(readyFlights));
+}
+// [LOG]: false
+// [LOG]: true
+// [LOG]: false
+// [LOG]: true
+```
+
+---
+
+### Notas importantes
+
+- A interface modela os **dados que chegam** — não os resultados da tua avaliação. A lógica de avaliação vive na função.
+- O nome do parameter da função é escolha tua — `response`, `product`, `flight`, etc. O que importa é ser consistente dentro da função.
+- **Erro de lógica em arrays:** `> 200` (mais de 200 lugares) é diferente de `> 0` (tem lugares disponíveis). O enunciado define a regra — lê com atenção.
+
+---
+
 *Próximo conceito: a definir na próxima sessão.*

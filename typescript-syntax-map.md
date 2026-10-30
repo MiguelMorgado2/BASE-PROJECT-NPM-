@@ -32,15 +32,17 @@ Define a "forma" de um object — quais as propriedades e os seus types.
 
 ```typescript
 interface NomeInterface {
-  propriedade1: type;
-  propriedade2: type;
-  propriedade3: type;
+  propriedade1: type;           // obrigatória
+  propriedade2: type;           // obrigatória
+  propriedade3?: type;          // opcional — o ? torna-a opcional
+  propriedade4: type1 | type2;  // union type — pode ser type1 OU type2
 }
 ```
 
 - Nome com **PascalCase** → `ApiResponse`, `LoginResponse`
 - Separador entre propriedades: `;`
 - Definida uma vez, reutilizada em vários objects e functions
+- A interface modela os **dados que chegam** — não os resultados da tua avaliação
 
 ---
 

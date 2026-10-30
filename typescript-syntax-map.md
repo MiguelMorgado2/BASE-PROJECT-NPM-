@@ -46,6 +46,28 @@ interface NomeInterface {
 
 ---
 
+## `typeof` — verificar o type em runtime
+
+Usado quando uma propriedade é union type (`number | string`) e precisas de saber com qual estás a trabalhar:
+
+```typescript
+typeof 200      // → "number"
+typeof "hello"  // → "string"
+typeof true     // → "boolean"
+```
+
+Padrão de uso:
+
+```typescript
+if (typeof valor === "number") {
+  // trata como number
+} else {
+  // trata como string
+}
+```
+
+---
+
 ## Object
 
 Cria um valor concreto que segue a forma de uma interface.

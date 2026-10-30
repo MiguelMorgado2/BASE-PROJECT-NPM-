@@ -756,3 +756,106 @@ for (const readyFlights of flightsDetails) {
 ---
 
 *Próximo conceito: a definir na próxima sessão.*
+
+---
+
+## Sessão 4 — Optional Properties e Union Types
+
+---
+
+### Conceito 7 — Optional Properties
+
+Por defeito todas as propriedades de uma interface são obrigatórias. O `?` torna uma propriedade opcional:
+
+```typescript
+interface ApiResponse {
+  statusCode: number;
+  body: string;
+  errorMessage?: string;  // opcional — pode existir ou não
+}
+```
+
+Objects com e sem a propriedade opcional são ambos válidos:
+
+```typescript
+const success: ApiResponse = { statusCode: 200, body: "ok" };                          // ✅ sem errorMessage
+const error: ApiResponse = { statusCode: 404, body: "not found", errorMessage: "..." }; // ✅ com errorMessage
+```
+
+A interface modela os **dados que chegam** — se um campo só aparece em certos casos, usa `?`.
+
+---
+
+### Conceito 8 — Union Types
+
+O `|` significa "ou" — uma propriedade pode ser de mais do que um type:
+
+```typescript
+interface ApiResponse {
+  statusCode: number | string;  // pode ser number OU string
+  body: string;
+}
+
+const r1: ApiResponse = { statusCode: 200, body: "ok" };    // number ✅
+const r2: ApiResponse = { statusCode: "200", body: "ok" };  // string ✅
+```
+
+---
+
+#### `typeof` — verificar o type em runtime
+
+Quando uma propriedade é `number | string`, tens de verificar o type antes de comparar:
+
+```typescript
+typeof 200      // → "number"
+typeof "hello"  // → "string"
+typeof true     // → "boolean"
+```
+
+Usado numa função:
+
+```typescript
+function isResponseSuccessful(response: ApiResponse): boolean {
+  if (typeof response.statusCode === "number") {
+    return response.statusCode === 200;   // compara como number
+  } else {
+    return response.statusCode === "200"; // compara como string
+  }
+}
+```
+
+---
+
+### Exercício realizado — API legacy com union types
+
+```typescript
+interface ApiLegacy {
+  statusCode: string | number;
+  endpoint: string;
+}
+
+const responses: ApiLegacy[] = [
+  { endpoint: "endpoint 1", statusCode: 200 },    // number
+  { endpoint: "endpoint 2", statusCode: "200" },  // string
+  { endpoint: "endpoint 3", statusCode: 400 },    // falha
+];
+
+function isResponseSuccessful(response: ApiLegacy): boolean {
+  if (typeof response.statusCode === "number") {
+    return response.statusCode === 200;
+  } else {
+    return response.statusCode === "200";
+  }
+}
+
+for (const result of responses) {
+  console.log(isResponseSuccessful(result));
+}
+// [LOG]: true
+// [LOG]: true
+// [LOG]: false
+```
+
+---
+
+*Próximo conceito: a definir na próxima sessão.*

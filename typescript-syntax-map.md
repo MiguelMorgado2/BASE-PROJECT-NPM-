@@ -308,3 +308,22 @@ nomeFuncao(["GET", "POST"]);  // T = string
 
 - `T` é um placeholder de type — muda consoante o que passas
 - Comum no Playwright: `response.json<NomeInterface>()`
+
+---
+
+## Arrow Functions
+
+```typescript
+// clássica
+function nomeFuncao(param: type): returnType {
+  return valor;
+}
+
+// arrow com {}
+const nomeFuncao = (param: type): returnType => {
+  return valor;
+}
+
+// arrow sem {} — só uma linha
+const nomeFuncao = (param: type): returnType => valor;
+```

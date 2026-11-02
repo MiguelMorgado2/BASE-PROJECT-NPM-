@@ -1364,3 +1364,44 @@ O `T` é só uma convenção — podia chamar-se `X` ou `Type`. O importante é 
 ---
 
 *Próximo conceito: **Arrow Functions** — Módulo 3.*
+
+---
+
+## Módulo 3 — Functions Avançadas
+
+---
+
+### Conceito 15 — Arrow Functions
+
+Uma forma mais compacta de escrever funções. As três versões fazem o mesmo:
+
+```typescript
+// versão clássica
+function isValid(response: ApiResponse): boolean {
+  return response.statusCode === 200;
+}
+
+// arrow function com {}
+const isValid = (response: ApiResponse): boolean => {
+  return response.statusCode === 200;
+}
+
+// arrow function sem {} — só uma linha
+const isValid = (response: ApiResponse): boolean => response.statusCode === 200;
+```
+
+**Regra:** quando a função tem só uma linha que devolve um valor, podes omitir `{}` e `return`.
+
+**Exemplos:**
+
+```typescript
+const isStatusSuccess = (code: number): boolean => code < 400;
+const getEnvironmentUrl = (env: string): string => "https://" + env + ".api.com";
+const isTestPassed = (passed: boolean): boolean => passed === true;
+```
+
+Arrow functions estão por toda a parte em Playwright e Cucumber — agora já sabes o que estás a ler.
+
+---
+
+*Próximo conceito: **Parâmetros opcionais e valores por defeito.***

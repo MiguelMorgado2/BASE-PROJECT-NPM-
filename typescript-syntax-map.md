@@ -278,3 +278,16 @@ if (valor) {
 "hello world".includes("world")  // → true
 "hello".length           // → 5
 ```
+
+---
+
+## Type Assertions (`as`)
+
+```typescript
+const data: unknown = "hello";
+const message = data as string;  // assumes o type
+```
+
+- Usa `typeof` para **verificar** o type com segurança
+- Usa `as` quando tens a certeza do type mas o TypeScript não consegue inferir
+- Cuidado — se o type estiver errado, dá erro em runtime

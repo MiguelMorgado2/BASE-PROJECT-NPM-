@@ -1278,3 +1278,46 @@ for (const response1 of apiResponses) {
 ---
 
 *Próximo conceito: **Type Assertions (`as`)** — dizer ao TypeScript o type de um valor.*
+
+---
+
+## Sessão 9 — Type Assertions
+
+---
+
+### Conceito 13 — Type Assertions (`as`)
+
+O `as` permite dizer ao TypeScript o type de um valor quando ele não consegue inferir:
+
+```typescript
+const data: unknown = "hello";
+const message = data as string;       // assumes que é string
+console.log(message.toUpperCase());   // ✅ funciona
+```
+
+**Diferença entre `typeof` e `as`:**
+
+| | `typeof` | `as` |
+|---|---|---|
+| O que faz | Verifica o type em runtime | Assume o type sem verificar |
+| Segurança | ✅ seguro | ⚠️ perigoso se estiveres errado |
+| Quando usar | Dados `unknown` de origem externa | Quando tens a certeza do type mas o TypeScript não consegue inferir |
+
+**Exemplo perigoso:**
+
+```typescript
+const data: unknown = 200;
+const message = data as string;       // assumes string — mas é number!
+console.log(message.toUpperCase());   // 💥 erro em runtime
+```
+
+**Uso real em QA Automation:**
+
+```typescript
+const response = await request.get("/user");
+const body = await response.json() as UserProfile;  // assumes o type da resposta
+```
+
+---
+
+*Próximo conceito: **Generics** — o último conceito do Módulo 2.*

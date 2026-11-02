@@ -1321,3 +1321,46 @@ const body = await response.json() as UserProfile;  // assumes o type da respost
 ---
 
 *Próximo conceito: **Generics** — o último conceito do Módulo 2.*
+
+---
+
+## Sessão 10 — Generics
+
+---
+
+### Conceito 14 — Generics
+
+Um **Generic** é um placeholder de type — permite escrever uma função uma vez e usá-la com qualquer type.
+
+```typescript
+// sem generics — só funciona com numbers
+function getFirst(arr: number[]): number {
+  return arr[0];
+}
+
+// com generics — funciona com qualquer type
+function getFirst<T>(arr: T[]): T {
+  return arr[0];
+}
+```
+
+O `T` substitui-se pelo type real quando a função é chamada:
+
+```typescript
+getFirst([200, 404, 500]);         // T = number → devolve number
+getFirst(["GET", "POST", "PUT"]);  // T = string → devolve string
+```
+
+---
+
+**Em QA Automation** vês Generics principalmente no Playwright:
+
+```typescript
+const body = await response.json<UserProfile>();  // T = UserProfile
+```
+
+O `T` é só uma convenção — podia chamar-se `X` ou `Type`. O importante é reconhecê-lo quando aparece.
+
+---
+
+*Próximo conceito: **Arrow Functions** — Módulo 3.*

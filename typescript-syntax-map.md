@@ -291,3 +291,20 @@ const message = data as string;  // assumes o type
 - Usa `typeof` para **verificar** o type com segurança
 - Usa `as` quando tens a certeza do type mas o TypeScript não consegue inferir
 - Cuidado — se o type estiver errado, dá erro em runtime
+
+---
+
+## Generics
+
+```typescript
+function nomeFuncao<T>(parametro: T[]): T {
+  return parametro[0];
+}
+
+// o T substitui-se pelo type real na chamada
+nomeFuncao([200, 404]);       // T = number
+nomeFuncao(["GET", "POST"]);  // T = string
+```
+
+- `T` é um placeholder de type — muda consoante o que passas
+- Comum no Playwright: `response.json<NomeInterface>()`

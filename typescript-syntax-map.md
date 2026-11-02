@@ -248,3 +248,33 @@ console.log(nome + ": passed");
 // com template literal (preferido)
 console.log(`${nome}: passed`);
 ```
+
+---
+
+## `null` e `undefined`
+
+```typescript
+let valor: string | null = null;       // explicitamente vazio
+let valor2: string | undefined;        // não atribuído
+
+// verificar antes de usar
+if (valor !== null) {
+  console.log(valor.toUpperCase());    // ✅ seguro
+}
+
+// forma curta
+if (valor) {
+  console.log(valor.toUpperCase());    // ✅ só entra se não for null/undefined
+}
+```
+
+---
+
+## Métodos de string úteis
+
+```typescript
+"hello".toUpperCase()    // → "HELLO"
+"HELLO".toLowerCase()    // → "hello"
+"hello world".includes("world")  // → true
+"hello".length           // → 5
+```

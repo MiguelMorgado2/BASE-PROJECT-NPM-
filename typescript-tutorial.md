@@ -1182,3 +1182,99 @@ Os template literals usam `` ` `` (backtick) e as variáveis ficam dentro de `${
 ---
 
 *Próximo conceito: **`null` e `undefined`** — valores em falta.*
+
+---
+
+## Sessão 8 — `null` e `undefined`
+
+---
+
+### Conceito 12 — `null` e `undefined`
+
+Em QA Automation as APIs nem sempre devolvem todos os campos. O TypeScript tem dois valores para representar dados em falta.
+
+**`undefined`** — a variável existe mas não tem valor atribuído:
+
+```typescript
+let errorMessage: string | undefined;
+console.log(errorMessage);  // [LOG]: undefined
+```
+
+**`null`** — o valor foi explicitamente definido como "vazio":
+
+```typescript
+let errorMessage: string | null = null;
+console.log(errorMessage);  // [LOG]: null
+```
+
+| | Significa |
+|---|---|
+| `undefined` | Ninguém atribuiu nada |
+| `null` | Foi explicitamente definido como "sem valor" |
+
+---
+
+#### Verificar se um valor existe antes de o usar
+
+```typescript
+// forma explícita
+if (response.errorMessage !== null) {
+  console.log(response.errorMessage.toUpperCase());
+}
+
+// forma curta — verifica se é "truthy"
+if (response.errorMessage) {
+  console.log(response.errorMessage.toUpperCase());
+}
+```
+
+---
+
+#### `.toUpperCase()` — normalizar strings
+
+Converte uma string para maiúsculas — útil para comparações case-insensitive:
+
+```typescript
+"staging".toUpperCase()   // → "STAGING"
+"Staging".toUpperCase()   // → "STAGING"
+"STAGING".toUpperCase()   // → "STAGING"
+
+// comparação segura independentemente do formato
+if (env.toUpperCase() === "STAGING") { ... }
+```
+
+---
+
+### Exercício realizado — mensagens de erro de API
+
+```typescript
+interface ApiResponseRules {
+  statusCode: number;
+  errorMessage: string | null;
+}
+
+const apiResponses: ApiResponseRules[] = [
+  { statusCode: 500, errorMessage: 'server error' },
+  { statusCode: 400, errorMessage: 'wrong url' },
+  { statusCode: 200, errorMessage: null },
+];
+
+function actualApiResponse(responses: ApiResponseRules): string {
+  if (responses.errorMessage !== null) {
+    return responses.errorMessage.toUpperCase();
+  } else {
+    return 'no error';
+  }
+}
+
+for (const response1 of apiResponses) {
+  console.log(actualApiResponse(response1));
+}
+// [LOG]: "SERVER ERROR"
+// [LOG]: "WRONG URL"
+// [LOG]: "no error"
+```
+
+---
+
+*Próximo conceito: **Type Assertions (`as`)** — dizer ao TypeScript o type de um valor.*

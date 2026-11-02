@@ -198,3 +198,53 @@ Em todo o resto — `if`, `return`, `=` — **não há `:`**
 | Object (const) | camelCase | `responseSuccess` |
 | Function | camelCase | `isLoginValid` |
 | Variable | camelCase | `statusCode` |
+
+---
+
+## Types Especiais
+
+| Type | Quando usar |
+|---|---|
+| `any` | Evitar — desativa a verificação de types |
+| `unknown` | Dados de origem desconhecida — obriga a verificar o type antes de usar |
+| `void` | Funções que não devolvem nada — só executam ações |
+| `never` | Funções que nunca terminam normalmente (ex: lançam sempre um erro) |
+
+---
+
+## Funções com `void`
+
+```typescript
+function nomeFuncao(param1: string, param2: boolean): void {
+  console.log(`${param1}: ${param2}`);
+  // sem return
+}
+
+nomeFuncao("Login Test", true);  // chama diretamente, sem guardar resultado
+```
+
+---
+
+## Funções com `unknown`
+
+```typescript
+function nomeFuncao(data: unknown): string | boolean {
+  if (typeof data === "string") {
+    return data.toUpperCase();
+  } else {
+    return "invalid data";
+  }
+}
+```
+
+---
+
+## Concatenar strings
+
+```typescript
+// com +
+console.log(nome + ": passed");
+
+// com template literal (preferido)
+console.log(`${nome}: passed`);
+```

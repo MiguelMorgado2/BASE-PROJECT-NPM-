@@ -1064,3 +1064,121 @@ for (const readableMethod of methodTypes) {
 ---
 
 *Próximo conceito: **`any`, `unknown`, `void`, `never`** — types especiais.*
+
+---
+
+## Sessão 7 — Types Especiais
+
+---
+
+### Conceito 11 — `any`, `unknown`, `void`, `never`
+
+---
+
+#### `any`
+
+Desativa completamente a verificação de types. Evita sempre que possível.
+
+```typescript
+let valor: any = 200;
+valor = "hello";   // ✅ sem erro
+valor = true;      // ✅ sem erro
+```
+
+---
+
+#### `unknown`
+
+Aceita qualquer valor mas não deixa usá-lo sem verificar o type primeiro — é o `any` seguro.
+
+```typescript
+function parseApiResponse(data: unknown): string {
+  if (typeof data === "string") {
+    return data.toUpperCase();  // ✅ TypeScript sabe que é string aqui
+  } else {
+    return "not a string";
+  }
+}
+
+console.log(parseApiResponse("hello"));  // [LOG]: "HELLO"
+console.log(parseApiResponse(200));      // [LOG]: "not a string"
+```
+
+---
+
+#### `void`
+
+Return type de funções que não devolvem nada — só executam ações.
+
+```typescript
+function logTestResult(testName: string, passed: boolean): void {
+  if (passed === true) {
+    console.log(testName + ": passed");
+  } else {
+    console.log(testName + ": failed");
+  }
+}
+
+logTestResult("Login Test", true);   // [LOG]: Login Test: passed
+logTestResult("Logout Test", false); // [LOG]: Logout Test: failed
+```
+
+Diferença prática:
+- Função com `boolean` → **calcula** algo → guardas em `const` e imprimes
+- Função com `void` → **faz** algo diretamente → chamas sem guardar resultado
+
+Em QA Automation o `void` aparece em funções de logging, setup/teardown e hooks do Cucumber/Playwright.
+
+---
+
+#### `never`
+
+Representa funções que nunca terminam normalmente — por exemplo, funções que lançam sempre um erro.
+
+```typescript
+function throwError(message: string): never {
+  throw new Error(message);
+}
+```
+
+Raramente escrevido por ti — mas importante reconhecer quando aparece no código.
+
+---
+
+#### Juntar `unknown` com union type no return
+
+Quando uma função pode devolver tipos diferentes consoante o input:
+
+```typescript
+function validateStatusCode(parameter: unknown): boolean | string {
+  if (typeof parameter === "number") {
+    return parameter < 400;  // devolve boolean
+  } else {
+    return "invalid data";   // devolve string
+  }
+}
+
+console.log(validateStatusCode(200));     // [LOG]: true
+console.log(validateStatusCode(500));     // [LOG]: false
+console.log(validateStatusCode("hello")); // [LOG]: "invalid data"
+```
+
+---
+
+#### Concatenar strings
+
+Duas formas de juntar strings com variáveis:
+
+```typescript
+// com +
+console.log(testName + ": passed");
+
+// com template literal (mais legível)
+console.log(`${testName}: passed`);
+```
+
+Os template literals usam `` ` `` (backtick) e as variáveis ficam dentro de `${}`.
+
+---
+
+*Próximo conceito: **`null` e `undefined`** — valores em falta.*

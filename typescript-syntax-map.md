@@ -525,3 +525,17 @@ if (firstError) {
 - Devolve **um único elemento** (não um array)
 - Se não encontrar → devolve `undefined`
 - É quase sempre a última operação de uma cadeia
+
+### `.some()` e `.every()` — verificar condições
+
+```typescript
+// some — existe pelo menos um?
+const hasErrors = responses.some((res) => res.statusCode >= 400);
+
+// every — todos passam?
+const allSuccess = responses.every((res) => res.statusCode < 400);
+```
+
+- Devolvem sempre `boolean` — sem necessidade de `if`
+- `.some()` → `true` se pelo menos um passar
+- `.every()` → `true` só se todos passarem

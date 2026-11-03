@@ -33,7 +33,7 @@
 19. ✅ `.filter()` — filtrar elementos
 20. ✅ `.map()` — transformar elementos
 21. ✅ `.find()` — encontrar um elemento
-22. `.some()` e `.every()` — verificar condições
+22. ✅ `.some()` e `.every()` — verificar condições
 23. `.reduce()` — agregar valores
 
 ### Módulo 5 — Classes e OOP
@@ -1444,3 +1444,79 @@ if (endpointsSlow) {
 ---
 
 *Próximo conceito: **`.some()` e `.every()`***
+
+---
+
+### Conceito 22 — `.some()` e `.every()`
+
+Verificam condições num array e devolvem sempre um **`boolean`**.
+
+#### `.some()` — existe pelo menos um?
+
+```
+const resultado = arrayOriginal.some((elemento) => condição);
+                                 ↑
+                        "existe algum que...?"
+→ true se pelo menos um passar
+→ false se nenhum passar
+```
+
+#### `.every()` — todos passam?
+
+```
+const resultado = arrayOriginal.every((elemento) => condição);
+                                  ↑
+                        "todos passam...?"
+→ true se todos passarem
+→ false se pelo menos um falhar
+```
+
+#### Comparação dos métodos booleanos
+
+| Método | Pergunta | Devolve |
+|---|---|---|
+| `.some()` | Existe pelo menos um? | `boolean` |
+| `.every()` | Todos passam? | `boolean` |
+| `.find()` | Qual é o primeiro? | elemento ou `undefined` |
+
+#### Não precisam de `if`
+
+`.some()` e `.every()` devolvem sempre `boolean` — podes usar `console.log` diretamente:
+
+```typescript
+console.log(hasVerySlowRequests);  // ✅ sem if
+```
+
+O `if` só é necessário com `.find()` porque pode devolver `undefined`.
+
+#### Exercício realizado
+
+```typescript
+interface HttpTypes {
+  endpoint: string;
+  method: string;
+  responseTime: number;
+}
+
+const requestTimeOptions: HttpTypes[] = [
+  { endpoint: "endpoint1", method: "GET", responseTime: 500 },
+  { endpoint: "endpoint2", method: "GET", responseTime: 200 },
+  { endpoint: "endpoint3", method: "GET", responseTime: 600 },
+  { endpoint: "endpoint4", method: "GET", responseTime: 300 },
+  { endpoint: "endpoint5", method: "GET", responseTime: 400 },
+  { endpoint: "endpoint6", method: "GET", responseTime: 700 },
+];
+
+const hasVerySlowRequests = requestTimeOptions
+  .some((response) => response.responseTime > 600);
+
+const allGetRequests = requestTimeOptions
+  .every((response) => response.method === "GET");
+
+console.log(hasVerySlowRequests);  // [LOG]: true
+console.log(allGetRequests);       // [LOG]: true
+```
+
+---
+
+*Próximo conceito: **`.reduce()`***

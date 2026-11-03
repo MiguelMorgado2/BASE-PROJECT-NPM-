@@ -37,7 +37,7 @@
 23. ✅ `.reduce()` — agregar valores
 
 ### Módulo 5 — Classes e OOP
-24. Classes e constructors
+24. ✅ Classes e constructors
 25. Properties e methods
 26. `public`, `private`, `protected`
 27. Herança (`extends`)
@@ -316,6 +316,12 @@ return: true;   // ❌ erro de sintaxe
 
 Um **object** agrupa propriedades relacionadas numa única estrutura.
 
+#### 🧠 Analogia — o bilhete de identidade
+
+Um **object** é como um bilhete de identidade — junta várias informações sobre a mesma coisa (nome, data de nascimento, número) num único documento, em vez de teres papéis soltos.
+
+A **interface** é o modelo oficial do bilhete — define que campos existem e de que tipo são. Todos os bilhetes seguem o mesmo modelo, mas cada um tem os seus próprios dados.
+
 #### Anatomia — Object
 
 ```
@@ -427,6 +433,10 @@ function canUserLogin(response: LoginPermission): boolean {
 ### Conceito 6 — Arrays e `for` loop
 
 Um **array** guarda vários valores numa única variável, em ordem.
+
+#### 🧠 Analogia — a caixa de ovos
+
+Um **array** é como uma caixa de ovos — uma só caixa com vários compartimentos numerados, cada um com um ovo. O número do compartimento é o **índice** (começa em 0). O `for` loop é pegares em cada ovo, um a um, do primeiro ao último, e fazeres algo com ele.
 
 #### Anatomia — Array
 
@@ -700,6 +710,10 @@ let method2: HttpMethod = "PATCH";  // ❌ ERRO
 
 Um **enum** define uma lista de valores válidos com nomes legíveis — o editor sugere as opções automaticamente.
 
+#### 🧠 Analogia — o menu de restaurante
+
+Um **enum** é como um menu de restaurante — só podes escolher dos pratos listados, não podes pedir algo que não está no menu. Em vez de escreveres o nome do prato à mão (e arriscares um erro de escrita), apontas para a opção na lista. O editor mostra-te sempre o menu completo quando escreves `HttpMethod.`
+
 #### Anatomia
 
 ```
@@ -972,6 +986,10 @@ const body = await response.json() as UserProfile;
 
 Um **Generic** é um placeholder de type — escreves a função uma vez e funciona com qualquer type.
 
+#### 🧠 Analogia — o molde de bolos
+
+Um **Generic** é como um molde de bolos que se adapta ao recheio. O mesmo molde serve para um bolo de chocolate ou de baunilha — a forma é a mesma, muda só o recheio. O `T` é o "recheio" — adapta-se ao type que passas, sem teres de criar um molde novo para cada sabor.
+
 #### Anatomia
 
 ```
@@ -1223,6 +1241,14 @@ A vantagem sobre union type simples é o **intellisense** — o editor sabe exat
 ---
 
 ## Módulo 4 — Array Methods
+
+> 🧠 **Analogia geral dos array methods** — imagina uma linha de produção com caixas a passar numa passadeira:
+> - `.filter()` → um inspetor que deixa passar só as caixas que cumprem um critério
+> - `.map()` → uma máquina que transforma cada caixa (ex: põe uma etiqueta)
+> - `.find()` → um trabalhador que agarra na primeira caixa que encontra com um critério e para
+> - `.some()` → pergunta "existe alguma caixa com...?" → sim ou não
+> - `.every()` → pergunta "todas as caixas têm...?" → sim ou não
+> - `.reduce()` → junta o conteúdo de todas as caixas numa só (ex: soma tudo)
 
 ---
 
@@ -1596,3 +1622,184 @@ console.log(totalRequests);  // [LOG]: 6
 ---
 
 *Próximo módulo: **Classes e OOP***
+
+---
+
+## Módulo 5 — Classes e OOP
+
+---
+
+### Conceito 24 — Classes e Constructors
+
+Uma **class** agrupa a forma (propriedades) **e** o comportamento (métodos) num único bloco. É como uma "fábrica de objects" — defines uma vez e crias quantos objects quiseres.
+
+#### 🧠 Analogia — a ficha de formulário
+
+Pensa numa class como uma **ficha de formulário em branco**:
+
+- **A class** = o modelo da ficha (define que campos existem, ainda vazios)
+- **O constructor** = as instruções de preenchimento (pega nos dados e escreve-os nos campos)
+- **O método** = uma ação que a ficha sabe fazer com os seus próprios dados
+- **`new`** = preencher uma ficha nova e independente
+- **`this`** = "os dados desta ficha específica"
+
+Cada object criado com `new` é uma ficha nova e separada — com os seus próprios dados.
+
+#### Interface vs Class
+
+| | Interface | Class |
+|---|---|---|
+| O que define | Só a forma (propriedades) | Forma + comportamento (métodos) |
+| Existe em runtime? | ❌ desaparece na compilação | ✅ existe quando o código corre |
+| Quando usar | Descrever **dados** (ex: resposta de API) | Criar **ferramentas** com comportamento (Page Objects, helpers) |
+| Como criar object | `{ ... }` | `new NomeClass(...)` |
+
+#### Anatomia
+
+```
+class NomeDaClass {
+  ↑        ↑
+keyword   nome (PascalCase)
+
+  nomeDaPropriedade: type;              // declara a propriedade
+
+  constructor(parametro: type) {        // corre quando fazes new
+    this.nomeDaPropriedade = parametro; // this = o object a ser criado
+  }
+
+  nomeDoMetodo(): returnType {          // método — função dentro da class
+    return this.nomeDaPropriedade;
+  }
+}
+```
+
+#### `this.x = x` traduzido
+
+```
+this.testName = testName;
+  ↑      ↑         ↑
+  |      |         o valor recebido de fora (o parâmetro)
+  |      a propriedade deste object
+  este object
+
+→ "guarda o valor recebido na propriedade deste object"
+```
+
+O lado esquerdo (`this.testName`) é a **propriedade** do object.
+O lado direito (`testName`) é o **parâmetro** recebido.
+Têm o mesmo nome por convenção — mas são coisas diferentes.
+
+#### Criar objects — `new`
+
+```typescript
+const request = new ApiRequest("/users", "GET");
+//                   ↑           ↑
+//                   new       argumentos vão para o constructor pela ordem
+```
+
+#### Duas formas de constructor
+
+**Forma longa** — quando precisas de lógica extra (transformar ou validar valores):
+
+```typescript
+class ApiRequest {
+  endpoint: string;
+  method: string;
+
+  constructor(endpoint: string, method: string) {
+    this.endpoint = endpoint;
+    this.method = method.toUpperCase();  // lógica extra
+  }
+}
+```
+
+**Forma curta (parameter properties)** — quando só guardas os valores diretamente:
+
+```typescript
+class ApiRequest {
+  constructor(public endpoint: string, public method: string) {}
+  // o public cria e preenche a propriedade automaticamente
+}
+```
+
+As duas fazem o mesmo quando é atribuição direta. Usa a curta quando é simples, a longa quando precisas de mexer no valor antes de guardar.
+
+#### Quando precisas de constructor?
+
+- Valores vêm de fora → **sim, precisas de constructor**
+- Propriedades têm valor fixo (`count: number = 0`) → não precisas
+- Class só tem métodos, sem estado → não precisas
+
+#### O que é um método? (ex: `getStatus()`)
+
+Um **método** é uma função que vive **dentro** de uma class. A única diferença para uma função normal é onde vive e a que tem acesso:
+
+| | Função normal | Método |
+|---|---|---|
+| Onde vive | Sozinha, fora de classes | Dentro de uma class |
+| Acesso aos dados | Tens de os **passar** como parâmetros | Já os tem via `this` |
+
+```typescript
+// função normal — tens de PASSAR os dados de fora
+function getStatus(passed: boolean): string {
+  if (passed) return "PASSED";
+  else return "FAILED";
+}
+getStatus(true);  // passas o valor
+
+// método — os dados JÁ ESTÃO no object via this
+getStatus(): string {
+  if (this.passed) return "PASSED";  // vai buscar ao próprio object
+  else return "FAILED";
+}
+passingObject.getStatus();  // não passas nada — o object já carrega os seus dados
+```
+
+Anatomia do método:
+
+```
+getStatus(): string {
+    ↑       ↑
+    nome    devolve uma string
+    (à tua  ()  vazio = não recebe nada de fora
+    escolha)    porque usa this para ir buscar aos dados do object
+}
+```
+
+- O nome é à tua escolha — convenção `camelCase` (`getStatus`, `isValid`, `isFast`)
+- Chamas um método com `()` → `object.getStatus()`
+- Acedes a uma propriedade sem `()` → `object.testName`
+
+#### Exercício realizado — class TestResult
+
+```typescript
+class TestResult {
+  testName: string;
+  passed: boolean;
+
+  constructor(testName: string, passed: boolean) {
+    this.testName = testName;
+    this.passed = passed;
+  }
+
+  getStatus(): string {
+    if (this.passed) {
+      return "PASSED";
+    } else {
+      return "FAILED";
+    }
+  }
+}
+
+const passingObject = new TestResult("test1", true);
+const failingObject = new TestResult("test2", false);
+
+console.log(passingObject.getStatus());  // [LOG]: "PASSED"
+console.log(failingObject.getStatus());  // [LOG]: "FAILED"
+```
+
+> **Nota:** chamar um método usa `()` → `object.getStatus()`. Aceder a uma propriedade não usa `()` → `object.testName`.
+
+---
+
+*Próximo conceito: **Properties e Methods***

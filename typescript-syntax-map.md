@@ -553,3 +553,51 @@ const count = array.reduce((acc, _item) => acc + 1, 0);
 - `acc` — acumulador, guarda o resultado até ao momento
 - `_item` com `_` — convenção para parâmetro não usado
 - Último argumento `0` — valor inicial do acumulador
+
+---
+
+## Classes
+
+```typescript
+class NomeDaClass {
+  propriedade1: type;
+  propriedade2: type;
+
+  constructor(propriedade1: type, propriedade2: type) {
+    this.propriedade1 = propriedade1;
+    this.propriedade2 = propriedade2;
+  }
+
+  nomeDoMetodo(): returnType {
+    return this.propriedade1;
+  }
+}
+
+// criar object — usa new
+const obj = new NomeDaClass(valor1, valor2);
+
+// chamar método — com ()
+obj.nomeDoMetodo();
+
+// aceder a propriedade — sem ()
+obj.propriedade1;
+```
+
+**Forma curta do constructor (parameter properties):**
+
+```typescript
+class NomeDaClass {
+  constructor(public propriedade1: type, public propriedade2: type) {}
+  // public cria e preenche a propriedade automaticamente
+}
+```
+
+**Interface vs Class:**
+- Interface → descreve **dados**, desaparece em runtime, cria com `{ }`
+- Class → cria **ferramentas com comportamento**, existe em runtime, cria com `new`
+
+**`this`** → refere-se ao object que está a ser criado/usado
+
+**Constructor:**
+- Forma longa → quando precisas de lógica extra (transformar/validar)
+- Forma curta → quando só guardas os valores diretamente

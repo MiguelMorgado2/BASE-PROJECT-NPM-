@@ -30,7 +30,7 @@
 18. ✅ Overloads
 
 ### Módulo 4 — Array Methods
-19. `.filter()` — filtrar elementos
+19. ✅ `.filter()` — filtrar elementos
 20. `.map()` — transformar elementos
 21. `.find()` — encontrar um elemento
 22. `.some()` e `.every()` — verificar condições
@@ -1219,3 +1219,92 @@ A vantagem sobre union type simples é o **intellisense** — o editor sabe exat
 ---
 
 *Próximo módulo: **Array Methods** — `.filter()`, `.map()`, `.find()`, `.some()`, `.every()`, `.reduce()`*
+
+---
+
+## Módulo 4 — Array Methods
+
+---
+
+### Conceito 19 — `.filter()`
+
+O `.filter()` percorre um array e devolve um **novo array** com apenas os elementos que passam numa condição.
+
+#### Anatomia
+
+```
+const novoArray = arrayOriginal.filter((elemento) => condição);
+                      ↑           ↑         ↑              ↑
+                   array       método   variável        condição
+                   original             temporária      true = fica
+                                        (nome à escolha) false = sai
+```
+
+- Devolve um **novo array** — o original não é modificado
+- Só inclui os elementos onde a condição é `true`
+- A variável temporária representa cada elemento — o nome é escolhido por ti
+
+#### Comparação com `for` loop
+
+```typescript
+// com for loop — mais verboso
+const successResponses = [];
+for (const response of responses) {
+  if (response.statusCode === 200) {
+    successResponses.push(response);
+  }
+}
+
+// com .filter() — mais limpo, mesma lógica
+const successResponses = responses.filter((response) => response.statusCode === 200);
+```
+
+#### Exercícios realizados
+
+```typescript
+// Exercício 1 — filtrar testes que passaram e falharam
+interface TestResultTypes {
+  testName: string;
+  pass: boolean;
+}
+
+const testResultOptions: TestResultTypes[] = [
+  { testName: "test1", pass: true },
+  { testName: "test2", pass: true },
+  { testName: "test3", pass: true },
+  { testName: "test4", pass: false },
+  { testName: "test5", pass: false },
+];
+
+const passingTests = testResultOptions.filter((response) => response.pass === true);
+const failingTests = testResultOptions.filter((response) => response.pass === false);
+
+console.log(passingTests.length);  // [LOG]: 3
+console.log(failingTests.length);  // [LOG]: 2
+
+// Exercício 2 — filtrar pedidos lentos e rápidos
+interface HttpTypes {
+  endpoint: string;
+  method: string;
+  responseTime: number;
+}
+
+const requestTimeOptions: HttpTypes[] = [
+  { endpoint: "endpoint1", method: "GET", responseTime: 500 },
+  { endpoint: "endpoint2", method: "GET", responseTime: 200 },
+  { endpoint: "endpoint3", method: "GET", responseTime: 600 },
+  { endpoint: "endpoint4", method: "GET", responseTime: 300 },
+  { endpoint: "endpoint5", method: "GET", responseTime: 400 },
+  { endpoint: "endpoint6", method: "GET", responseTime: 700 },
+];
+
+const requestWithSlowTimes = requestTimeOptions.filter((response) => response.responseTime >= 500);
+const requestWithFastTimes = requestTimeOptions.filter((response) => response.responseTime < 500);
+
+console.log(requestWithSlowTimes.length);  // [LOG]: 3
+console.log(requestWithFastTimes.length);  // [LOG]: 3
+```
+
+---
+
+*Próximo conceito: **`.map()`***

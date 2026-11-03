@@ -468,3 +468,21 @@ function nomeFuncao(param: type1 | type2): returnType1 | returnType2 {
 
 - Dá ao editor informação precisa sobre o return type para cada caso
 - Raro em QA Automation — importante reconhecer quando aparece
+
+---
+
+## Array Methods
+
+### `.filter()` — filtrar elementos
+
+```typescript
+const novoArray = arrayOriginal.filter((elemento) => condição);
+
+// exemplo
+const passing = tests.filter((test) => test.passed === true);
+const slow    = requests.filter((req) => req.responseTime >= 500);
+```
+
+- Devolve novo array com elementos onde a condição é `true`
+- O array original não é modificado
+- O tamanho do resultado é igual ou menor que o original

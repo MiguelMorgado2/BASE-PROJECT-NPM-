@@ -428,3 +428,21 @@ nomeFuncao("texto")           // param2 = "default"
 - Os argumentos ligam-se pela **ordem** — primeiro valor → primeiro parâmetro
 - Com `?` precisas de verificar se existe antes de usar
 - Com valor por defeito o parâmetro sempre tem um valor — sem verificações
+
+---
+
+## Rest Parameters (`...args`)
+
+```typescript
+function nomeFuncao(...nomeDoArray: type[]): returnType {
+  for (const item of nomeDoArray) {
+    console.log(item);
+  }
+}
+
+nomeFuncao(200, 404, 500);  // sem [] — qualquer número de argumentos
+```
+
+- `...` agrupa todos os argumentos num array dentro da função
+- Tem de ser sempre o último parâmetro
+- Raro em QA Automation — importante reconhecer quando aparece

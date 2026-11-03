@@ -26,7 +26,7 @@
 ### Módulo 3 — Functions Avançadas
 15. ✅ Arrow functions (`=>`)
 16. ✅ Parâmetros opcionais e valores por defeito
-17. Rest parameters (`...args`)
+17. ✅ Rest parameters (`...args`)
 18. Overloads
 
 ### Módulo 4 — Array Methods
@@ -1113,3 +1113,62 @@ const code = 200;
 ---
 
 *Próximo conceito: **Rest parameters (`...args`)***
+
+---
+
+### Conceito 17 — Rest Parameters (`...args`)
+
+Permite que uma função aceite qualquer número de argumentos diretamente, sem precisar de passar um array.
+
+#### Anatomia
+
+```
+function nomeFuncao(...nomeDoArray: type[]): returnType {
+                    ↑                 ↑
+                    ... agrupa        é sempre um array
+                    tudo num array    dentro da função
+}
+```
+
+- O `...` antes do nome agrupa todos os argumentos num array
+- Dentro da função tratas como um array normal
+- Tem de ser **sempre o último parâmetro**
+
+#### Diferença prática
+
+```typescript
+// sem rest parameters — tens de passar um array com []
+function hasErrors(codes: number[]): boolean { ... }
+hasErrors([200, 404, 500]);
+
+// com rest parameters — passas os valores diretamente
+function hasErrors(...codes: number[]): boolean { ... }
+hasErrors(200, 404, 500);  // sem []
+hasErrors(200, 201);       // qualquer número de argumentos
+hasErrors(400);
+```
+
+O resultado dentro da função é o mesmo — `codes` é sempre um array. A diferença é só como chamas a função.
+
+#### Combinação com outros parâmetros
+
+```typescript
+function logResults(testSuite: string, ...codes: number[]): void {
+  console.log(`Suite: ${testSuite}`);
+  for (const code of codes) {
+    console.log(code);
+  }
+}
+
+logResults("Login Suite", 200, 404, 500);
+// [LOG]: Suite: Login Suite
+// [LOG]: 200
+// [LOG]: 404
+// [LOG]: 500
+```
+
+> **Nota:** Rest parameters são raros em QA Automation — mais importante reconhecê-los quando aparecem do que usá-los ativamente.
+
+---
+
+*Próximo conceito: **Overloads***

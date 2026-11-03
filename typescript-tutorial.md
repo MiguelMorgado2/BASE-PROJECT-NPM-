@@ -31,7 +31,7 @@
 
 ### Módulo 4 — Array Methods
 19. ✅ `.filter()` — filtrar elementos
-20. `.map()` — transformar elementos
+20. ✅ `.map()` — transformar elementos
 21. `.find()` — encontrar um elemento
 22. `.some()` e `.every()` — verificar condições
 23. `.reduce()` — agregar valores
@@ -1308,3 +1308,70 @@ console.log(requestWithFastTimes.length);  // [LOG]: 3
 ---
 
 *Próximo conceito: **`.map()`***
+
+---
+
+### Conceito 20 — `.map()`
+
+O `.map()` percorre um array e devolve um **novo array** onde cada elemento foi **transformado**.
+
+#### Anatomia
+
+```
+const novoArray = arrayOriginal.map((elemento) => transformação);
+                      ↑          ↑       ↑               ↑
+                   array      método  variável        o que devolver
+                   original           temporária      para cada elemento
+```
+
+- Devolve um **novo array** com o **mesmo número** de elementos
+- Cada elemento é transformado pela função que defines
+- O array original não é modificado
+
+#### Diferença entre `.filter()` e `.map()`
+
+| | `.filter()` | `.map()` |
+|---|---|---|
+| O que faz | Remove elementos | Transforma elementos |
+| Tamanho do resultado | Igual ou menor | Sempre igual |
+
+#### Exercício realizado
+
+```typescript
+interface HttpTypes {
+  endpoint: string;
+  method: string;
+  responseTime: number;
+}
+
+const requestTimeOptions: HttpTypes[] = [
+  { endpoint: "endpoint1", method: "GET", responseTime: 500 },
+  { endpoint: "endpoint2", method: "GET", responseTime: 200 },
+  { endpoint: "endpoint3", method: "GET", responseTime: 600 },
+  { endpoint: "endpoint4", method: "GET", responseTime: 300 },
+  { endpoint: "endpoint5", method: "GET", responseTime: 400 },
+  { endpoint: "endpoint6", method: "GET", responseTime: 700 },
+];
+
+// extrai só os endpoints
+const endpoints = requestTimeOptions.map((response) => response.endpoint);
+console.log(endpoints);
+// [LOG]: ["endpoint1", "endpoint2", "endpoint3", "endpoint4", "endpoint5", "endpoint6"]
+```
+
+#### `.filter()` + `.map()` encadeados
+
+Filtra e transforma numa só operação — padrão muito comum em QA Automation:
+
+```typescript
+const slowEndpoints = requestTimeOptions
+  .filter((response) => response.responseTime >= 500)
+  .map((response) => response.endpoint);
+
+console.log(slowEndpoints);         // [LOG]: ["endpoint1", "endpoint3", "endpoint6"]
+console.log(slowEndpoints.length);  // [LOG]: 3
+```
+
+---
+
+*Próximo conceito: **`.find()`***

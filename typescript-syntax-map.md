@@ -486,3 +486,24 @@ const slow    = requests.filter((req) => req.responseTime >= 500);
 - Devolve novo array com elementos onde a condição é `true`
 - O array original não é modificado
 - O tamanho do resultado é igual ou menor que o original
+
+### `.map()` — transformar elementos
+
+```typescript
+const novoArray = arrayOriginal.map((elemento) => transformação);
+
+// exemplo
+const endpoints = requests.map((req) => req.endpoint);
+const names     = tests.map((test) => test.testName.toUpperCase());
+```
+
+- Devolve novo array com o **mesmo número** de elementos
+- Cada elemento é transformado
+
+### `.filter()` + `.map()` encadeados
+
+```typescript
+const resultado = array
+  .filter((elemento) => condição)
+  .map((elemento) => transformação);
+```

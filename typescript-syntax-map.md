@@ -539,3 +539,17 @@ const allSuccess = responses.every((res) => res.statusCode < 400);
 - Devolvem sempre `boolean` — sem necessidade de `if`
 - `.some()` → `true` se pelo menos um passar
 - `.every()` → `true` só se todos passarem
+
+### `.reduce()` — acumular um valor
+
+```typescript
+// somar valores
+const total = array.reduce((acc, elemento) => acc + elemento.propriedade, 0);
+
+// contar elementos
+const count = array.reduce((acc, _item) => acc + 1, 0);
+```
+
+- `acc` — acumulador, guarda o resultado até ao momento
+- `_item` com `_` — convenção para parâmetro não usado
+- Último argumento `0` — valor inicial do acumulador

@@ -29,12 +29,12 @@
 17. ✅ Rest parameters (`...args`)
 18. ✅ Overloads
 
-### Módulo 4 — Array Methods
+### Módulo 4 — Array Methods ✅
 19. ✅ `.filter()` — filtrar elementos
 20. ✅ `.map()` — transformar elementos
 21. ✅ `.find()` — encontrar um elemento
 22. ✅ `.some()` e `.every()` — verificar condições
-23. `.reduce()` — agregar valores
+23. ✅ `.reduce()` — agregar valores
 
 ### Módulo 5 — Classes e OOP
 24. Classes e constructors
@@ -1520,3 +1520,79 @@ console.log(allGetRequests);       // [LOG]: true
 ---
 
 *Próximo conceito: **`.reduce()`***
+
+---
+
+### Conceito 23 — `.reduce()`
+
+O `.reduce()` percorre um array e **acumula** um único valor resultado.
+
+#### Anatomia
+
+```
+const resultado = array.reduce((acumulador, elemento) => operação, valorInicial);
+                          ↑         ↑            ↑           ↑           ↑
+                       método    guarda o     elemento    o que       valor de
+                                resultado    atual       fazer       partida do
+                                acumulado                            acumulador
+```
+
+#### Caso 1 — somar valores
+
+```typescript
+const times = [200, 350, 500];
+const total = times.reduce((acc, time) => acc + time, 0);
+// acc + time — adiciona o VALOR do elemento
+// [LOG]: 1050
+```
+
+Como funciona por dentro:
+```
+Início  → acc = 0
+Volta 1 → acc = 0 + 200 = 200
+Volta 2 → acc = 200 + 350 = 550
+Volta 3 → acc = 550 + 500 = 1050
+```
+
+#### Caso 2 — contar elementos
+
+```typescript
+const times = [200, 350, 500];
+const count = times.reduce((acc, _item) => acc + 1, 0);
+// acc + 1 — adiciona sempre 1, ignora o valor
+// _item com _ = convenção para parâmetro não usado
+// [LOG]: 3
+```
+
+> **Nota:** Para contar todos os elementos de um array usa `array.length` — é mais simples. O `.reduce()` para contar é útil quando queres contar só os que passam uma condição.
+
+#### Exercícios realizados
+
+```typescript
+interface HttpTypes {
+  endpoint: string;
+  method: string;
+  responseTime: number;
+}
+
+const requestTimeOptions: HttpTypes[] = [
+  { endpoint: "endpoint1", method: "GET", responseTime: 500 },
+  { endpoint: "endpoint2", method: "GET", responseTime: 200 },
+  { endpoint: "endpoint3", method: "GET", responseTime: 600 },
+  { endpoint: "endpoint4", method: "GET", responseTime: 300 },
+  { endpoint: "endpoint5", method: "GET", responseTime: 400 },
+  { endpoint: "endpoint6", method: "GET", responseTime: 700 },
+];
+
+// somar todos os tempos de resposta
+const totalResponseTime = requestTimeOptions.reduce((acc, time) => acc + time.responseTime, 0);
+console.log(totalResponseTime);  // [LOG]: 2700
+
+// contar todos os pedidos
+const totalRequests = requestTimeOptions.reduce((acc, _item) => acc + 1, 0);
+console.log(totalRequests);  // [LOG]: 6
+```
+
+---
+
+*Próximo módulo: **Classes e OOP***

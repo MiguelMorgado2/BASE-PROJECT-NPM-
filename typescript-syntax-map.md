@@ -91,6 +91,35 @@ interface ApiResponse {
 
 ---
 
+## Enums
+
+```typescript
+enum NomeDoEnum {
+  NomeLegivel  = "valor",
+  NomeLegivel2 = "valor2",
+}
+```
+
+- Nome com **PascalCase** → `HttpMethod`, `TestStatus`
+- Separador entre valores: `,`
+- Ordem de definição: **enum → interface → array → função → for loop**
+
+```typescript
+enum HttpMethod {
+  Get    = "GET",
+  Post   = "POST",
+  Delete = "DELETE",
+}
+
+// usar o enum
+let method: HttpMethod = HttpMethod.Get;  // → "GET"
+
+// comparar com o enum (não com a string direta)
+if (result.method === HttpMethod.Get) { ... }
+```
+
+---
+
 ## Object
 
 Cria um valor concreto que segue a forma de uma interface.
@@ -100,6 +129,15 @@ const nomeObject: NomeInterface = {
   propriedade1: valor,
   propriedade2: valor,
   propriedade3: valor,
+};
+```
+
+**Object simples sem interface** — quando é pontual e não precisas de reutilizar o type:
+
+```typescript
+const response = {
+  statusCode: 200,
+  body: "ok",
 };
 ```
 
@@ -241,12 +279,43 @@ function nomeFuncao(data: unknown): string | boolean {
 
 ## Concatenar strings
 
-```typescript
-// com +
-console.log(nome + ": passed");
+Duas formas de juntar strings com variáveis:
 
-// com template literal (preferido)
-console.log(`${nome}: passed`);
+**Com `+`** — forma clássica:
+```typescript
+const name = "Miguel";
+const code = 200;
+
+"Hello " + name           // → "Hello Miguel"
+"Status: " + code         // → "Status: 200"
+"Hello " + name + " got " + code  // → "Hello Miguel got 200"
+```
+
+**Com template literals** — forma moderna e preferida:
+```typescript
+`Hello ${name}`           // → "Hello Miguel"
+`Status: ${code}`         // → "Status: 200"
+`Hello ${name} got ${code}` // → "Hello Miguel got 200"
+```
+
+**Anatomia do template literal:**
+```
+`texto antes ${variavel} texto depois`
+ ↑                ↑                ↑
+backtick        ${}            backtick
+(abre)      (variável         (fecha)
+            ou expressão)
+```
+
+- Usa `` ` `` (backtick) em vez de `"` ou `'`
+- As variáveis ficam dentro de `${}`
+- Podes ter quantos `${}` quiseres na mesma string
+- O `${}` aceita variáveis, operações e chamadas de funções
+
+```typescript
+`Total: ${price * 2}`           // operação matemática
+`Result: ${isValid(200)}`        // chamada de função
+`${testName}: ${passed ? "passed" : "failed"}`  // condição
 ```
 
 ---
@@ -327,3 +396,35 @@ const nomeFuncao = (param: type): returnType => {
 // arrow sem {} — só uma linha
 const nomeFuncao = (param: type): returnType => valor;
 ```
+
+---
+
+## Parâmetros Opcionais e Valores por Defeito
+
+**Parâmetro opcional com `?`:**
+```typescript
+const nomeFuncao = (param1: string, param2?: number): string => {
+  if (param2) {
+    return `${param1}:${param2}`;
+  } else {
+    return param1;
+  }
+}
+
+nomeFuncao("texto", 3000)  // param2 existe
+nomeFuncao("texto")        // param2 é undefined
+```
+
+**Valor por defeito:**
+```typescript
+const nomeFuncao = (param1: string, param2: string = "default"): string => {
+  return `${param1}: ${param2}`;
+}
+
+nomeFuncao("texto", "valor")  // param2 = "valor"
+nomeFuncao("texto")           // param2 = "default"
+```
+
+- Os argumentos ligam-se pela **ordem** — primeiro valor → primeiro parâmetro
+- Com `?` precisas de verificar se existe antes de usar
+- Com valor por defeito o parâmetro sempre tem um valor — sem verificações

@@ -16,16 +16,16 @@
 8. ✅ Union types `|` e `typeof`
 9. ✅ Type aliases (`type`)
 
-### Módulo 2 — Tipos e Estruturas
-10. Enums
-11. `any`, `unknown`, `void`, `never` — types especiais
-12. `null` e `undefined` — valores em falta
-13. Type assertions (`as`)
-14. Generics — introdução
+### Módulo 2 — Tipos e Estruturas ✅
+10. ✅ Enums
+11. ✅ `any`, `unknown`, `void`, `never` — types especiais
+12. ✅ `null` e `undefined` — valores em falta
+13. ✅ Type assertions (`as`)
+14. ✅ Generics — introdução
 
 ### Módulo 3 — Functions Avançadas
-15. Arrow functions (`=>`)
-16. Parâmetros opcionais e valores por defeito
+15. ✅ Arrow functions (`=>`)
+16. ✅ Parâmetros opcionais e valores por defeito
 17. Rest parameters (`...args`)
 18. Overloads
 
@@ -72,150 +72,159 @@
 
 ---
 
-## Sessão 1 — Fundamentos
- 
+## Módulo 1 — Fundamentos
+
 ---
- 
+
 ### Conceito 1 — Variables e Types
- 
-Em TypeScript cada variable tem um **type** que define o que pode conter.
-Sem types (JavaScript puro), podes colocar qualquer valor em qualquer variable e só descobres erros quando o código corre.
+
+Em TypeScript cada variável tem um **type** que define o que pode conter.
+Sem types (JavaScript puro), só descobres erros quando o código corre.
 Com types, o editor sublinha os erros **antes de correres** uma única linha.
- 
-#### Sintaxe
- 
-```typescript
-let nomeDaVariable: type = valor;
+
+#### Anatomia
+
 ```
- 
+let nomeDaVariavel: type = valor;
+ ↑        ↑          ↑      ↑
+keyword  nome       type   valor
+```
+
+- `let` ou `const` — keyword que declara a variável
+- `nomeDaVariavel` — o nome que escolhes
+- `: type` — o type annotation (o que pode conter)
+- `= valor` — o valor inicial
+
 #### Os tipos básicos (primitive types)
- 
+
 | Type | O que representa | Exemplo |
 |---|---|---|
 | `string` | Texto | `"Login Test"` |
 | `number` | Número (inteiro ou decimal) | `200`, `3.14` |
 | `boolean` | Verdadeiro ou falso | `true`, `false` |
- 
-#### Exemplos
- 
-```typescript
-let testName: string = "Login Test";
-let statusCode: number = 200;
-let testPassed: boolean = true;
-```
- 
+
 #### Declaration vs Assignment
- 
-- **Declaration** — dizes que a variable existe, qual o nome e qual o type
-- **Assignment** — dás um valor à variable
- 
+
 ```typescript
-let statusCode: number;   // declaration
-statusCode = 200;         // assignment
+let statusCode: number;   // declaration — dizes que existe e qual o type
+statusCode = 200;         // assignment — dás um valor
+
+let statusCode: number = 200;  // os dois na mesma linha
 ```
- 
-Podes fazer os dois na mesma linha:
- 
-```typescript
-let statusCode: number = 200;   // declaration + assignment
-```
- 
+
 #### Type Inference
- 
-O TypeScript consegue inferir o type automaticamente quando atribuis um valor logo na declaration:
- 
+
+O TypeScript infere o type automaticamente quando atribuis um valor na declaration:
+
 ```typescript
 let statusCode = 200;   // TypeScript infere: number
 let testName = "Login"; // TypeScript infere: string
 ```
- 
-Nos primeiros tempos, **escreve sempre o type explicitamente** — ajuda a pensar no que cada variable deve conter.
- 
+
+Nos primeiros tempos, **escreve sempre o type explicitamente**.
+
+#### Exercício realizado
+
+```typescript
+let testName: string = "Login Test";
+let statusCode: number = 200;
+let testPassed: boolean = true;
+
+console.log(testName);    // [LOG]: Login Test
+console.log(statusCode);  // [LOG]: 200
+console.log(testPassed);  // [LOG]: true
+```
+
 ---
- 
+
 ### Conceito 2 — `const` vs `let`
- 
+
 | Keyword | Quando usar |
 |---|---|
 | `let` | O valor pode ser **reatribuído** (alterado) mais tarde |
 | `const` | O valor é atribuído uma vez e **nunca muda** |
- 
-**Reatribuir** significa dar um novo valor a uma variable que já tinha um valor:
- 
+
+#### Anatomia
+
+```
+const nomeDaVariavel: type = valor;
+  ↑                              ↑
+não pode ser reatribuída       valor fixo
+
+let nomeDaVariavel: type = valor;
+ ↑
+pode ser reatribuída mais tarde
+```
+
+#### Exemplos
+
 ```typescript
 let retryCount: number = 0;
-retryCount = 1;   // reatribuição — o valor mudou
-retryCount = 2;   // reatribuição novamente
-```
- 
-Com `const` isso não é possível:
- 
-```typescript
+retryCount = 1;   // ✅ reatribuição permitida
+
 const apiUrl: string = "https://api.example.com";
-apiUrl = "https://outro-url.com";   // ❌ ERRO — não podes mudar um const
+apiUrl = "https://outro.com";   // ❌ ERRO — não podes mudar um const
 ```
- 
-#### Regra de ouro
- 
-> Usa sempre `const` por defeito. Só mudas para `let` quando precisares de reatribuir.
- 
-#### Exemplos em QA Automation
- 
+
+> **Regra de ouro:** Usa sempre `const` por defeito. Só mudas para `let` quando precisares de reatribuir.
+
+#### Exercício realizado
+
 ```typescript
-const endpointUrl: string = "https://api.example.com/actions";  // nunca muda — const
-const expectedStatusCode: number = 200;                          // nunca muda — const
- 
-let retryCount: number = 0;    // vai sendo incrementado — let
-let actualStatusCode: number;  // vai receber o valor da resposta — let
+const endpointUrl: string = "https://api.example.com/actions";  // nunca muda
+const expectedStatusCode: number = 200;                          // nunca muda
+
+let retryCount: number = 0;    // vai sendo incrementado
+let actualStatusCode: number;  // vai receber o valor da resposta
 ```
- 
+
 ---
- 
-### Conceito 3 — Functions
- 
+
+### Conceito 3 — Functions e `if/else`
+
 Uma **function** é um bloco de código com nome que podes reutilizar.
- 
-#### Sintaxe
- 
-```typescript
+
+#### Anatomia
+
+```
 function nomeDaFunction(parameter: type): returnType {
+    ↑           ↑              ↑      ↑        ↑
+keyword       nome         parâmetro type   o que devolve
   // código aqui
 }
 ```
- 
-- **parameter** — valor que a function recebe para trabalhar
-- **returnType** — type do valor que a function devolve
- 
-#### Exemplo
- 
-```typescript
-function checkStatusCode(actual: number, expected: number): boolean {
-  return actual === expected;
+
+- `parameter` — valor que a função recebe para trabalhar
+- `returnType` — type do valor que a função devolve
+- `{}` — delimitam o corpo da função
+
+#### `if / else` — anatomia
+
+```
+if (condicao) {
+ ↑      ↑
+keyword condição entre ()
+
+  // código se true
+} else {
+  // código se false
 }
 ```
- 
-Esta function recebe dois numbers e devolve `true` se forem iguais, `false` se não forem.
- 
-#### Chamar uma function
- 
-**Definir** uma function é criar a receita. **Chamar** uma function é usá-la:
- 
-```typescript
-checkStatusCode(200, 200);   // chama a function com os valores 200 e 200
+
+#### `console.log()` — anatomia
+
 ```
- 
-Para guardar o resultado numa variable:
- 
-```typescript
-const result: boolean = checkStatusCode(200, 200);
-console.log(result);   // [LOG]: true
+console.log(valor);
+    ↑          ↑
+objeto       o que imprimir
 ```
- 
-#### `if / else`
- 
-Usado dentro de functions (e não só) para executar código consoante uma condição:
- 
+
+Guardar um valor numa variável não o mostra automaticamente — tens de usar `console.log`.
+
+#### Exercícios realizados
+
 ```typescript
+// Exercício 1 — isResponseFast
 function isResponseFast(responseTime: number): boolean {
   if (responseTime < 500) {
     return true;
@@ -223,40 +232,42 @@ function isResponseFast(responseTime: number): boolean {
     return false;
   }
 }
+
+const result1: boolean = isResponseFast(300);
+const result2: boolean = isResponseFast(600);
+
+console.log(result1);  // [LOG]: true
+console.log(result2);  // [LOG]: false
+
+// Exercício 2 — isValidStatusCode
+function isValidStatusCode(statusCode: number): boolean {
+  if (statusCode === 200) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log(isValidStatusCode(200));  // [LOG]: true
+console.log(isValidStatusCode(404));  // [LOG]: false
 ```
- 
-#### `console.log()`
- 
-Usado para imprimir valores no output. Guardar um valor numa variable não o mostra automaticamente — tens de usar `console.log`:
- 
-```typescript
-const result: boolean = isResponseFast(300);
-console.log(result);   // [LOG]: true
-```
- 
+
 ---
- 
+
 ### Conceito 4 — Operadores
- 
+
 #### Assignment vs Comparison
- 
+
 | Símbolo | Nome | O que faz | Quando usar |
 |---|---|---|---|
-| `=` | assignment | Guarda um valor numa variable | `let x = 5` |
-| `===` | strict equality | Compara se dois valores são iguais | Dentro de `if` |
-| `!==` | strict inequality | Compara se dois valores são diferentes | Dentro de `if` |
- 
+| `=` | assignment | Guarda um valor | `let x = 5` |
+| `===` | strict equality | Compara se iguais | Dentro de `if` |
+| `!==` | strict inequality | Compara se diferentes | Dentro de `if` |
+
 > **Regra:** Um `=` → estás a **dar** um valor. Dois ou três `=` → estás a **comparar** valores.
- 
-```typescript
-let retryCount: number = 0;         // = assignment — dá o valor 0
- 
-if (retryCount === 3) { ... }       // === comparação — pergunta "é igual a 3?"
-if (retryCount !== 0) { ... }       // !== comparação — pergunta "é diferente de 0?"
-```
- 
-#### Operadores de comparação completos
- 
+
+#### Operadores de comparação
+
 | Símbolo | Significado | Exemplo QA |
 |---|---|---|
 | `===` | igual a | `statusCode === 200` |
@@ -265,203 +276,89 @@ if (retryCount !== 0) { ... }       // !== comparação — pergunta "é diferen
 | `<` | menor que | `responseTime < 500` |
 | `>=` | maior ou igual | `points >= 100` |
 | `<=` | menor ou igual | `points <= 100` |
- 
+
+#### Operadores lógicos
+
+| Símbolo | Significado | Exemplo |
+|---|---|---|
+| `&&` | E — as duas condições têm de ser verdadeiras | `statusCode === 200 && body !== ""` |
+| `\|\|` | OU — pelo menos uma tem de ser verdadeira | `code === 200 \|\| code === 201` |
+| `!` | NÃO — inverte o boolean | `!isBlocked` |
+
 #### `==` vs `===`
- 
-Em TypeScript usa sempre `===` (strict equality):
- 
+
 ```typescript
-200 == "200"    // true  — == converte o tipo antes de comparar ⚠️
-200 === "200"   // false — === compara tipo e valor ✅
+200 == "200"    // true  — converte o tipo antes de comparar ⚠️
+200 === "200"   // false — compara tipo E valor ✅
 ```
- 
-O `===` é mais seguro porque não faz conversões automáticas de tipo.
- 
----
- 
-### Onde usar os dois pontos `:`
- 
-Os `:` em TypeScript servem **apenas** para type annotations:
- 
-```typescript
-let nome: string               // depois do nome de uma variable
-function f(x: number)          // depois do nome de um parameter
-function f(): boolean          // depois dos parênteses da function (return type)
+
+Usa sempre `===` em TypeScript.
+
+#### Onde usar os dois pontos `:`
+
 ```
- 
-Em todo o resto — `if`, `return`, `=` — **não há `:`**.
- 
+let nome: string               // depois do nome de uma variável
+function f(x: number)          // depois do nome de um parâmetro
+function f(): boolean          // depois dos parênteses (return type)
+const obj: NomeInterface = {}  // depois do nome de um object
+```
+
+Em `if`, `return`, `=` — **não há `:`**.
+
 ```typescript
-return true;    // ✅ sem :
+return true;    // ✅
 return: true;   // ❌ erro de sintaxe
 ```
- 
----
- 
-### Exercícios realizados
- 
-#### Exercício 1 — `isResponseFast`
- 
-Escreve uma function que recebe um `responseTime: number` e retorna `true` se for menor que 500.
- 
-```typescript
-function isResponseFast(responseTime: number): boolean {
-  if (responseTime < 500) {
-    return true;
-  } else {
-    return false;
-  }
-}
- 
-const result1: boolean = isResponseFast(300);
-const result2: boolean = isResponseFast(600);
- 
-console.log(result1);  // [LOG]: true
-console.log(result2);  // [LOG]: false
-```
- 
-#### Exercício 2 — `isValidStatusCode`
- 
-Escreve uma function que recebe um `statusCode: number` e retorna `true` apenas se for igual a 200.
- 
-```typescript
-function isValidStatusCode(statusCode: number): boolean {
-  if (statusCode === 200) {
-    return true;
-  } else {
-    return false;
-  }
-}
- 
-const result1: boolean = isValidStatusCode(200);
-const result2: boolean = isValidStatusCode(300);
-const result3: boolean = isValidStatusCode(404);
- 
-console.log(result1);  // [LOG]: true
-console.log(result2);  // [LOG]: false
-console.log(result3);  // [LOG]: false
-```
- 
----
- 
-*Próximo conceito: **Objects** — como modelar respostas de APIs em TypeScript.*
 
 ---
 
-## Sessão 2 — Objects
-
----
-
-### Conceito 5 — Objects
+### Conceito 5 — Objects e Interfaces
 
 Um **object** agrupa propriedades relacionadas numa única estrutura.
 
-Em vez de variáveis soltas:
+#### Anatomia — Object
 
-```typescript
-let statusCode: number = 200;
-let responseTime: number = 340;
-let success: boolean = true;
 ```
+const nomeObject: NomeInterface = {
+    ↑        ↑           ↑
+  keyword   nome     type (interface)
 
-Podes agrupar tudo num object:
-
-```typescript
-const response = {
-  statusCode: 200,
-  responseTime: 340,
-  success: true
+  propriedade1: valor,   ← separador é vírgula ,
+  propriedade2: valor,
 };
 ```
 
-Para aceder a uma propriedade usa-se o `.` (dot notation):
+#### Anatomia — Interface
 
-```typescript
-console.log(response.statusCode);  // [LOG]: 200
-console.log(response.success);     // [LOG]: true
 ```
+interface NomeInterface {
+    ↑           ↑
+ keyword       nome (PascalCase)
 
----
-
-#### Type annotation com `interface`
-
-Para objects, o TypeScript usa uma **interface** — define a "forma" esperada antes de criar o object:
-
-```typescript
-interface ApiResponse {
-  statusCode: number;
-  body: string;
+  propriedade1: type;   ← separador é ponto e vírgula ;
+  propriedade2: type;
+  propriedade3?: type;  ← ? torna a propriedade opcional
 }
 ```
 
-Depois usas a interface como type:
+#### Dot notation — aceder a propriedades
 
-```typescript
-const response: ApiResponse = {
-  statusCode: 200,
-  body: "ok"
-};
+```
+nomeObject.propriedade
+     ↑    ↑      ↑
+   object ponto  nome da propriedade
 ```
 
-A interface é um contrato. Se quebrares o contrato, o TypeScript avisa:
+#### Convenções de nomes
 
-```typescript
-const response: ApiResponse = {
-  statusCode: "200",  // ❌ ERRO — devia ser number, não string
-  body: "ok"
-};
-```
+| O quê | Convenção | Exemplo |
+|---|---|---|
+| Interface | PascalCase | `ApiResponse` |
+| Object | camelCase | `responseSuccess` |
+| Function | camelCase | `isLoginValid` |
+| Variable | camelCase | `statusCode` |
 
-#### Convenção de nomes
-
-- Interfaces e classes → `PascalCase` → `ApiResponse`
-- Variables e functions → `camelCase` → `response`, `myResponse`
-
----
-
-#### Vários objects do mesmo type
-
-Podes criar quantos objects quiseres com a mesma interface — cada um precisa do seu próprio nome:
-
-```typescript
-const responseSuccess: ApiResponse = { statusCode: 200, body: "ok" };
-const responseFailure: ApiResponse = { statusCode: 400, body: "not found" };
-```
-
----
-
-#### Objects em functions
-
-Podes passar um object como parameter de uma function:
-
-```typescript
-function isRequestSuccessful(response: ApiResponse): boolean {
-  if (response.statusCode === 200 && response.body !== "") {
-    return true;
-  } else {
-    return false;
-  }
-}
-```
-
-O parameter `response` é local — existe apenas dentro da função. Cá fora só tens acesso às variáveis que criaste nesse scope.
-
-Para usar o resultado cá fora:
-
-```typescript
-const result: boolean = isRequestSuccessful(responseSuccess);
-console.log(result);  // [LOG]: true
-```
-
-Ou diretamente, sem variável intermédia:
-
-```typescript
-console.log(isRequestSuccessful(responseSuccess));  // [LOG]: true
-```
-
----
-
-### Exercício realizado — `isRequestSuccessful`
+#### Exercício realizado
 
 ```typescript
 interface ApiResponse {
@@ -480,35 +377,20 @@ function isRequestSuccessful(response: ApiResponse): boolean {
   }
 }
 
-console.log(isRequestSuccessful(responseSuccess));              // [LOG]: true
-console.log(isRequestSuccessful(responseFailure));              // [LOG]: false
+console.log(isRequestSuccessful(responseSuccess));               // [LOG]: true
+console.log(isRequestSuccessful(responseFailure));               // [LOG]: false
 console.log(isRequestSuccessful({ statusCode: 200, body: "" })); // [LOG]: false
 ```
 
----
-
-### Exercícios de consolidação
-
-#### Exercício — `isApiHealthy`
+#### Exercícios de consolidação
 
 ```typescript
+// isApiHealthy
 interface ApiHealthCheck {
   endpoint: string;
   responseTime: number;
   isOnline: boolean;
 }
-
-const apiIsHealthy: ApiHealthCheck = {
-  endpoint: "httpblablabla.com",
-  responseTime: 100,
-  isOnline: true,
-};
-
-const apiIsUnhealthy: ApiHealthCheck = {
-  endpoint: "httpblablabla.com",
-  responseTime: 600,
-  isOnline: false,
-};
 
 function isApiHealthy(response: ApiHealthCheck): boolean {
   if (response.endpoint !== "" && response.responseTime < 500 && response.isOnline === true) {
@@ -518,30 +400,12 @@ function isApiHealthy(response: ApiHealthCheck): boolean {
   }
 }
 
-console.log(isApiHealthy(apiIsHealthy));    // [LOG]: true
-console.log(isApiHealthy(apiIsUnhealthy));  // [LOG]: false
-```
-
-#### Exercício — `canUserLogin`
-
-```typescript
+// canUserLogin
 interface LoginPermission {
   userName: string;
   loginAttemptsNumber: number;
   isAccountBlocked: boolean;
 }
-
-const userCanLogin: LoginPermission = {
-  userName: "Miguel",
-  loginAttemptsNumber: 2,
-  isAccountBlocked: false,
-};
-
-const userCannotLogin: LoginPermission = {
-  userName: "Miguel",
-  loginAttemptsNumber: 4,
-  isAccountBlocked: true,
-};
 
 function canUserLogin(response: LoginPermission): boolean {
   if (response.loginAttemptsNumber < 3 && response.isAccountBlocked === false) {
@@ -550,107 +414,67 @@ function canUserLogin(response: LoginPermission): boolean {
     return false;
   }
 }
-
-console.log(canUserLogin(userCanLogin));    // [LOG]: true
-console.log(canUserLogin(userCannotLogin)); // [LOG]: false
 ```
 
----
-
-### Notas importantes
-
-- **Erro de sintaxe** — o TypeScript sublinha e não deixa correr. Ex: esquecer `{` ou usar `,` em vez de `;` na interface.
-- **Erro de lógica** — o código corre mas devolve resultados errados. Ex: `> 2` em vez de `< 3`. Não há aviso — tens de detetar pelo resultado.
-- O parameter de uma função é **local** — só existe dentro das `{}` da função. Cá fora usa as variáveis que criaste.
-- Nos exercícios criamos objects à mão (**mock data**). Numa framework real, os dados chegam da API via Playwright.
+> **Notas:**
+> - **Erro de sintaxe** — o TypeScript sublinha e não deixa correr
+> - **Erro de lógica** — o código corre mas devolve resultados errados — tens de detetar pelo resultado
+> - O parâmetro de uma função é **local** — só existe dentro das `{}`
+> - Nos exercícios criamos objects à mão (**mock data**). Numa framework real, os dados chegam da API
 
 ---
 
-*Próximo conceito: **Arrays** — como guardar listas de valores (e de objects) em TypeScript.*
-
----
-
-## Sessão 3 — Arrays
-
----
-
-### Conceito 6 — Arrays
+### Conceito 6 — Arrays e `for` loop
 
 Um **array** guarda vários valores numa única variável, em ordem.
 
-```typescript
-const statusCodes: number[] = [200, 404, 500];
+#### Anatomia — Array
+
+```
+const nomeDoArray: type[] = [valor1, valor2, valor3];
+    ↑       ↑        ↑               ↑
+  keyword  nome    type[]        elementos
+                    ↑
+              [] significa "array de"
 ```
 
-O `number[]` significa "array de numbers". Funciona com qualquer type:
+#### Anatomia — `for` loop
 
-```typescript
-const testNames: string[] = ["Login Test", "Logout Test", "Register Test"];
-const results: boolean[] = [true, false, true];
+```
+for (const nomeTemporario of nomeDoArray) {
+  ↑          ↑                   ↑
+keyword   variável            o array
+          temporária        a percorrer
+
+  console.log(nomeTemporario);  // código executado em cada volta
+}
 ```
 
----
+- `nomeTemporario` — variável local que em cada volta tem o valor do elemento atual
+- O nome é escolhido por ti — deve fazer sentido para o contexto
+
+#### Como funciona por dentro
+
+```
+array: [200, 404, 500]
+
+Volta 1 → nomeTemporario = 200 → executa o código
+Volta 2 → nomeTemporario = 404 → executa o código
+Volta 3 → nomeTemporario = 500 → executa o código
+Acabou → para
+```
 
 #### Aceder a elementos — índice começa em 0
 
 ```typescript
-const statusCodes: number[] = [200, 404, 500];
+const codes: number[] = [200, 404, 500];
+//  índice:               0    1    2
 
-console.log(statusCodes[0]);  // [LOG]: 200
-console.log(statusCodes[1]);  // [LOG]: 404
-console.log(statusCodes[2]);  // [LOG]: 500
+console.log(codes[0]);  // [LOG]: 200
+console.log(codes[2]);  // [LOG]: 500
 ```
 
----
-
-#### Percorrer um array — `for` loop
-
-Em vez de aceder elemento a elemento, o `for` loop faz isso automaticamente:
-
-```typescript
-for (const code of statusCodes) {
-  console.log(code);
-}
-// [LOG]: 200
-// [LOG]: 404
-// [LOG]: 500
-```
-
-O `code` é uma variável temporária — em cada volta tem o valor do elemento atual. O nome é escolhido por ti.
-
-**Como funciona por dentro:**
-- Volta 1 → `code = 200` → executa o código dentro de `{}`
-- Volta 2 → `code = 404` → executa o código dentro de `{}`
-- Volta 3 → `code = 500` → executa o código dentro de `{}`
-- Acabou o array → para
-
----
-
-#### Arrays de objects
-
-```typescript
-interface ApiResponse {
-  statusCode: number;
-  body: string;
-}
-
-const apiResponses: ApiResponse[] = [
-  { statusCode: 200, body: "ok" },
-  { statusCode: 404, body: "not found" },
-  { statusCode: 500, body: "server error" },
-];
-
-for (const response of apiResponses) {
-  console.log(response.statusCode);  // acede à propriedade com dot notation
-}
-// [LOG]: 200
-// [LOG]: 404
-// [LOG]: 500
-```
-
----
-
-#### Arrays + functions — o padrão completo
+#### Exercício realizado — Arrays + Functions
 
 ```typescript
 interface ApiResponse {
@@ -680,184 +504,79 @@ for (const response of apiResponses) {
 // [LOG]: false
 ```
 
-Dentro do `for` loop, o `response` é um object individual em cada volta — passa-se diretamente à função como argumento.
-
 ---
 
-### Exercícios de consolidação
+### Conceito 7 — Optional Properties `?`
 
-#### Exercício — lista de resultados de testes
+O `?` torna uma propriedade da interface opcional — pode existir ou não.
 
-```typescript
-interface Tests {
-  testName: string;
-  passed: boolean;
+#### Anatomia
+
+```
+interface NomeInterface {
+  propriedade1: type;    // obrigatória — tem de existir sempre
+  propriedade2?: type;   // opcional — pode não existir
+                  ↑
+                  ? = opcional
 }
-
-const allTests: Tests[] = [
-  { testName: "test1", passed: true },
-  { testName: "test2", passed: false },
-  { testName: "test3", passed: false },
-];
-
-function testResults(response: Tests): boolean {
-  if (response.passed === true) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-for (const result of allTests) {
-  console.log(testResults(result));
-}
-// [LOG]: true
-// [LOG]: false
-// [LOG]: false
 ```
 
-#### Exercício — endpoints e tempo de resposta
-
-```typescript
-interface ApiList {
-  endpoints: string;
-  time: number;
-}
-
-const endpointsWithTime: ApiList[] = [
-  { endpoints: "endpoint1", time: 200 },
-  { endpoints: "endpoint2", time: 100 },
-  { endpoints: "endpoint3", time: 400 },
-  { endpoints: "endpoint4", time: 600 },
-];
-
-function isApiFast(response: ApiList): boolean {
-  if (response.time < 300) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-for (const fastApis of endpointsWithTime) {
-  console.log(isApiFast(fastApis));
-}
-// [LOG]: true
-// [LOG]: true
-// [LOG]: false
-// [LOG]: false
-```
-
-#### Exercício — produtos disponíveis para compra
-
-```typescript
-interface CelularPhones {
-  productName: string;
-  productPrice: number;
-  stock: boolean;
-}
-
-const productInformation: CelularPhones[] = [
-  { productName: "iphone 15", productPrice: 90, stock: true },
-  { productName: "iphone 16", productPrice: 700, stock: false },
-  { productName: "iphone 17", productPrice: 1000, stock: true },
-  { productName: "iphone 17 pro", productPrice: 1400, stock: false },
-];
-
-function availablePhones(product: CelularPhones): boolean {
-  if (product.stock === true && product.productPrice < 100) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-for (const phone of productInformation) {
-  console.log(availablePhones(phone));
-}
-// [LOG]: true
-// [LOG]: false
-// [LOG]: false
-// [LOG]: false
-```
-
-#### Exercício — voos prontos para embarque
-
-```typescript
-interface Flights {
-  destination: string;
-  seats: number;
-  isDelayed: boolean;
-}
-
-const flightsDetails: Flights[] = [
-  { destination: "Madrid", seats: 200, isDelayed: true },
-  { destination: "London", seats: 300, isDelayed: false },
-  { destination: "Lisbon", seats: 150, isDelayed: true },
-  { destination: "Dubai", seats: 350, isDelayed: false },
-];
-
-function isFlightReadyForDeparture(flight: Flights): boolean {
-  if (flight.seats > 0 && flight.isDelayed === false) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-for (const readyFlights of flightsDetails) {
-  console.log(isFlightReadyForDeparture(readyFlights));
-}
-// [LOG]: false
-// [LOG]: true
-// [LOG]: false
-// [LOG]: true
-```
-
----
-
-### Notas importantes
-
-- A interface modela os **dados que chegam** — não os resultados da tua avaliação. A lógica de avaliação vive na função.
-- O nome do parameter da função é escolha tua — `response`, `product`, `flight`, etc. O que importa é ser consistente dentro da função.
-- **Erro de lógica em arrays:** `> 200` (mais de 200 lugares) é diferente de `> 0` (tem lugares disponíveis). O enunciado define a regra — lê com atenção.
-
----
-
-*Próximo conceito: a definir na próxima sessão.*
-
----
-
-## Sessão 4 — Optional Properties e Union Types
-
----
-
-### Conceito 7 — Optional Properties
-
-Por defeito todas as propriedades de uma interface são obrigatórias. O `?` torna uma propriedade opcional:
+#### Exemplo
 
 ```typescript
 interface ApiResponse {
   statusCode: number;
   body: string;
-  errorMessage?: string;  // opcional — pode existir ou não
+  errorMessage?: string;  // opcional
 }
+
+// ambos válidos:
+const success: ApiResponse = { statusCode: 200, body: "ok" };
+const error: ApiResponse   = { statusCode: 404, body: "not found", errorMessage: "Resource not found" };
 ```
 
-Objects com e sem a propriedade opcional são ambos válidos:
+#### Exercício realizado
 
 ```typescript
-const success: ApiResponse = { statusCode: 200, body: "ok" };                          // ✅ sem errorMessage
-const error: ApiResponse = { statusCode: 404, body: "not found", errorMessage: "..." }; // ✅ com errorMessage
-```
+interface ErrorDetails {
+  errorName: string;
+  errorCode: number;
+  errorMessage?: string;
+}
 
-A interface modela os **dados que chegam** — se um campo só aparece em certos casos, usa `?`.
+const errors: ErrorDetails[] = [
+  { errorName: "Not found",    errorCode: 404 },
+  { errorName: "Server Error", errorCode: 500, errorMessage: "Critical, the server failed" },
+  { errorName: "Access Error", errorCode: 401 },
+];
+
+function isErrorCritical(typeOfError: ErrorDetails): boolean {
+  if (typeOfError.errorCode === 500) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+for (const errorType of errors) {
+  console.log(isErrorCritical(errorType));
+}
+// [LOG]: false
+// [LOG]: true
+// [LOG]: false
+```
 
 ---
 
-### Conceito 8 — Union Types
+### Conceito 8 — Union Types `|` e `typeof`
 
-O `|` significa "ou" — uma propriedade pode ser de mais do que um type:
+#### Union Types — Anatomia
+
+```
+propriedade: type1 | type2
+                  ↑
+                  | significa "ou"
+```
 
 ```typescript
 interface ApiResponse {
@@ -865,15 +584,18 @@ interface ApiResponse {
   body: string;
 }
 
-const r1: ApiResponse = { statusCode: 200, body: "ok" };    // number ✅
+const r1: ApiResponse = { statusCode: 200,   body: "ok" };  // number ✅
 const r2: ApiResponse = { statusCode: "200", body: "ok" };  // string ✅
 ```
 
----
-
 #### `typeof` — verificar o type em runtime
 
-Quando uma propriedade é `number | string`, tens de verificar o type antes de comparar:
+```
+typeof valor
+   ↑     ↑
+keyword  variável a verificar
+→ devolve "number", "string", ou "boolean"
+```
 
 ```typescript
 typeof 200      // → "number"
@@ -881,21 +603,19 @@ typeof "hello"  // → "string"
 typeof true     // → "boolean"
 ```
 
-Usado numa função:
+Usado quando uma propriedade é union type — tens de saber com qual estás a trabalhar antes de usar:
 
 ```typescript
-function isResponseSuccessful(response: ApiResponse): boolean {
-  if (typeof response.statusCode === "number") {
-    return response.statusCode === 200;   // compara como number
-  } else {
-    return response.statusCode === "200"; // compara como string
-  }
+if (typeof valor === "number") {
+  // aqui o TypeScript sabe que é number
+} else if (typeof valor === "string") {
+  // aqui o TypeScript sabe que é string
+} else {
+  // safety net
 }
 ```
 
----
-
-### Exercício realizado — API legacy com union types
+#### Exercício realizado
 
 ```typescript
 interface ApiLegacy {
@@ -904,9 +624,9 @@ interface ApiLegacy {
 }
 
 const responses: ApiLegacy[] = [
-  { endpoint: "endpoint 1", statusCode: 200 },    // number
-  { endpoint: "endpoint 2", statusCode: "200" },  // string
-  { endpoint: "endpoint 3", statusCode: 400 },    // falha
+  { endpoint: "endpoint 1", statusCode: 200 },
+  { endpoint: "endpoint 2", statusCode: "200" },
+  { endpoint: "endpoint 3", statusCode: 400 },
 ];
 
 function isResponseSuccessful(response: ApiLegacy): boolean {
@@ -927,114 +647,97 @@ for (const result of responses) {
 
 ---
 
-*Próximo conceito: a definir na próxima sessão.*
+### Conceito 9 — Type Aliases (`type`)
 
----
+#### Anatomia
 
-## Sessão 5 — Type Aliases
-
----
-
-### Conceito 9 — Type Aliases
-
-O `type` é uma alternativa à `interface` — mas serve para casos diferentes.
-
-#### Para objects — funciona igual à interface
-
-```typescript
-type ApiResponse = {
-  statusCode: number;
-  body: string;
-};
+```
+type NomeDoType = valor1 | valor2 | valor3;
+  ↑       ↑           ↑
+keyword  nome      valores possíveis separados por |
 ```
 
-#### Para union types — onde o `type` brilha
-
 ```typescript
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+type HttpMethod  = "GET" | "POST" | "PUT" | "DELETE";
 type Environment = "staging" | "production" | "development";
-type StatusCode = number | string;
+type StatusCode  = number | string;
 ```
 
-Só os valores definidos são permitidos — qualquer outro valor dá erro:
+Só os valores definidos são permitidos:
 
 ```typescript
 let method: HttpMethod = "GET";    // ✅
 let method2: HttpMethod = "PATCH"; // ❌ ERRO — não está na lista
 ```
 
----
-
-#### `interface` vs `type` — quando usar
+#### `interface` vs `type`
 
 | | `interface` | `type` |
 |---|---|---|
 | Forma de um object | ✅ preferido | ✅ funciona |
-| Union types | ❌ | ✅ |
-| Valores fixos | ❌ | ✅ |
+| Union types / valores fixos | ❌ | ✅ |
 
 **Regra prática:**
 - Estrutura de uma resposta de API → `interface`
-- Lista de valores possíveis (métodos HTTP, ambientes, status) → `type`
+- Lista de valores possíveis → `type`
+
+#### Exercício realizado
+
+```typescript
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
+
+let method1: HttpMethod = "GET";    // ✅
+let method2: HttpMethod = "PATCH";  // ❌ ERRO
+```
 
 ---
 
-## Sessão 6 — Enums
+## Módulo 2 — Tipos e Estruturas
 
 ---
 
 ### Conceito 10 — Enums
 
-Um **enum** define uma lista de valores válidos com nomes legíveis — semelhante ao `type` mas com melhor autocomplete no editor.
+Um **enum** define uma lista de valores válidos com nomes legíveis — o editor sugere as opções automaticamente.
 
-```typescript
-enum HttpMethod {
-  Get = "GET",
-  Post = "POST",
-  Patch = "PATCH",
-  Put = "PUT",
-  Delete = "DELETE",
+#### Anatomia
+
+```
+enum NomeDoEnum {
+  ↑       ↑
+keyword  nome (PascalCase)
+
+  NomeLegivel = "valor",   ← separador é vírgula ,
+  NomeLegivel2 = "valor2",
 }
 ```
 
-Para usar o enum:
+#### Ordem de definição — enum antes da interface
 
 ```typescript
-console.log(HttpMethod.Get);  // [LOG]: "GET"
-```
-
----
-
-#### Enum + Interface + Array — o padrão completo
-
-O enum define-se **antes** da interface porque a interface o usa como type:
-
-```typescript
-// 1. enum — lista de valores válidos
+// 1. enum — define os valores possíveis
 enum HttpMethod {
-  Get = "GET",
-  Post = "POST",
-  Patch = "PATCH",
-  Put = "PUT",
+  Get    = "GET",
+  Post   = "POST",
+  Patch  = "PATCH",
+  Put    = "PUT",
   Delete = "DELETE",
 }
 
 // 2. interface — usa o enum como type
 interface HttpRequest {
   endpoint: string;
-  method: HttpMethod;
+  method: HttpMethod;   // ← o type é o enum
 }
 
 // 3. array — usa o enum para preencher os valores
-const methodTypes: HttpRequest[] = [
+const requests: HttpRequest[] = [
   { endpoint: "endpoint1", method: HttpMethod.Get },
-  { endpoint: "endpoint2", method: HttpMethod.Patch },
-  { endpoint: "endpoint3", method: HttpMethod.Delete },
-  { endpoint: "endpoint4", method: HttpMethod.Post },
+  { endpoint: "endpoint2", method: HttpMethod.Post },
 ];
 
 // 4. função — compara com o enum, não com a string direta
-function isMethodReadable(result: HttpRequest): boolean {
+function isReadRequest(result: HttpRequest): boolean {
   if (result.method === HttpMethod.Get) {
     return true;
   } else {
@@ -1043,118 +746,108 @@ function isMethodReadable(result: HttpRequest): boolean {
 }
 
 // 5. for loop
-for (const readableMethod of methodTypes) {
-  console.log(isMethodReadable(readableMethod));
+for (const request of requests) {
+  console.log(isReadRequest(request));
 }
 // [LOG]: true
 // [LOG]: false
-// [LOG]: false
-// [LOG]: false
 ```
-
----
 
 #### O que o enum acrescenta
 
 - **Segurança** — só os valores definidos são permitidos
 - **Legibilidade** — `HttpMethod.Get` é mais claro que `"GET"`
 - **Autocomplete** — o editor sugere as opções quando escreves `HttpMethod.`
-- **Manutenção** — se mudares o valor do enum, atualiza em todo o lado automaticamente
 
 ---
 
-*Próximo conceito: **`any`, `unknown`, `void`, `never`** — types especiais.*
+### Conceito 11 — Types Especiais
 
----
-
-## Sessão 7 — Types Especiais
-
----
-
-### Conceito 11 — `any`, `unknown`, `void`, `never`
-
----
-
-#### `any`
-
-Desativa completamente a verificação de types. Evita sempre que possível.
+#### `any` — desativa a verificação de types
 
 ```typescript
 let valor: any = 200;
-valor = "hello";   // ✅ sem erro
-valor = true;      // ✅ sem erro
+valor = "hello";   // ✅ sem erro — mas perdes a proteção do TypeScript
 ```
 
----
+> Evita `any` sempre que possível.
 
-#### `unknown`
-
-Aceita qualquer valor mas não deixa usá-lo sem verificar o type primeiro — é o `any` seguro.
+#### `unknown` — any seguro
 
 ```typescript
-function parseApiResponse(data: unknown): string {
+// anatomia
+function nomeFuncao(data: unknown): string {
+                          ↑
+                    aceita qualquer valor
+                    mas obriga a verificar antes de usar
+
   if (typeof data === "string") {
-    return data.toUpperCase();  // ✅ TypeScript sabe que é string aqui
+    return data.toUpperCase();  // ✅ só usa depois de verificar
   } else {
     return "not a string";
   }
 }
-
-console.log(parseApiResponse("hello"));  // [LOG]: "HELLO"
-console.log(parseApiResponse(200));      // [LOG]: "not a string"
 ```
 
----
-
-#### `void`
-
-Return type de funções que não devolvem nada — só executam ações.
+#### `void` — funções que não devolvem nada
 
 ```typescript
+// anatomia
+function nomeFuncao(param: string): void {
+                                     ↑
+                              não devolve nada — só executa ações
+
+  console.log(param);  // sem return
+}
+
+nomeFuncao("hello");  // chama diretamente — sem guardar resultado
+```
+
+Diferença prática:
+- Função com `boolean` → **calcula** algo → guardas em `const`
+- Função com `void` → **faz** algo → chamas diretamente
+
+#### `never` — funções que nunca terminam normalmente
+
+```typescript
+function throwError(message: string): never {
+  throw new Error(message);  // lança sempre um erro — nunca devolve
+}
+```
+
+#### Exercícios realizados
+
+```typescript
+// void — logTestResult
 function logTestResult(testName: string, passed: boolean): void {
   if (passed === true) {
-    console.log(testName + ": passed");
+    console.log(`${testName}: passed`);
   } else {
-    console.log(testName + ": failed");
+    console.log(`${testName}: failed`);
   }
 }
 
 logTestResult("Login Test", true);   // [LOG]: Login Test: passed
 logTestResult("Logout Test", false); // [LOG]: Logout Test: failed
-```
 
-Diferença prática:
-- Função com `boolean` → **calcula** algo → guardas em `const` e imprimes
-- Função com `void` → **faz** algo diretamente → chamas sem guardar resultado
-
-Em QA Automation o `void` aparece em funções de logging, setup/teardown e hooks do Cucumber/Playwright.
-
----
-
-#### `never`
-
-Representa funções que nunca terminam normalmente — por exemplo, funções que lançam sempre um erro.
-
-```typescript
-function throwError(message: string): never {
-  throw new Error(message);
+// unknown — parseApiResponse
+function parseApiResponse(data: unknown): string {
+  if (typeof data === "string") {
+    return data.toUpperCase();
+  } else {
+    return "not a string";
+  }
 }
-```
 
-Raramente escrevido por ti — mas importante reconhecer quando aparece no código.
+console.log(parseApiResponse("hello")); // [LOG]: "HELLO"
+console.log(parseApiResponse(200));     // [LOG]: "not a string"
 
----
-
-#### Juntar `unknown` com union type no return
-
-Quando uma função pode devolver tipos diferentes consoante o input:
-
-```typescript
+// unknown + union return type
 function validateStatusCode(parameter: unknown): boolean | string {
   if (typeof parameter === "number") {
-    return parameter < 400;  // devolve boolean
+    return parameter < 400;
   } else {
-    return "invalid data";   // devolve string
+    return "invalid data";
   }
 }
 
@@ -1165,87 +858,47 @@ console.log(validateStatusCode("hello")); // [LOG]: "invalid data"
 
 ---
 
-#### Concatenar strings
-
-Duas formas de juntar strings com variáveis:
-
-```typescript
-// com +
-console.log(testName + ": passed");
-
-// com template literal (mais legível)
-console.log(`${testName}: passed`);
-```
-
-Os template literals usam `` ` `` (backtick) e as variáveis ficam dentro de `${}`.
-
----
-
-*Próximo conceito: **`null` e `undefined`** — valores em falta.*
-
----
-
-## Sessão 8 — `null` e `undefined`
-
----
-
 ### Conceito 12 — `null` e `undefined`
-
-Em QA Automation as APIs nem sempre devolvem todos os campos. O TypeScript tem dois valores para representar dados em falta.
-
-**`undefined`** — a variável existe mas não tem valor atribuído:
-
-```typescript
-let errorMessage: string | undefined;
-console.log(errorMessage);  // [LOG]: undefined
-```
-
-**`null`** — o valor foi explicitamente definido como "vazio":
-
-```typescript
-let errorMessage: string | null = null;
-console.log(errorMessage);  // [LOG]: null
-```
 
 | | Significa |
 |---|---|
-| `undefined` | Ninguém atribuiu nada |
+| `undefined` | Ninguém atribuiu nada — a variável existe mas está vazia |
 | `null` | Foi explicitamente definido como "sem valor" |
 
----
+#### Anatomia
 
-#### Verificar se um valor existe antes de o usar
+```typescript
+let valor: string | undefined;        // não atribuído → undefined
+let valor2: string | null = null;     // explicitamente vazio → null
+```
+
+#### Verificar antes de usar
 
 ```typescript
 // forma explícita
 if (response.errorMessage !== null) {
-  console.log(response.errorMessage.toUpperCase());
+  console.log(response.errorMessage.toUpperCase());  // ✅ seguro
 }
 
-// forma curta — verifica se é "truthy"
+// forma curta — "truthy check"
 if (response.errorMessage) {
-  console.log(response.errorMessage.toUpperCase());
+  console.log(response.errorMessage.toUpperCase());  // ✅ só entra se existir
 }
 ```
-
----
 
 #### `.toUpperCase()` — normalizar strings
 
-Converte uma string para maiúsculas — útil para comparações case-insensitive:
+Converte para maiúsculas — útil para comparações independentes do formato:
 
 ```typescript
-"staging".toUpperCase()   // → "STAGING"
-"Staging".toUpperCase()   // → "STAGING"
-"STAGING".toUpperCase()   // → "STAGING"
+"staging".toUpperCase()  // → "STAGING"
+"Staging".toUpperCase()  // → "STAGING"
+"STAGING".toUpperCase()  // → "STAGING"
 
-// comparação segura independentemente do formato
-if (env.toUpperCase() === "STAGING") { ... }
+if (env.toUpperCase() === "STAGING") { ... }  // aceita qualquer formato
 ```
 
----
-
-### Exercício realizado — mensagens de erro de API
+#### Exercício realizado
 
 ```typescript
 interface ApiResponseRules {
@@ -1254,8 +907,8 @@ interface ApiResponseRules {
 }
 
 const apiResponses: ApiResponseRules[] = [
-  { statusCode: 500, errorMessage: 'server error' },
-  { statusCode: 400, errorMessage: 'wrong url' },
+  { statusCode: 500, errorMessage: "server error" },
+  { statusCode: 400, errorMessage: "wrong url" },
   { statusCode: 200, errorMessage: null },
 ];
 
@@ -1263,12 +916,12 @@ function actualApiResponse(responses: ApiResponseRules): string {
   if (responses.errorMessage !== null) {
     return responses.errorMessage.toUpperCase();
   } else {
-    return 'no error';
+    return "no error";
   }
 }
 
-for (const response1 of apiResponses) {
-  console.log(actualApiResponse(response1));
+for (const response of apiResponses) {
+  console.log(actualApiResponse(response));
 }
 // [LOG]: "SERVER ERROR"
 // [LOG]: "WRONG URL"
@@ -1277,17 +930,17 @@ for (const response1 of apiResponses) {
 
 ---
 
-*Próximo conceito: **Type Assertions (`as`)** — dizer ao TypeScript o type de um valor.*
-
----
-
-## Sessão 9 — Type Assertions
-
----
-
 ### Conceito 13 — Type Assertions (`as`)
 
-O `as` permite dizer ao TypeScript o type de um valor quando ele não consegue inferir:
+O `as` diz ao TypeScript o type de um valor quando ele não consegue inferir.
+
+#### Anatomia
+
+```
+const variavel = outraVariavel as NomeDoType;
+                              ↑
+                              as = "confia em mim, é este type"
+```
 
 ```typescript
 const data: unknown = "hello";
@@ -1295,75 +948,55 @@ const message = data as string;       // assumes que é string
 console.log(message.toUpperCase());   // ✅ funciona
 ```
 
-**Diferença entre `typeof` e `as`:**
+#### `typeof` vs `as`
 
 | | `typeof` | `as` |
 |---|---|---|
 | O que faz | Verifica o type em runtime | Assume o type sem verificar |
 | Segurança | ✅ seguro | ⚠️ perigoso se estiveres errado |
-| Quando usar | Dados `unknown` de origem externa | Quando tens a certeza do type mas o TypeScript não consegue inferir |
-
-**Exemplo perigoso:**
+| Quando usar | Dados `unknown` | Quando tens a certeza mas o TS não sabe |
 
 ```typescript
+// perigoso — assumes errado
 const data: unknown = 200;
-const message = data as string;       // assumes string — mas é number!
-console.log(message.toUpperCase());   // 💥 erro em runtime
+const message = data as string;
+console.log(message.toUpperCase());  // 💥 erro em runtime
+
+// uso real em Playwright
+const body = await response.json() as UserProfile;
 ```
-
-**Uso real em QA Automation:**
-
-```typescript
-const response = await request.get("/user");
-const body = await response.json() as UserProfile;  // assumes o type da resposta
-```
-
----
-
-*Próximo conceito: **Generics** — o último conceito do Módulo 2.*
-
----
-
-## Sessão 10 — Generics
 
 ---
 
 ### Conceito 14 — Generics
 
-Um **Generic** é um placeholder de type — permite escrever uma função uma vez e usá-la com qualquer type.
+Um **Generic** é um placeholder de type — escreves a função uma vez e funciona com qualquer type.
 
-```typescript
-// sem generics — só funciona com numbers
-function getFirst(arr: number[]): number {
-  return arr[0];
-}
+#### Anatomia
 
-// com generics — funciona com qualquer type
-function getFirst<T>(arr: T[]): T {
-  return arr[0];
+```
+function nomeFuncao<T>(parametro: T[]): T {
+                    ↑              ↑    ↑
+                    T = placeholder  usa T como type
+                    (pode ser qualquer nome)
+  return parametro[0];
 }
 ```
 
-O `T` substitui-se pelo type real quando a função é chamada:
+O `T` substitui-se pelo type real na chamada:
 
 ```typescript
 getFirst([200, 404, 500]);         // T = number → devolve number
 getFirst(["GET", "POST", "PUT"]);  // T = string → devolve string
 ```
 
----
-
-**Em QA Automation** vês Generics principalmente no Playwright:
+Em QA Automation vês Generics no Playwright:
 
 ```typescript
 const body = await response.json<UserProfile>();  // T = UserProfile
 ```
 
-O `T` é só uma convenção — podia chamar-se `X` ou `Type`. O importante é reconhecê-lo quando aparece.
-
----
-
-*Próximo conceito: **Arrow Functions** — Módulo 3.*
+> O `T` é só uma convenção — o importante é reconhecê-lo quando aparece.
 
 ---
 
@@ -1373,35 +1006,110 @@ O `T` é só uma convenção — podia chamar-se `X` ou `Type`. O importante é 
 
 ### Conceito 15 — Arrow Functions
 
-Uma forma mais compacta de escrever funções. As três versões fazem o mesmo:
+Uma forma mais compacta de escrever funções.
+
+#### Anatomia — comparação das três versões
 
 ```typescript
 // versão clássica
-function isValid(response: ApiResponse): boolean {
-  return response.statusCode === 200;
+function nomeFuncao(param: type): returnType {
+  return valor;
 }
 
 // arrow function com {}
-const isValid = (response: ApiResponse): boolean => {
-  return response.statusCode === 200;
+const nomeFuncao = (param: type): returnType => {
+                                              ↑
+                                              => substitui a palavra "function"
+  return valor;
 }
 
 // arrow function sem {} — só uma linha
-const isValid = (response: ApiResponse): boolean => response.statusCode === 200;
+const nomeFuncao = (param: type): returnType => valor;
+//                                              ↑
+//                          sem {} e sem return — TypeScript assume o return
 ```
 
 **Regra:** quando a função tem só uma linha que devolve um valor, podes omitir `{}` e `return`.
 
-**Exemplos:**
+#### Exercício realizado
 
 ```typescript
-const isStatusSuccess = (code: number): boolean => code < 400;
-const getEnvironmentUrl = (env: string): string => "https://" + env + ".api.com";
-const isTestPassed = (passed: boolean): boolean => passed === true;
+const isStatusSuccess    = (code: number): boolean  => code < 400;
+const getEnvironmentUrl  = (env: string): string    => "https://" + env + ".api.com";
+const isTestPassed       = (passed: boolean): boolean => passed === true;
 ```
-
-Arrow functions estão por toda a parte em Playwright e Cucumber — agora já sabes o que estás a ler.
 
 ---
 
-*Próximo conceito: **Parâmetros opcionais e valores por defeito.***
+### Conceito 16 — Parâmetros Opcionais e Valores por Defeito
+
+#### Parâmetro opcional com `?`
+
+```
+const nomeFuncao = (param1: type, param2?: type): returnType => { ... }
+                                          ↑
+                                          ? = pode não ser passado
+                                              se não for → valor é undefined
+```
+
+```typescript
+const getBaseUrl = (env: string, port?: number): string => {
+  if (port) {                         // se port existe (não é undefined)
+    return `https://${env}:${port}`;
+  } else {
+    return `https://${env}`;
+  }
+}
+
+getBaseUrl("localhost", 3000)  // port=3000   → "https://localhost:3000"
+getBaseUrl("localhost")        // port=undefined → "https://localhost"
+```
+
+#### Valor por defeito
+
+```
+const nomeFuncao = (param1: type, param2: type = "valor"): returnType => { ... }
+                                                   ↑
+                                          = define o valor a usar
+                                            quando nada é passado
+```
+
+```typescript
+const createTestName = (feature: string, scenario: string = "default"): string => {
+  return `${feature}: ${scenario}`;
+}
+
+createTestName("Login", "valid credentials")  // → "Login: valid credentials"
+createTestName("Login")                       // → "Login: default"
+```
+
+#### Diferença entre `?` e valor por defeito
+
+| | `?` | valor por defeito |
+|---|---|---|
+| Valor quando não passado | `undefined` | o valor que definiste |
+| Precisas de `if/else`? | sim | não |
+| Quando usar | quando a ausência tem significado | quando há um valor sensato |
+
+#### Template literals — concatenar strings
+
+```
+`texto ${variavel} texto`
+ ↑          ↑
+backtick   ${ } insere o valor da variável
+```
+
+```typescript
+const name = "Miguel";
+const code = 200;
+
+`Hello ${name}`              // → "Hello Miguel"
+`Status: ${code}`            // → "Status: 200"
+`${name} got ${code}`        // → "Miguel got 200"
+`Total: ${price * 2}`        // → operação dentro de ${}
+`Result: ${isValid(200)}`    // → chamada de função dentro de ${}
+```
+
+---
+
+*Próximo conceito: **Rest parameters (`...args`)***

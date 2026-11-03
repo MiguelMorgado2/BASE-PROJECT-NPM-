@@ -32,7 +32,7 @@
 ### Módulo 4 — Array Methods
 19. ✅ `.filter()` — filtrar elementos
 20. ✅ `.map()` — transformar elementos
-21. `.find()` — encontrar um elemento
+21. ✅ `.find()` — encontrar um elemento
 22. `.some()` e `.every()` — verificar condições
 23. `.reduce()` — agregar valores
 
@@ -1375,3 +1375,72 @@ console.log(slowEndpoints.length);  // [LOG]: 3
 ---
 
 *Próximo conceito: **`.find()`***
+
+---
+
+### Conceito 21 — `.find()`
+
+O `.find()` percorre um array e devolve o **primeiro elemento** que passa numa condição. Se não encontrar nenhum, devolve `undefined`.
+
+#### Anatomia
+
+```
+const elemento = arrayOriginal.find((elemento) => condição);
+      ↑               ↑          ↑       ↑              ↑
+   variável         array      método  variável       condição
+   (ou undefined)  original            temporária
+```
+
+- Devolve **um único elemento** — não um array
+- Para quando encontra o primeiro que passa a condição
+- Se não encontrar → devolve `undefined`
+
+#### Diferença entre `.filter()` e `.find()`
+
+| | `.filter()` | `.find()` |
+|---|---|---|
+| Devolve | Array com todos que passam | Primeiro que passa |
+| Se não encontrar | Array vazio `[]` | `undefined` |
+| Quando usar | Queres todos | Queres só um |
+
+#### Verificar antes de usar
+
+Como pode devolver `undefined`, verifica sempre antes de aceder às propriedades:
+
+```typescript
+const firstError = responses.find((response) => response.statusCode >= 400);
+
+if (firstError) {
+  console.log(firstError.body);  // ✅ seguro
+}
+```
+
+#### Exercício realizado
+
+```typescript
+interface HttpTypes {
+  endpoint: string;
+  method: string;
+  responseTime: number;
+}
+
+const requestTimeOptions: HttpTypes[] = [
+  { endpoint: "endpoint1", method: "GET", responseTime: 500 },
+  { endpoint: "endpoint2", method: "GET", responseTime: 200 },
+  { endpoint: "endpoint3", method: "GET", responseTime: 600 },
+  { endpoint: "endpoint4", method: "GET", responseTime: 300 },
+  { endpoint: "endpoint5", method: "GET", responseTime: 400 },
+  { endpoint: "endpoint6", method: "GET", responseTime: 700 },
+];
+
+const endpointsSlow = requestTimeOptions
+  .find((response) => response.responseTime >= 500);
+
+if (endpointsSlow) {
+  console.log(endpointsSlow.endpoint);  // [LOG]: "endpoint1"
+}
+```
+
+---
+
+*Próximo conceito: **`.some()` e `.every()`***

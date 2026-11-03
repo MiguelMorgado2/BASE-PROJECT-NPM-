@@ -507,3 +507,21 @@ const resultado = array
   .filter((elemento) => condição)
   .map((elemento) => transformação);
 ```
+
+### `.find()` — encontrar um elemento
+
+```typescript
+const elemento = arrayOriginal.find((elemento) => condição);
+
+// exemplo
+const firstError = responses.find((response) => response.statusCode >= 400);
+
+// verificar antes de usar — pode ser undefined
+if (firstError) {
+  console.log(firstError.body);
+}
+```
+
+- Devolve **um único elemento** (não um array)
+- Se não encontrar → devolve `undefined`
+- É quase sempre a última operação de uma cadeia

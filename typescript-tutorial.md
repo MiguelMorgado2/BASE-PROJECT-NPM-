@@ -23,11 +23,11 @@
 13. ✅ Type assertions (`as`)
 14. ✅ Generics — introdução
 
-### Módulo 3 — Functions Avançadas
+### Módulo 3 — Functions Avançadas ✅
 15. ✅ Arrow functions (`=>`)
 16. ✅ Parâmetros opcionais e valores por defeito
 17. ✅ Rest parameters (`...args`)
-18. Overloads
+18. ✅ Overloads
 
 ### Módulo 4 — Array Methods
 19. `.filter()` — filtrar elementos
@@ -1172,3 +1172,50 @@ logResults("Login Suite", 200, 404, 500);
 ---
 
 *Próximo conceito: **Overloads***
+
+---
+
+### Conceito 18 — Overloads
+
+Permitem que uma função tenha assinaturas diferentes dependendo dos tipos de argumentos.
+
+#### Anatomia
+
+```
+// 1. declaras as assinaturas possíveis — sem corpo
+function nomeFuncao(param: type1): returnType1;
+function nomeFuncao(param: type2): returnType2;
+
+// 2. implementas com union type — com corpo
+function nomeFuncao(param: type1 | type2): returnType1 | returnType2 {
+  // lógica aqui
+}
+```
+
+#### Exemplo
+
+```typescript
+// assinaturas
+function formatStatus(code: number): string;
+function formatStatus(code: string): string;
+
+// implementação
+function formatStatus(code: number | string): string {
+  if (typeof code === "number") {
+    return `Status: ${code}`;
+  } else {
+    return `Status: ${code.toUpperCase()}`;
+  }
+}
+
+console.log(formatStatus(200));   // [LOG]: "Status: 200"
+console.log(formatStatus("ok"));  // [LOG]: "Status: OK"
+```
+
+A vantagem sobre union type simples é o **intellisense** — o editor sabe exatamente qual a assinatura correta para cada tipo de argumento.
+
+> **Nota:** Overloads são raros em QA Automation — mais importante reconhecê-los quando aparecem.
+
+---
+
+*Próximo módulo: **Array Methods** — `.filter()`, `.map()`, `.find()`, `.some()`, `.every()`, `.reduce()`*

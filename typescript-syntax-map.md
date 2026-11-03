@@ -446,3 +446,25 @@ nomeFuncao(200, 404, 500);  // sem [] — qualquer número de argumentos
 - `...` agrupa todos os argumentos num array dentro da função
 - Tem de ser sempre o último parâmetro
 - Raro em QA Automation — importante reconhecer quando aparece
+
+---
+
+## Overloads
+
+```typescript
+// assinaturas — sem corpo
+function nomeFuncao(param: type1): returnType1;
+function nomeFuncao(param: type2): returnType2;
+
+// implementação — com corpo
+function nomeFuncao(param: type1 | type2): returnType1 | returnType2 {
+  if (typeof param === "type1") {
+    // lógica para type1
+  } else {
+    // lógica para type2
+  }
+}
+```
+
+- Dá ao editor informação precisa sobre o return type para cada caso
+- Raro em QA Automation — importante reconhecer quando aparece

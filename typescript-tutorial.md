@@ -1724,6 +1724,40 @@ class ApiRequest {
 
 As duas fazem o mesmo quando é atribuição direta. Usa a curta quando é simples, a longa quando precisas de mexer no valor antes de guardar.
 
+#### Porque é que o `public` elimina a repetição?
+
+O `public` é um **modificador de acesso**. Quando o pões num parâmetro do constructor, dizes ao TypeScript:
+
+> "Este parâmetro não é só um valor temporário — transforma-o automaticamente numa propriedade do object e preenche-a."
+
+Compara os três passos da forma longa com o que o `public` faz:
+
+```typescript
+// FORMA LONGA — três passos à mão
+class User {
+  userName: string;                 // 1. declara a propriedade
+  constructor(userName: string) {   // 2. recebe o valor
+    this.userName = userName;       // 3. guarda o valor na propriedade
+  }
+}
+
+// FORMA CURTA — o public funde os três passos num só
+class User {
+  constructor(public userName: string) {}
+  //           ↑
+  //           declara + recebe + guarda, tudo automaticamente
+}
+```
+
+**A lógica:** os criadores do TypeScript repararam que quase toda a gente escrevia o mesmo padrão repetitivo (`this.x = x`). Criaram este atalho para o fazer automaticamente.
+
+**Importante:** o atalho só funciona com um modificador de acesso (`public`, `private` ou `protected`). Sem nenhum, o parâmetro fica um valor temporário normal e NÃO vira propriedade:
+
+```typescript
+constructor(userName: string) {}         // temporário — NÃO vira propriedade
+constructor(public userName: string) {}  // vira propriedade do object
+```
+
 #### Quando precisas de constructor?
 
 - Valores vêm de fora → **sim, precisas de constructor**
@@ -1883,6 +1917,135 @@ console.log(slowObject.isFast());  // [LOG]: false
 > **Nota:** chamar um método usa `()` → `object.getStatus()`. Aceder a uma propriedade não usa `()` → `object.testName`.
 >
 > **`isFast` vs `isFast()`** — sem `()` refere a função em si (imprime o código). Com `()` executa a função e devolve o resultado. Os `()` executam mesmo quando a função não recebe argumentos.
+
+#### Exercício de consolidação — class User (forma longa e forma curta)
+
+Mesmo exercício escrito nas duas formas de constructor — resultado idêntico.
+
+```typescript
+// FORMA LONGA — declara propriedades + this.x = x
+class User {
+  userName: string;
+  loginAttempt: number;
+
+  constructor(userName: string, loginAttempt: number) {
+    this.userName = userName;
+    this.loginAttempt = loginAttempt;
+  }
+
+  isBlocked(): boolean {
+    if (this.loginAttempt >= 3) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+// FORMA CURTA — public no constructor, sem declarações, sem this.x = x
+class User {
+  constructor(public userName: string, public loginAttempt: number) {}
+
+  isBlocked(): boolean {
+    if (this.loginAttempt >= 3) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+const blockedUser = new User("Miguel", 4);
+const unblockedUser = new User("Ana", 3);
+
+console.log(blockedUser.isBlocked());    // [LOG]: true
+console.log(unblockedUser.isBlocked());  // [LOG]: false
+```
+
+> **Qual usar?** A forma curta (`public`) é a mais comum no código moderno. A forma longa usa-se quando o constructor precisa de lógica extra (validações, transformações). Para aprender, a longa mostra a mecânica; depois de a perceberes, usa a curta com confiança.
+>
+> **Erro comum:** o método e o constructor são **irmãos** — ficam lado a lado dentro da class. O método NÃO vai dentro do constructor. Na forma curta o constructor fica vazio `{}`.
+
+#### Revisão comparativa — o mesmo problema de 3 formas
+
+Problema: um produto tem `name` e `price`. É caro se o preço for acima de 500.
+
+```typescript
+// ===== FORMA 1 — INTERFACE + função externa =====
+interface Product {
+  name: string;
+  price: number;
+}
+
+const productA: Product = { name: "car motor", price: 6000 };
+const productB: Product = { name: "car oil", price: 100 };
+
+function isProductExpensive(response: Product): boolean {
+  if (response.price > 500) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+console.log(isProductExpensive(productA));  // [LOG]: true
+console.log(isProductExpensive(productB));  // [LOG]: false
+
+
+// ===== FORMA 2 — CLASS LONGA (com repetição) =====
+class Product {
+  name: string;
+  price: number;
+
+  constructor(name: string, price: number) {
+    this.name = name;
+    this.price = price;
+  }
+
+  isProductExpensive(): boolean {
+    if (this.price > 500) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+const expensiveProduct = new Product("product A", 6000);
+const cheapProduct = new Product("product B", 400);
+
+console.log(expensiveProduct.isProductExpensive());  // [LOG]: true
+console.log(cheapProduct.isProductExpensive());      // [LOG]: false
+
+
+// ===== FORMA 3 — CLASS CURTA (public, sem repetição) =====
+class Product {
+  constructor(public name: string, public price: number) {}
+
+  isProductExpensive(): boolean {
+    if (this.price > 500) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+const expensiveProduct = new Product("product A", 6000);
+const cheapProduct = new Product("product B", 400);
+
+console.log(expensiveProduct.isProductExpensive());  // [LOG]: true
+console.log(cheapProduct.isProductExpensive());      // [LOG]: false
+```
+
+#### Quadro comparativo
+
+| | Interface | Class longa | Class curta |
+|---|---|---|---|
+| Dados | object `{}` | `new` + `this.x = x` | `new` + `public` |
+| Comportamento | função externa | método dentro | método dentro |
+| Como chamar | `func(object)` | `object.metodo()` | `object.metodo()` |
+| Quando usar | dados sem comportamento | class com lógica no constructor | class simples (preferido) |
 
 ---
 

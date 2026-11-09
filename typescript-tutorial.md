@@ -1770,6 +1770,60 @@ getStatus(): string {
 - Chamas um método com `()` → `object.getStatus()`
 - Acedes a uma propriedade sem `()` → `object.testName`
 
+#### Perguntas frequentes sobre classes
+
+**1. Porque usar class + constructor em vez de interface > object > function?**
+
+A class **junta os dados e o comportamento no mesmo sítio**. O object sabe fazer coisas sozinho — não precisas de uma função externa e de lhe passar o object.
+
+```typescript
+// Abordagem interface — dados e comportamento SEPARADOS
+interface ApiEndpoint {
+  url: string;
+  responseTime: number;
+}
+function isFast(endpoint: ApiEndpoint): boolean {
+  return endpoint.responseTime < 300;
+}
+const e1 = { url: "/users", responseTime: 200 };
+isFast(e1);  // tens de PASSAR o object à função
+
+// Abordagem class — dados e comportamento JUNTOS
+class ApiEndpoint {
+  constructor(public url: string, public responseTime: number) {}
+  isFast(): boolean {
+    return this.responseTime < 300;
+  }
+}
+const e2 = new ApiEndpoint("/users", 200);
+e2.isFast();  // o object JÁ CARREGA a função consigo
+```
+
+- Dados simples sem comportamento → **interface chega**
+- "Coisas que fazem ações" (ex: Page Objects com `clicar()`, `preencher()`) → **class é melhor**
+
+**2. Porque precisamos do constructor se repete os types da class?**
+
+São dois momentos diferentes: a declaração de cima define a estrutura, o constructor recebe os dados.
+
+Mas a **forma curta com `public` elimina a repetição** — usa-a quando é simples:
+
+```typescript
+class ApiEndpoint {
+  constructor(public url: string, public responseTime: number) {}
+  // sem declarar propriedades em cima, sem this.x = x
+}
+```
+
+**3. Ainda precisamos de funções, ou o método substitui-as?**
+
+O método **substitui** a função externa — quando o comportamento está ligado aos dados desse object.
+
+- Comportamento ligado a um object → **método dentro da class**
+- Lógica genérica e independente → **função normal (fora de classes)**
+
+---
+
 #### Exercício realizado — class TestResult
 
 ```typescript
@@ -1798,7 +1852,37 @@ console.log(passingObject.getStatus());  // [LOG]: "PASSED"
 console.log(failingObject.getStatus());  // [LOG]: "FAILED"
 ```
 
+#### Exercício de consolidação — class ApiEndpoint
+
+```typescript
+class ApiEndpoint {
+  url: string;
+  responseTime: number;
+
+  constructor(url: string, responseTime: number) {
+    this.url = url;
+    this.responseTime = responseTime;
+  }
+
+  isFast(): boolean {
+    if (this.responseTime < 300) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+const fastObject = new ApiEndpoint("/users", 200);
+const slowObject = new ApiEndpoint("/users", 400);
+
+console.log(fastObject.isFast());  // [LOG]: true
+console.log(slowObject.isFast());  // [LOG]: false
+```
+
 > **Nota:** chamar um método usa `()` → `object.getStatus()`. Aceder a uma propriedade não usa `()` → `object.testName`.
+>
+> **`isFast` vs `isFast()`** — sem `()` refere a função em si (imprime o código). Com `()` executa a função e devolve o resultado. Os `()` executam mesmo quando a função não recebe argumentos.
 
 ---
 

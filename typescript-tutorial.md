@@ -2050,3 +2050,107 @@ console.log(cheapProduct.isProductExpensive());      // [LOG]: false
 ---
 
 *Próximo conceito: **Properties e Methods***
+
+---
+
+## Sessão de Revisão — Combinar Conceitos
+
+Exercícios que combinam vários conceitos para consolidar a lógica e a sintaxe.
+
+---
+
+### Revisão 1 — Enum + Interface + Array + `for` com `if`
+
+Não é preciso função quando a condição é simples e usada uma só vez: um `if` dentro do `for` chega.
+
+```typescript
+enum Priority {
+  Low = "low",
+  Medium = "medium",
+  High = "high",
+}
+
+interface Bug {
+  title: string;
+  priority: Priority;
+}
+
+const bugs: Bug[] = [
+  { title: "bug 1", priority: Priority.Low },
+  { title: "bug 2", priority: Priority.High },
+  { title: "bug 3", priority: Priority.Low },
+  { title: "bug 4", priority: Priority.High },
+];
+
+for (const bug of bugs) {
+  if (bug.priority === Priority.High) {
+    console.log(bug.title);
+  }
+}
+// [LOG]: "bug 2"
+// [LOG]: "bug 4"
+```
+
+> **Nota:** ao usar um valor de enum escreves `Enum.Valor` (`Priority.High`), nunca só `High`.
+
+---
+
+### Revisão 2 — `.filter()` + `.map()` com enum
+
+```typescript
+const highPriorityBugs = bugs
+  .filter((bug) => bug.priority === Priority.High)
+  .map((bug) => bug.title);
+
+console.log(highPriorityBugs);  // [LOG]: ["bug 2", "bug 4"]
+```
+
+---
+
+### Revisão 3 — Arrow function + `.reduce()` + `.filter().length`
+
+#### Quando preciso de interface?
+
+| O que guardas | Exemplo | Precisas de interface? |
+|---|---|---|
+| Valores simples | `[200, 350, 500]` | ❌ Não, basta `number[]` |
+| Objects com propriedades com nome | `[{ endpoint: "/users", time: 200 }]` | ✅ Sim, para descrever a forma |
+
+A interface descreve a **forma de um object**. Não depende de quantas propriedades há: depende de os dados serem objects com campos com nome.
+
+#### Soma com arrow function e `.reduce()`
+
+```typescript
+const times: number[] = [200, 350, 500, 150, 400];
+
+const sumTimes = (times: number[]): number => times.reduce((acc, time) => acc + time, 0);
+
+console.log(sumTimes(times));  // [LOG]: 1600
+```
+
+Diferença para usar o `.reduce()` diretamente: dentro de uma arrow function fica reutilizável com qualquer `number[]`.
+
+#### Contar com `.filter()` + `.length`
+
+```typescript
+const countSlowTimes = (times: number[]): number => times.filter((time) => time > 300).length;
+const countFastTimes = (times: number[]): number => times.filter((time) => time < 300).length;
+
+console.log(countSlowTimes(times));  // [LOG]: 3  (350, 500, 400)
+console.log(countFastTimes(times));  // [LOG]: 2  (200, 150)
+```
+
+#### Erro comum: `.filter` sem `()`
+
+```typescript
+times.filter.length                         // ❌ função em si, nunca executada → dá 1
+times.filter((time) => time > 300).length   // ✅ filtra e depois conta
+```
+
+Sem `()` não executas o `.filter()`: referes-te à função, e uma função tem `.length` (número de parâmetros). É o mesmo princípio de `isFast` vs `isFast()`. O TypeScript não avisa porque é válido, mas é um erro de lógica.
+
+Como ler a cadeia: `.filter(...)` devolve um **novo array**, e só nesse array é que pedes o `.length`.
+
+---
+
+*Próximo conceito: **Properties e Methods***

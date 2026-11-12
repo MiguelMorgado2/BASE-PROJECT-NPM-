@@ -601,3 +601,44 @@ class NomeDaClass {
 **Constructor:**
 - Forma longa → quando precisas de lógica extra (transformar/validar)
 - Forma curta → quando só guardas os valores diretamente
+
+---
+
+## Interface ou só o type do array?
+
+```typescript
+// valores simples → basta o type do array
+const times: number[] = [200, 350, 500];
+
+// objects com propriedades com nome → interface
+interface Request {
+  endpoint: string;
+  time: number;
+}
+const requests: Request[] = [{ endpoint: "/users", time: 200 }];
+```
+
+---
+
+## Arrow function com `.reduce()` e `.filter().length`
+
+```typescript
+// somar
+const sumTimes = (times: number[]): number => times.reduce((acc, time) => acc + time, 0);
+
+// contar os que passam uma condição
+const countSlow = (times: number[]): number => times.filter((time) => time > 300).length;
+```
+
+- `.filter(...)` devolve um **novo array**; `.length` conta os elementos desse array
+- `.filter.length` (sem `()`) é um erro: refere a função em si, não a executa
+- Com `number[]` o elemento já é o número (`time`); com objects é `time.propriedade`
+
+---
+
+## Ler valores de enum
+
+```typescript
+bug.priority === Priority.High   // ✅ Enum.Valor
+bug.priority === High            // ❌ nunca só o valor
+```
